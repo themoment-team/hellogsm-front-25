@@ -34,6 +34,7 @@ export { default as CalculateIcon } from './CalculateIcon';
 export { default as SparkleIcon } from './SparkleIcon';
 export { default as PrintIcon } from './PrintIcon';
 export { default as CopyIcon } from './CopyIcon';
+export { default as MedalIcon } from './MedalIcon';
 export { default as Section2Icon1 } from './Section2/Section2Icon1';
 export { default as Section2Icon2 } from './Section2/Section2Icon2';
 export { default as Section2Icon3 } from './Section2/Section2Icon3';
