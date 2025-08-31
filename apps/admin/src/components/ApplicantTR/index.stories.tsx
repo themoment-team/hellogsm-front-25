@@ -58,6 +58,7 @@ const MockData: ApplicationTRProps = {
   competencyEvaluationScore: 100,
   interviewScore: 100,
   secondTestPassYn: 'YES',
+  examinationNumber: 1101,
   oneseoRefetch: oneseoFakeRefetch,
   entranceIntentionYn: 'YES',
   editableData: { oneseoEditability: true },

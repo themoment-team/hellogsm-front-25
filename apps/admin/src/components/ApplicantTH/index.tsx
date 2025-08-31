@@ -49,13 +49,14 @@ const ApplicantTH = () => {
               </div>
             </TableCell>
             <TableCell className={cn([defaultStyle, 'w-[7rem]'])}>지원자 정보</TableCell>
-            <TableCell className={cn([defaultStyle, 'w-[8.75rem]'])}>출신 중학교</TableCell>
+            <TableCell className={cn([defaultStyle, 'w-[7.5rem]'])}>수험 번호</TableCell>
+            <TableCell className={cn([defaultStyle, 'w-[8.5rem]'])}>출신 중학교</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[6.75rem]'])}>전형</TableCell>
-            <TableCell className={cn([defaultStyle, 'w-[5.3125rem]'])}>1차 결과</TableCell>
-            <TableCell className={cn([defaultStyle, 'w-[10rem]'])}>역량검사 점수</TableCell>
+            <TableCell className={cn([defaultStyle, 'w-[6rem]'])}>1차 결과</TableCell>
+            <TableCell className={cn([defaultStyle, 'w-[10.25rem]'])}>역량검사 점수</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[10rem]'])}>심층면접 점수</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[5.625rem]'])}>2차 결과</TableCell>
-            <TableCell className={cn([defaultStyle, 'w-[15rem]'])}>
+            <TableCell className={cn([defaultStyle, 'w-[14.5rem]'])}>
               <div className={cn('flex', 'gap-1', 'items-center')}>
                 입학 동의서 제출 여부
                 <div

@@ -195,6 +195,7 @@ export interface OneseoType {
   competencyEvaluationScore: number | null;
   interviewScore: number | null;
   secondTestPassYn: YesNo | null;
+  examinationNumber: number | null;
 }
 
 export interface OneseoListType {
