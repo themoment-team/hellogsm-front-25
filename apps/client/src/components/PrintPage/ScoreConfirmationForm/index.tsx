@@ -18,7 +18,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
   return (
     <div
       className={cn(
-        'flex h-fit flex-col items-center justify-center overflow-hidden bg-white p-2 text-[1vh]',
+        'flex h-fit flex-col items-center justify-center overflow-hidden bg-white p-2 pt-0 text-[1vh]',
       )}
     >
       <div className={cn('relative', 'z-[2]', 'w-[66vh]')}>
