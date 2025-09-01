@@ -18,7 +18,16 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
   return (
     <div
       className={cn(
-        'flex h-fit flex-col items-center justify-center overflow-hidden bg-white p-2 pt-0 text-[1vh]',
+        'flex',
+        'h-fit',
+        'flex-col',
+        'items-center',
+        'justify-center',
+        'overflow-hidden',
+        'bg-white',
+        'p-2',
+        'pt-0',
+        'text-[1vh]',
       )}
     >
       <div className={cn('relative', 'z-[2]', 'w-[66vh]')}>
@@ -38,7 +47,15 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
               <div
                 id="sample"
                 className={cn(
-                  'absolute top-[-60px] z-[-2] rotate-[-30deg] transform select-none text-center text-[40vh] text-gray-200',
+                  'absolute',
+                  'top-[-60px]',
+                  'z-[-2]',
+                  'rotate-[-30deg]',
+                  'transform',
+                  'select-none',
+                  'text-center',
+                  'text-[40vh]',
+                  'text-gray-200',
                 )}
               >
                 견본
@@ -56,7 +73,14 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
                     <tr>
                       <th
                         className={cn(
-                          'w-20 border border-b-0 border-black bg-[#e9e9e9] p-[0.2vh] align-middle font-medium',
+                          'w-20',
+                          'border',
+                          'border-b-0',
+                          'border-black',
+                          'bg-[#e9e9e9]',
+                          'p-[0.2vh]',
+                          'align-middle',
+                          'font-medium',
                         )}
                       >
                         접수번호

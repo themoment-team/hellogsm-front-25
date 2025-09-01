@@ -30,14 +30,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
           <div className={cn('flex', 'flex-col')}>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               1학년 1학기
             </div>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               성취도/평어
@@ -81,14 +93,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
           <div className={cn('flex', 'flex-col')}>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               1학년 2학기
             </div>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               성취도/평어
@@ -131,14 +155,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
         <div className={cn('flex', 'flex-col')}>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             2학년 1학기
           </div>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             성취도/평어
@@ -168,14 +204,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
         <div className={cn('flex', 'flex-col')}>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             2학년 2학기
           </div>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             성취도/평어
@@ -213,14 +261,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
         <div className={cn('flex', 'flex-col')}>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             3학년 1학기
           </div>
           <div
             className={cn(
-              'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+              'h-[2.2vh]',
+              'border-b',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.2vh]',
+              'text-center',
+              'font-bold',
             )}
           >
             성취도/평어
@@ -251,14 +311,26 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
           <div className={cn('flex', 'flex-col')}>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               3학년 2학기
             </div>
             <div
               className={cn(
-                'h-[2.2vh] border-b border-black bg-gray-200 p-[0.2vh] text-center font-bold',
+                'h-[2.2vh]',
+                'border-b',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.2vh]',
+                'text-center',
+                'font-bold',
               )}
             >
               성취도/평어
