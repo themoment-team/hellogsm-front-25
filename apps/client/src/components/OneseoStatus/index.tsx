@@ -1,16 +1,12 @@
 import {
-  GetMyOneseoType,
   GraduationEnum,
   ScreeningEnum,
   MajorEnum,
   achievementGradeValues,
+  OneseoStatusType,
 } from 'types';
 
 import { cn } from 'shared/lib/utils';
-
-interface OneseoStatusType {
-  oneseo: GetMyOneseoType;
-}
 
 const tdStyle = 'border border-black ';
 

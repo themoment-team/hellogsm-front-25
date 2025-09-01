@@ -180,6 +180,10 @@ export interface GetMyOneseoType {
   step: number | null;
 }
 
+export interface OneseoStatusType {
+  oneseo: GetMyOneseoType;
+}
+
 export interface OneseoType {
   memberId: number;
   submitCode: string | null;
