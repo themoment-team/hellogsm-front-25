@@ -181,11 +181,11 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
             <div className={cn('flex', 'w-full', 'justify-between')}>
               <Select value={year === '0000' ? '' : year} onValueChange={handleYearSelectChange}>
                 <SelectTrigger className={cn('w-[14.6785rem]')}>
-                  <SelectValue placeholder="년도 선택" />
+                  <SelectValue placeholder="연도 선택" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>년도 선택</SelectLabel>
+                    <SelectLabel>연도 선택</SelectLabel>
                     {Array.from({ length: PERMIT_YEAR + 1 }, (_, index) => START_YEAR - index).map(
                       (year) => (
                         <SelectItem key={year} value={year.toString()}>

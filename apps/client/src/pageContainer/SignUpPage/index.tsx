@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useGetDuplicateMember, useGetMyAuthInfo, useGetMyMemberInfo } from 'api';
+import { memberQueryKeys, useGetDuplicateMember } from 'api';
 import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MemberRegisterType, SendCodeType, SexType } from 'types';
@@ -127,8 +129,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
 
   const targetYear = new Date().getFullYear();
 
-  const { refetch: refetchGetMyAuthInfo } = useGetMyAuthInfo();
-  const { refetch: refetchGetMyMemberInfo } = useGetMyMemberInfo();
+  const queryClient = useQueryClient();
 
   const { refetch: checkDuplicateMember } = useGetDuplicateMember(phoneNumber, {
     enabled: false,
@@ -137,8 +138,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const { mutate: mutateMemberRegister } = usePostMemberRegister({
     onError: () => setShowModal('error'),
     onSuccess: () => {
-      refetchGetMyAuthInfo();
-      refetchGetMyMemberInfo();
+      queryClient.invalidateQueries({ queryKey: memberQueryKeys.getMyAuthInfo() });
+      queryClient.invalidateQueries({ queryKey: memberQueryKeys.getMyMemberInfo() });
       setShowModal('success');
     },
   });
@@ -272,12 +273,12 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                   >
                     <FormControl>
                       <SelectTrigger className={cn('w-[7.5625rem]')}>
-                        <SelectValue placeholder="년도" />
+                        <SelectValue placeholder="연도" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>년도 선택</SelectLabel>
+                        <SelectLabel>연도 선택</SelectLabel>
                         {Array.from({ length: PERMIT_YEAR }, (_, index) => targetYear - index).map(
                           (year) => (
                             <SelectItem key={year} value={year.toString()}>
@@ -425,11 +426,14 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     'text-gray-500',
                     'text-[0.75rem]/[1.125rem]',
                     'font-normal',
-                    'overflow-scroll',
+                    'overflow-y-auto',
+                    'overflow-x-hidden',
                     'w-[23.75rem]',
+                    'h-[6.25rem]',
                   )}
                 >
-                  ㅡ 서류제출 시 [서식2] 개인정보수집활용동의서를 작성하여 제출하여 주시기 바랍니다.
+                  ㅡ 서류제출 시 [서식2-1] 개인정보수집활용동의서, [서식2-2] 개인정보 제3자
+                  제공동의서를 작성하여 제출하여 주시기 바랍니다.
                 </div>
               )}
             </div>
@@ -451,7 +455,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              인증번호 전송에 실패하였습니다. <br /> (인증번호는 최대 5번만 전송가능합니다.)
+              인증번호 전송에 실패하였습니다. <br /> (인증번호는 최대 5번만 전송 가능합니다.)
             </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -486,7 +490,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
             <AlertDialogTitle>
               같은 전화번호로 생성된 계정이 이미 존재합니다.
               <br />
-              회원가입시, 기존의 정보는 사라집니다. 진행하시겠습니까?
+              회원가입 시, 기존의 정보는 사라집니다. 진행하시겠습니까?
             </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>

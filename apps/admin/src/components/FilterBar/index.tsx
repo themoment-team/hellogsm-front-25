@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-import { useGetOperation, usePostFirstResult, usePostSecondResult } from 'api';
+import type { AxiosError } from 'axios';
 
-import { SearchIcon, FileIcon, CloverIcon, MedalIcon } from 'admin/assets';
+import { useGetOperation, usePostExcel, usePostFirstResult, usePostSecondResult } from 'api';
+import { toast } from 'react-toastify';
+
+import { SearchIcon, FileIcon, CloverIcon, MedalIcon, UploadIcon } from 'admin/assets';
 
 import { PrintIcon } from 'shared/assets';
 import {
@@ -52,6 +55,7 @@ const FilterBar = ({
 }: FilterBarProps) => {
   const [showFirstModal, setShowFirstModal] = useState<boolean>(false);
   const [showSecondModal, setShowSecondModal] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: operationData, refetch: operationRefetch } = useGetOperation();
 
@@ -67,6 +71,18 @@ const FilterBar = ({
       operationRefetch();
     },
     onError: () => {},
+  });
+
+  const { mutate: postExcel, isPending } = usePostExcel({
+    onSuccess: () => {
+      operationRefetch();
+      toast.success('Excel 업로드에 성공했습니다!');
+    },
+    onError: (error) => {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const serverMessage = axiosError.response?.data?.message;
+      toast.error(serverMessage ?? '오류가 발생했습니다.');
+    },
   });
 
   const handleSubmittedChange = (value: string) => {
@@ -94,6 +110,28 @@ const FilterBar = ({
 
   const handlePrintButtonClick = () => {
     window.open('/print');
+  };
+
+  const handleUploadButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleExcelFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    const isExcel = file?.name.toLowerCase().endsWith('.xlsx');
+
+    if (!isExcel) {
+      toast.error('Excel 파일(.xlsx)만 업로드 가능합니다.');
+    } else if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      postExcel(formData);
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -181,6 +219,22 @@ const FilterBar = ({
           >
             <FileIcon />
             Excel 다운
+          </Button>
+          <Button
+            onClick={handleUploadButtonClick}
+            variant="outline"
+            className={cn('border-slate-900', 'gap-2', 'hover:bg-slate-200')}
+            disabled={isPending}
+          >
+            <UploadIcon />
+            {isPending ? 'Excel 업로드 중' : 'Excel 업로드'}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx"
+              onChange={handleExcelFileChange}
+              className={cn('hidden')}
+            />
           </Button>
         </div>
       </div>

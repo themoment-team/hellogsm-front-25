@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      NEXT_PUBLIC_STAGE: ${{ secrets.NEXT_PUBLIC_STAGE }}
       NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }}
       NEXT_PUBLIC_CHANNEL_IO_KEY: ${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }}
       NEXT_PUBLIC_IMAGE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_URL }}
@@ -39,6 +40,7 @@ jobs:
       - name: Docker Client build
         run: |
           docker build \
+          --build-arg NEXT_PUBLIC_STAGE=${{ secrets.NEXT_PUBLIC_STAGE }} \
           --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
           --build-arg NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
@@ -59,6 +61,7 @@ jobs:
           --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
           --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
+          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           -f ./admin.Dockerfile \
           -t hello-stage-admin:latest \
           .

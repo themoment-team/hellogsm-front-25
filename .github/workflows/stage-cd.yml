@@ -9,7 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }}
+      NEXT_PUBLIC_STAGE: ${{ secrets.NEXT_PUBLIC_STAGE }}
+      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }}
       NEXT_PUBLIC_CHANNEL_IO_KEY: ${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }}
       NEXT_PUBLIC_IMAGE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_URL }}
       NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF: ${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }}
@@ -49,6 +50,7 @@ jobs:
       - name: Docker Client build
         run: |
           docker build \
+          --build-arg NEXT_PUBLIC_STAGE=${{ secrets.NEXT_PUBLIC_STAGE }} \
           --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
           --build-arg NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
@@ -69,6 +71,7 @@ jobs:
           --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
           --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
+          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest \
           .
@@ -102,6 +105,7 @@ jobs:
             docker run -d \
               --name hello-stage-client \
               -p 3004:3000 \
+              -e NEXT_PUBLIC_STAGE=${{ secrets.NEXT_PUBLIC_STAGE }} \
               -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
               -e NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
               -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
@@ -119,6 +123,7 @@ jobs:
               -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
               -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
               -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
+              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
               ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
 
              docker image prune -a -f

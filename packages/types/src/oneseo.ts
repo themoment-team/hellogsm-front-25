@@ -192,9 +192,10 @@ export interface OneseoType {
   guardianPhoneNumber: string;
   schoolTeacherPhoneNumber: string;
   firstTestPassYn: YesNo | null;
-  aptitudeEvaluationScore: number | null;
+  competencyEvaluationScore: number | null;
   interviewScore: number | null;
   secondTestPassYn: YesNo | null;
+  examinationNumber: number | null;
 }
 
 export interface OneseoListType {

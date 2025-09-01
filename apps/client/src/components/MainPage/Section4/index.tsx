@@ -91,6 +91,7 @@ const TitleCard = ({ firstText, lastText, icon }: TitleCardProps) => (
       'w-[30rem]',
       'sm:w-[25.1875rem]',
       'md:w-[20rem]',
+      'bg-white',
     )}
   >
     <div className={cn('flex', 'w-[16.4375rem]', 'flex-col', 'items-start')}>

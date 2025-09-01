@@ -26,6 +26,7 @@ interface FreeGradeFormProps {
   watch: UseFormWatch<Step4FormType>;
   handleDeleteSubjectClick: (idx: number) => void;
   achievementList: AchievementType[];
+  isGraduate: boolean;
 }
 
 const itemStyle = [
@@ -56,6 +57,7 @@ const FreeGradeForm = ({
   watch,
   handleDeleteSubjectClick,
   achievementList,
+  isGraduate,
 }: FreeGradeFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -83,7 +85,10 @@ const FreeGradeForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>과목명</h1>
         <div className={cn('flex')}>
           {achievementList.map(({ title }) => (
-            <h1 key={title} className={cn([...itemStyle, 'w-[9.34375rem]'])}>
+            <h1
+              key={title}
+              className={cn([...itemStyle, isGraduate ? 'w-[9.34rem]' : 'w-[12.46rem]'])}
+            >
               {title}
             </h1>
           ))}
@@ -135,7 +140,7 @@ const FreeGradeForm = ({
                   >
                     <SelectTrigger
                       className={cn(
-                        'w-[7.34375rem]',
+                        isGraduate ? 'w-[7.34375rem]' : 'w-[10.46rem]',
                         'h-[2rem]',
                         'text-sm',
                         'font-normal',

@@ -41,6 +41,7 @@ export const oneseoUrl = {
   patchInterviewScore: (memberId: number) => `/oneseo/v3/interview-score/${memberId}`,
   getAdmissionTickets: () => '/oneseo/v3/admission-tickets',
   getEditability: () => '/oneseo/v3/editability',
+  postExcel: () => '/oneseo/v3/excel',
 } as const;
 
 export const memberUrl = {

@@ -69,6 +69,7 @@ jobs:
           --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
           --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
+          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest \
           .
@@ -141,6 +142,7 @@ jobs:
               -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
               -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
               -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
+              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
               ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
 
             docker stop hello-gsm-admin-$OLD_COLOR || true

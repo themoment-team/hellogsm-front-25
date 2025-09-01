@@ -80,12 +80,12 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
 
   const relatedDocuments = [
     {
-      icon: <PrintIcon />,
-      text: '유형별 제출서류 확인하기',
+      icon: <DocumentIcon />,
+      text: '유형별 제출서류 안내 파일',
       path: '/지원자 제출서류 목록 안내.hwpx',
     },
-    { icon: <ParticleIcon />, text: '입학원서 다운로드', path: '/print' },
-    { icon: <DocumentIcon />, text: '제출서류 다운로드', path: '/입학제출서류.hwp' },
+    { icon: <PrintIcon />, text: '입학원서', path: '/print' },
+    { icon: <PrintIcon />, text: '제출서류', path: '/입학제출서류.hwp' },
   ];
 
   const screeningLabels: Record<string, string> = {
@@ -327,10 +327,13 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
                 <AlertIcon />
                 <span className={cn('text-slate-500', 'text-[0.875rem]/[1.5rem]', 'font-normal')}>
                   <strong>
-                    입학원서, 성적입력확인서, 개인정보 수집 및 활용동의서, 학부모 동의서
+                    입학원서, 입학 전형성적 입력 확인서, 개인정보 수집활용동의서,
+                    <br />
+                    개인정보 제3자 제공 동의서, 보호자 확인서
                   </strong>
-                  를 출력 <br />
-                  하여 원서와 함께 행정실에 제출해야 합니다.
+                  를 출력하여 입학원서 접수처에
+                  <br />
+                  제출해 주세요.
                 </span>
               </div>
             </div>

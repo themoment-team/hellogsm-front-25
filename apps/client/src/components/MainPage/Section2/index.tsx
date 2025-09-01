@@ -129,7 +129,7 @@ const Section2 = () => {
             className={cn(
               'text-gray-600',
               'font-normal',
-              'text-[1rem]/[1.5rem]',
+              'text-[1.25rem]/[1.75rem]',
               'text-center',
               'smx:text-left',
             )}
@@ -263,7 +263,9 @@ const Section2 = () => {
                       'absolute',
                       'lg:bottom-[32.5%]',
                       'bottom-[33%]',
-                      'right-[calc(22.5%+4rem)]',
+                      'sm:right-[calc(17%+4rem)]',
+                      'md: right-[calc(19%+4rem)]',
+                      'xl:right-[calc(23%+4rem)]',
                       'w-[100vw]',
                       'h-[2px]',
                       'bg-blue-200',

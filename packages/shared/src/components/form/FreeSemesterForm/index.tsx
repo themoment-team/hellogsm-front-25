@@ -83,7 +83,8 @@ const FreeSemesterForm = ({
     setTimeout(
       () =>
         ACHIEVEMENT_FIELD_LIST.forEach((field) => {
-          achievementList.some((freeGrade) => freeGrade.field === field)
+          achievementList.some((freeGrade) => freeGrade.field === field) &&
+          !(freeSemester && field === freeSemesterToAchievementField[freeSemester])
             ? setValue(field, watch(field) || [])
             : setValue(field, null);
         }),

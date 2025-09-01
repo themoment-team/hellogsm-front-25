@@ -113,7 +113,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
     resolver: zodResolver(step4Schema),
     defaultValues: {
       liberalSystem:
-        data?.middleSchoolAchievement.liberalSystem || LiberalSystemValueEnum.FREE_GRADE,
+        data?.middleSchoolAchievement.liberalSystem || LiberalSystemValueEnum.FREE_SEMESTER,
       achievement1_1: data?.middleSchoolAchievement.achievement1_1 || undefined,
       achievement1_2: data?.middleSchoolAchievement.achievement1_2 || undefined,
       achievement2_1: data?.middleSchoolAchievement.achievement2_1 || undefined,

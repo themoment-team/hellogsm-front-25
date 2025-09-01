@@ -40,13 +40,14 @@ const mustReadArticles = [
     (단, 본교에 지원하여 불합격한 자는 전기 특성화고, 후기 고등학교에 지원할 수 있습니다.)
   </>,
   <>
-    본교는 SW 영마이스터를 양성하기 위해 교육부와 과학기술정보통신부에서 지정•운영하는
-    산업수요맞춤형고등학교로서 취업을 목표로 교육과정을 편성, 운영합니다.
+    본교는 SW 영 마이스터를 양성하기 위해 교육부와 과학기술정보통신부에서 지정•운영하는 산업수요
+    맞춤형고등학교로서 취업을 목표로 교육과정을 편성, 운영합니다.
   </>,
-  <>기숙사 생활관은 평일 교육과정을 위하여 운영하는 것을 원칙으로 합니다.</>,
   <>
-    주말과 공휴일 등 학교 휴무일에 기숙사를 운영하지 않습니다.(예: 금요일 하교 후 퇴사, 일요일 저녁
-    입사)
+    기숙사 생활관은 평일 교육과정을 위하여 운영하는 것을 원칙으로 합니다.
+    <br />
+    (주말과 공휴일 등 학교 휴무일에 기숙사를 운영하지 않습니다.(예: 금요일 하교 후 퇴사, 일요일 저녁
+    입사))
   </>,
   <>
     모든 학생이 기숙사에서 공동생활을 하므로 건강상의 사유로 적응이 어렵다고 판단되는 경우에는
@@ -92,7 +93,7 @@ const Elements: ElementType[] = [
       <>
         서류를 출력 후 확인 부분에 서명 후{' '}
         <strong className={cn('text-blue-500', 'font-semibold')}>
-          10월 20일 ~ 10월 23일 (16:30) 까지
+          10월 20일 ~ 10월 23일 (16:30)까지
         </strong>{' '}
         해당 서류를 원서 접수처에 제출합니다.
       </>
@@ -217,7 +218,7 @@ const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
   });
 
   const [buttonText, buttonVariant]: [string, 'submit' | 'fill' | 'reverseFill'] = (() => {
-    if (!isOneseoWrite) return ['원서 작성을 할수 없는 기간입니다.', 'submit'];
+    if (!isOneseoWrite) return ['원서 작성을 할 수 없는 기간입니다.', 'submit'];
 
     if (!data) return ['원서 작성하기', 'fill'];
 
@@ -307,15 +308,6 @@ const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
           <div className={cn('w-full', 'flex', 'flex-col', 'gap-5')}>
             <p className={cn([...textStyle, 'text-gray-900'])}>원서 접수 전 꼭 읽어주세요!</p>
             <div className={cn([...descriptionStyle, '[&>span]:font-semibold'])}>
-              {/* <p className={cn('text-red-600')}>
-                본교 최종 합격자는 당해 학년도에는 다른 고등학교 입학전형에 지원할 수 없습니다.
-              </p>
-              본교는 소프트웨어 영마이스터를 양성하기 위해 교육부와 과학기술정보통신부에서 지정,
-              운영하는 <br />
-              산업수요맞춤형고등학교로 취업을 목표로 하며 대학 진학을 희망하는 학생은 본교에 지원할
-              수 없습니다. <br /> <br />
-              기숙사 생활관은 평일 교육과정을 위하여 운영하는 것을 원칙으로합니다. <br />
-              주말과 공휴일 등 학교 휴무일에 기숙사를 운영하지 않습니다. <br /> */}
               {mustReadArticles.map((article, idx) => (
                 <div className={cn('flex')} key={idx}>
                   <li />

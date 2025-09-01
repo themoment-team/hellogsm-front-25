@@ -6,11 +6,11 @@ import { oneseoQueryKeys, oneseoUrl, patch } from 'api/libs';
 
 export const usePatchAptitudeScore = (
   memberId: number,
-  options?: UseMutationOptions<unknown, AxiosError, { aptitudeEvaluationScore: number }>,
+  options?: UseMutationOptions<unknown, AxiosError, { competencyEvaluationScore: number }>,
 ) =>
   useMutation({
     mutationKey: oneseoQueryKeys.patchAptitudeScore(memberId),
-    mutationFn: (aptitudeEvaluationScore) =>
-      patch(oneseoUrl.patchAptitudeScore(memberId), aptitudeEvaluationScore),
+    mutationFn: (competencyEvaluationScore) =>
+      patch(oneseoUrl.patchAptitudeScore(memberId), competencyEvaluationScore),
     ...options,
   });

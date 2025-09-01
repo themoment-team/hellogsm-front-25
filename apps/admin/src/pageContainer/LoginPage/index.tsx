@@ -21,7 +21,9 @@ const LoginPage = () => (
         </p>
       </div>
 
-      <LoginButton variant="google">Google 계정으로 로그인</LoginButton>
+      <LoginButton variant="google" isAdmin={true}>
+        Google 계정으로 로그인
+      </LoginButton>
     </div>
   </main>
 );

@@ -75,7 +75,7 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
     return (
       <nav
         className={cn(
-          'gap-[2.75rem]',
+          'gap-[2.5rem]',
           'hidden',
           'md:flex',
           'justify-between',
@@ -96,7 +96,7 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
   return (
     <nav
       className={cn(
-        'gap-[2.75rem]',
+        'gap-[2.5rem]',
         'hidden',
         'md:flex',
         'justify-between',
@@ -232,7 +232,7 @@ const DropdownMenu = ({
         className={cn(
           'absolute',
           'top-full',
-          'left-[-17.5%]',
+          'left-[-40%]',
           'mt-2',
           'flex',
           'w-[10rem]',
@@ -262,7 +262,7 @@ const DropdownMenu = ({
       className={cn(
         'absolute',
         'top-full',
-        'left-[-17.5%]',
+        'left-[-40%]',
         'mt-2',
         'flex',
         'w-[10rem]',
@@ -324,6 +324,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/', label: '홈', icon: I.HomeIcon },
         { href: '/guide', label: '원서 접수', icon: I.OneseoIcon },
         { href: '/faq', label: '자주 묻는 질문', icon: I.FaqIcon },
+        { href: '/check-result', label: '합격자 조회', icon: I.MedalIcon },
         { href: '/mypage', label: '내 정보 페이지', icon: I.HeaderProfileIcon },
         {
           href: '/introduce',
@@ -380,7 +381,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
   }, []);
 
   const handleLogoutClick = () => {
-    if (confirm('변경사항이 저장되지 않을 수 있습니다. 로그아웃 하시겠습니까?')) {
+    if (confirm('변경사항이 저장되지 않을 수 있습니다. 로그아웃하시겠습니까?')) {
       handleLogout();
       setIsDropdown(false);
       router.push('/');
@@ -394,8 +395,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
       <header
         className={cn(
           'h-[4.625rem]',
-          'px-[1.75rem]',
-          'md:px-[3.75rem]',
+          'px-[1.25rem]',
           'lg:px-[6.25rem]',
           'xl:px-[15.25rem]',
           'fhd:px-[20rem]',
@@ -423,7 +423,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
           <div className={cn('hidden', 'md:flex')}>
             {isSignup ? (
               <>
-                <div className={cn('relative', 'w-[10rem]')}>
+                <div className={cn('relative')}>
                   <button
                     className={cn([...loginLinkStyle, 'gap-2', 'relative'])}
                     onClick={() => setIsDropdown(!isDropdown)}

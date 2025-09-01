@@ -45,7 +45,7 @@ const MainPage = ({ memberInfo, resultInfo, isServerHealthy }: MainPageProps) =>
 
   return (
     <>
-      <LoginNoticeDialog userName={memberInfo?.name} />
+      <LoginNoticeDialog userName={memberInfo?.name} usedPath={'main'} />
       <Section1 isServerCurrentActive={isServerHealthy} />
       <Section2 />
       <Section3 isServerHealthy={isServerHealthy} />

@@ -52,18 +52,17 @@ interface ApplicationTRProps extends OneseoType {
 
 const ApplicantTR = ({
   oneseoRefetch,
-  aptitudeEvaluationScore,
+  competencyEvaluationScore,
   firstTestPassYn,
-  guardianPhoneNumber,
   interviewScore,
   memberId,
   name,
   phoneNumber,
   realOneseoArrivedYn,
   schoolName,
-  schoolTeacherPhoneNumber,
   screening,
   secondTestPassYn,
+  examinationNumber,
   submitCode,
   entranceIntentionYn,
   editableData,
@@ -124,7 +123,7 @@ const ApplicantTR = ({
   const is역량검사처리기간 = checkIsPassedDate(역량검사처리시작일자);
   const is심층면접처리기간 = checkIsPassedDate(심층면접처리시작일자);
 
-  const formatted역량검사점수 = formatScore(String(aptitudeEvaluationScore ?? ''));
+  const formatted역량검사점수 = formatScore(String(competencyEvaluationScore ?? ''));
   const formatted심층면접점수 = formatScore(String(interviewScore ?? ''));
 
   const { control, watch, setValue } = useForm({
@@ -165,7 +164,7 @@ const ApplicantTR = ({
 
     if (역량검사점수 < 0 || 역량검사점수 > 100 || isNaN(역량검사점수)) return;
 
-    patchAptitudeScore({ aptitudeEvaluationScore: 역량검사점수 });
+    patchAptitudeScore({ competencyEvaluationScore: 역량검사점수 });
   };
 
   const handleInterviewScore = () => {
@@ -188,7 +187,7 @@ const ApplicantTR = ({
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell className={cn('w-[6.25rem]', 'text-zinc-900')}>{submitCode}</TableCell>
+          <TableCell className={cn('w-[6.5rem]', 'text-zinc-900')}>{submitCode}</TableCell>
           <TableCell className={cn('w-[7.25rem]', 'p-0')}>
             <AlertDialog open={realOneseoDialogOpen}>
               <Toggle
@@ -211,18 +210,21 @@ const ApplicantTR = ({
               </AlertDialogContent>
             </AlertDialog>
           </TableCell>
-          <TableCell className={cn('w-[8.625rem]', 'font-semibold', 'text-zinc-900')}>
+          <TableCell className={cn('w-[7.5rem]', 'font-semibold', 'text-zinc-900')}>
             {name} <br />
             <span className={cn('font-normal', 'text-zinc-600')}>{phoneNumber}</span>
           </TableCell>
-          <TableCell className={cn('w-[9.625rem]', 'text-zinc-600')}>{schoolName}</TableCell>
-          <TableCell className={cn('w-[7.625rem]', 'text-zinc-900')}>
+          <TableCell className={cn('w-[8rem]', 'text-zinc-900')}>
+            {examinationNumber === null ? <Badge variant={'미정'}>미정</Badge> : examinationNumber}
+          </TableCell>
+          <TableCell className={cn('w-[9rem]', 'text-zinc-600')}>{schoolName}</TableCell>
+          <TableCell className={cn('w-[7.25rem]', 'text-zinc-900')}>
             {ScreeningEnum[screening]}
           </TableCell>
-          <TableCell className={cn('w-[6rem]')}>
+          <TableCell className={cn('w-[7rem]')}>
             <Badge variant={firstTestResult}>{firstTestResult}</Badge>
           </TableCell>
-          <TableCell className={cn('w-[11.25rem]', 'text-zinc-400')}>
+          <TableCell className={cn('w-[10.75rem]', 'text-zinc-400')}>
             {firstTestPassYn === 'YES' && is역량검사처리기간 ? (
               <div className={cn('flex', 'gap-1.5')}>
                 <Controller
@@ -246,7 +248,7 @@ const ApplicantTR = ({
               '진행 전'
             )}
           </TableCell>
-          <TableCell className={cn('w-[11.25rem]', 'text-zinc-400')}>
+          <TableCell className={cn('w-[10.75rem]', 'text-zinc-400')}>
             {firstTestPassYn === 'YES' && is심층면접처리기간 ? (
               <div className={cn('flex', 'gap-1.5')}>
                 <Controller
@@ -296,8 +298,8 @@ const ApplicantTR = ({
               </AlertDialogContent>
             </AlertDialog>
           </TableCell>
-          <TableCell className={cn('w-[8.875rem]')}>
-            <Button onClick={handleOneseoEdit} className={cn('ml-[33.24px]')} variant="outline">
+          <TableCell className={cn('w-[5rem]')}>
+            <Button onClick={handleOneseoEdit} variant="outline">
               원서수정
             </Button>
             <AlertDialog open={editOneseoDialogOpen}>

@@ -42,13 +42,14 @@ const Elements = [
 
 const Section5 = () => {
   return (
-    <div className={cn('flex', 'flex-col', 'gap-[4.25rem]', 'bg-white', 'py-[11.25rem]', 'w-full')}>
-      <div className={cn('flex', 'justify-center', 'gap-[3.75rem]', 'flex-col')}>
+    <div className={cn('flex', 'flex-col', 'bg-white', 'py-[11.25rem]', 'w-full')}>
+      <div className={cn('flex', 'justify-center', 'gap-[4.25rem]', 'flex-col')}>
         <div
           className={cn(
             'flex',
             'flex-col',
             'items-center',
+            'gap-[1rem]',
             'pl-[8rem]',
             'px-4',
             'xs:px-[3.75rem]',

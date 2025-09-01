@@ -6,3 +6,4 @@ export { default as SearchIcon } from './FilterBar/SearchIcon';
 export { default as FileIcon } from './FilterBar/FileIcon';
 export { default as CloverIcon } from './FilterBar/CloverIcon';
 export { default as MedalIcon } from './FilterBar/MedalIcon';
+export { default as UploadIcon } from './FilterBar/UploadIcon';

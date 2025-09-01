@@ -33,44 +33,35 @@ const Footer = () => {
         'flex',
         'items-center',
         'justify-center',
-        'p-[3.75rem]',
-        'sm:px-[6.25rem]',
-        '2xl:px-[12.5rem]',
+        'p-15',
+        'lg:px-[6.25rem]',
+        'xl:px-[15.25rem]',
+        'fhd:px-80',
         'w-full',
       )}
     >
       <div
         className={cn(
           'flex',
-          'items-start',
-          'sm:items-center',
           'w-full',
           'gap-10',
-          'sm:gap-0',
-          'max-w-[77.5rem]',
+          'md:gap-2',
           'justify-between',
-          'sm:flex-row',
+          'items-start',
+          'md:flex-row',
           'flex-col',
         )}
       >
         <FooterGSMLogo />
-        <div className={cn('flex', 'flex-col', 'items-start', 'gap-16', 'md:items-start')}>
-          <div
-            className={cn(
-              'flex',
-              'flex-col',
-              'items-start',
-              'sm:items-end',
-              'gap-2',
-              'text-white',
-              'md:items-start',
-            )}
-          >
+        <div className={cn('flex', 'flex-col', 'items-start', 'gap-16')}>
+          <div className={cn('flex', 'flex-col', 'items-start', 'gap-2', 'text-white')}>
             <p
               className={cn(
                 'w-full',
+                'text-[1.125rem]',
                 'text-left',
-                'sm:text-right',
+                'text-left',
+                'md:text-right',
                 'font-normal',
                 'text-slate-600',
               )}
@@ -79,12 +70,12 @@ const Footer = () => {
               <br className={cn('sm:hidden')} />
               ALL RIGHTS RESERVED.
             </p>
-            <div className={cn('flex', 'gap-2', 'sm:flex-row', 'flex-col', 'sm:gap-6')}>
+            <div className={cn('flex', 'gap-2', 'md:flex-row', 'flex-col', 'md:gap-6')}>
               {LINKS.map(({ text, link }) => (
                 <a
                   key={text}
                   href={link}
-                  className={cn('text-h5', 'font-bold', 'text-slate-600')}
+                  className={cn('text-[1.125rem]/[1.6875rem]', 'font-bold', 'text-slate-600')}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -95,13 +86,13 @@ const Footer = () => {
           </div>
           <p
             className={cn(
-              'text-body2',
               'w-full',
-              'text-right',
+              'text-left',
               'font-normal',
+              'text-[0.875rem]/[1.25rem]',
               'text-slate-400',
-              'hidden',
-              'sm:block',
+              'md:block',
+              'md:text-right',
             )}
           >
             우) 62423 광주광역시 광산구 상무대로 312

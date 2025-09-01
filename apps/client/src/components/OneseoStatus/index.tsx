@@ -67,7 +67,10 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
             출신중학교
           </td>
           {oneseo.privacyDetail.graduationType === 'GED' ? (
-            <td colSpan={2} className={cn('bg-slash', 'bg-contain', 'bg-no-repeat')} />
+            <td
+              colSpan={2}
+              className={cn('bg-slash', 'bg-contain', 'bg-no-repeat', 'border-r', 'border-black')}
+            />
           ) : (
             <td className={cn('border', 'border-t-0', 'border-black')} colSpan={2}>
               {oneseo.privacyDetail.schoolName}

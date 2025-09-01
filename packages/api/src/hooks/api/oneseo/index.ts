@@ -11,3 +11,4 @@ export * from './useGetMyOneseo';
 export * from './usePostImage';
 export * from './usePatchAgreeDocStatus';
 export * from './useGetEditability';
+export * from './usePostExcel';

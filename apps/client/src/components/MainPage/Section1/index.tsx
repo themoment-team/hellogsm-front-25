@@ -119,12 +119,12 @@ const Section1 = ({ isServerCurrentActive }: { isServerCurrentActive: boolean })
               'border-solid',
             )}
           >
-            원서 접수 하러 가기
+            원서 접수하러 가기
           </button>
         </div>
       </div>
 
-      <div className={cn(['absolute', 'bottom-14', ...flexColStyle, 'gap-1', 'z-[3]'])}>
+      <div className={cn(['absolute', 'bottom-14', ...flexColStyle, 'gap-[0.75rem]', 'z-[3]'])}>
         <p
           onClick={scrollToSection2}
           className={cn(

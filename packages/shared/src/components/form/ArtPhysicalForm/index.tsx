@@ -76,7 +76,7 @@ const ArtPhysicalForm = ({
               key={title}
               className={cn([
                 ...itemStyle,
-                isFreeGrade || isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]',
+                isGraduate ? 'w-[9.34rem]' : isFreeGrade ? 'w-[12.46rem]' : 'w-[7.47rem]',
               ])}
             >
               {title}
@@ -106,7 +106,7 @@ const ArtPhysicalForm = ({
                   key={registerIndex}
                   className={cn([
                     ...itemStyle,
-                    isFreeGrade || isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]',
+                    isGraduate ? 'w-[9.34rem]' : isFreeGrade ? 'w-[12.46rem]' : 'w-[7.47rem]',
                   ])}
                 >
                   <Select
@@ -126,7 +126,7 @@ const ArtPhysicalForm = ({
                         'text-slate-900',
                         'px-[0.5rem]',
                         'border-slate-300',
-                        isFreeGrade || isGraduate ? 'w-[7.34375rem]' : 'w-[5.475rem]',
+                        isGraduate ? 'w-[7.34rem]' : isFreeGrade ? 'w-[10.46rem]' : 'w-[5.47rem]',
                       ])}
                     >
                       <SelectValue placeholder="성적 선택" />
