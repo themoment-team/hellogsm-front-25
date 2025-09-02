@@ -1,6 +1,6 @@
 import { OneseoStatusType } from 'types';
 
-import { getArtPhysicalScores, semesterArray } from 'client/utils';
+import { getArtPhysicalScores, scoreToAlphabet, semesterArray } from 'client/utils';
 
 import { ARTS_PHYSICAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
@@ -99,7 +99,7 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
               const score = artPhysicalScores[actualColIdx]?.[rowIdx];
               return (
                 <td key={`score-${colIdx}-${rowIdx}`} className={cn('border', 'border-black')}>
-                  {score ?? ''}
+                  {scoreToAlphabet[score ?? -1] || ''}
                 </td>
               );
             })}
