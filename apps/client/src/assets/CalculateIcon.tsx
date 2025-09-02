@@ -1,8 +1,6 @@
-interface Props {
-  color: string;
-}
+import { IconProps } from 'types';
 
-const CalculateIcon = ({ color }: Props) => (
+const CalculateIcon = ({ color }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="1.75rem"

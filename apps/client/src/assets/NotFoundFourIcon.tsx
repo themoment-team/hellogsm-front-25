@@ -1,8 +1,6 @@
-interface Props {
-  color: string;
-}
+import { IconProps } from 'types';
 
-const NotFoundFourIcon = ({ color }: Props) => (
+const NotFoundFourIcon = ({ color }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="7.1875rem"

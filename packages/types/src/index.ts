@@ -9,3 +9,4 @@ export * from './step';
 export * from './value';
 export * from './check-result';
 export * from './notion';
+export * from './icon';
