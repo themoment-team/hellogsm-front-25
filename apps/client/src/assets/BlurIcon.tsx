@@ -1,8 +1,6 @@
-interface BlurColorProps {
-  color: string;
-}
+import { IconProps } from 'types';
 
-const BlurIcon = ({ color }: BlurColorProps) => (
+const BlurIcon = ({ color }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="15.4375rem"

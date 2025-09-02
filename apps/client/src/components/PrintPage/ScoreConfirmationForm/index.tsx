@@ -118,7 +118,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
                 </div>
                 <div className={cn('mt-[1vh]', 'flex', 'justify-between', 'text-[1vh]', 'text-sm')}>
                   <span>광주소프트웨어마이스터고등학교장 귀하</span>
-                  <span>중학교장[직인]</span>
+                  <span>{oneseo.privacyDetail.schoolName}장[직인]</span>
                 </div>
               </div>
             </div>
