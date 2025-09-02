@@ -14,7 +14,7 @@ const PrintButton = () => {
         'fixed',
         'bottom-10',
         'right-24',
-        'z-50',
+        'z-10',
         'items-center',
         'gap-2',
         'print:hidden',
