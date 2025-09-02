@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from 'shared/components';
+import { CURRENT_YEAR, NEXT_YEAR } from 'shared/lib';
 import { cn } from 'shared/lib/utils';
 
 interface Step2RegisterProps {
@@ -80,8 +81,7 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
   const isCandidate = watch('graduationType') === GraduationTypeValueEnum.CANDIDATE;
   const isGED = watch('graduationType') === GraduationTypeValueEnum.GED;
 
-  const YEAR = new Date().getFullYear();
-  const START_YEAR = isCandidate ? YEAR + 1 : YEAR;
+  const START_YEAR = isCandidate ? NEXT_YEAR : CURRENT_YEAR;
   const PERMIT_YEAR = isCandidate ? 1 : 5;
 
   const handleGraduationTypeOptionClick = (value: GraduationTypeValueEnum) => {

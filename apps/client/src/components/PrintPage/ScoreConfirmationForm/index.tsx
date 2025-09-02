@@ -1,3 +1,4 @@
+import { CURRENT_YEAR, NEXT_YEAR } from 'shared';
 import { OneseoStatusType } from 'types';
 
 import { cn } from 'shared/lib/utils';
@@ -12,9 +13,6 @@ import ExtracurricularTable from '../ExtracurricularTable';
 import GeneralSubjectsTable from '../GeneralSubjectsTable';
 
 const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
-  const date = new Date();
-  const targetDate = date.getFullYear() + 1;
-
   return (
     <div
       className={cn(
@@ -63,7 +61,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
 
               <p>[서식 3]</p>
               <h1 className={cn('text-center', 'text-[1.8vh]', 'font-bold')}>
-                {targetDate}학년도 광주소프트웨어마이스터고등학교 입학 전형성적 입력 확인서
+                {NEXT_YEAR}학년도 광주소프트웨어마이스터고등학교 입학 전형성적 입력 확인서
               </h1>
 
               <div className={cn('flex', 'items-end', 'justify-between')}>
@@ -114,7 +112,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
               <div className={cn('mt-[2vh]', 'text-center', 'text-[1.2vh]')}>
                 <p>위와 같이 입력하고 확인하였음을 증명합니다.</p>
                 <div className={cn('mb-4', 'flex', 'justify-center')}>
-                  <p className={cn('mr-6')}>년</p>
+                  <p className={cn('mr-6')}>{CURRENT_YEAR}년</p>
                   <p className={cn('mr-6')}>월</p>
                   <p>일</p>
                 </div>

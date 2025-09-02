@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { memberQueryKeys, useGetDuplicateMember } from 'api';
 import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
+import { CURRENT_YEAR } from 'shared';
 import { MemberRegisterType, SendCodeType, SexType } from 'types';
 import { z } from 'zod';
 
@@ -126,8 +127,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const isCertificationButtonDisabled = !/^\d{10,11}$/.test(phoneNumber);
   const isCertificationValid = isSuccess === true;
   const isSubmitButtonDisabled = !isCertificationValid || !isAgreed;
-
-  const targetYear = new Date().getFullYear();
 
   const queryClient = useQueryClient();
 
@@ -279,13 +278,14 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>연도 선택</SelectLabel>
-                        {Array.from({ length: PERMIT_YEAR }, (_, index) => targetYear - index).map(
-                          (year) => (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          ),
-                        )}
+                        {Array.from(
+                          { length: PERMIT_YEAR },
+                          (_, index) => CURRENT_YEAR - index,
+                        ).map((year) => (
+                          <SelectItem key={year} value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
