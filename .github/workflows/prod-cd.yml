@@ -19,6 +19,7 @@ jobs:
       NEXT_PUBLIC_NOTION_SECRET_API_KEY: ${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }}
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
       NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
+      NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
 
     steps:
       - name: Checkout code
@@ -59,6 +60,7 @@ jobs:
           --build-arg NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
           --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
+          --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
           -f ./client.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest \
           .
@@ -120,6 +122,7 @@ jobs:
               -e NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
               -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
               -e NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
+              -e NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
               ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
 
             docker stop hello-gsm-client-$OLD_COLOR || true
