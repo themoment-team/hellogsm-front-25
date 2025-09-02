@@ -11,6 +11,8 @@ import {
 } from 'shared/constants';
 import { getValuesByEnum } from 'shared/utils';
 
+const FORBIDDEN_SUBJECTS: string[] = [...ARTS_PHYSICAL_SUBJECTS, ...GENERAL_SUBJECTS];
+
 const achievementSchema = (minLength: number) =>
   z.nullable(
     z.array(z.number().refine((value) => MAX_SCORE >= value && value >= MIN_SCORE)).min(minLength),
@@ -27,7 +29,16 @@ export const step4Schema = z
     achievement2_2: achievementSchema(GENERAL_SUBJECTS.length),
     achievement3_1: achievementSchema(GENERAL_SUBJECTS.length),
     achievement3_2: achievementSchema(GENERAL_SUBJECTS.length),
-    newSubjects: z.optional(z.array(z.string().min(1))),
+    newSubjects: z.optional(
+      z
+        .array(z.string().min(1))
+        .refine((items) => new Set(items).size === items.length, {
+          message: '과목이 중복되어 작성되어 있습니다.',
+        })
+        .refine((items) => items.every((item) => !FORBIDDEN_SUBJECTS.includes(item)), {
+          message: '기본 과목이 작성되어 있습니다.',
+        }),
+    ),
     artsPhysicalAchievement: achievementSchema(ARTS_PHYSICAL_SUBJECTS.length * 3),
     absentDays: nonSubjectSchema,
     attendanceDays: nonSubjectSchema,
