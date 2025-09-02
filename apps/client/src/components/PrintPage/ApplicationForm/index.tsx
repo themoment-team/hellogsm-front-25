@@ -89,7 +89,6 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
         </div>
       </div>
     </div>
-    // </div>
   );
 };
 
