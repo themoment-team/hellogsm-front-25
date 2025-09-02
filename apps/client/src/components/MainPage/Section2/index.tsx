@@ -1,5 +1,7 @@
 'use client';
 
+import { NEXT_YEAR } from 'shared';
+
 import {
   Section2Icon1,
   Section2Icon2,
@@ -123,7 +125,7 @@ const Section2 = () => {
           >
             광주소프트웨어마이스터고등학교
             <br />
-            2025 신입생 모집절차
+            {NEXT_YEAR} 신입생 모집절차
           </h1>
           <p
             className={cn(

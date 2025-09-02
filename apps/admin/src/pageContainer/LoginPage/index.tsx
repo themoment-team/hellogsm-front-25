@@ -1,3 +1,5 @@
+import { CURRENT_YEAR } from 'shared';
+
 import { LoginButton } from 'shared/components';
 import { cn } from 'shared/lib/utils';
 
@@ -13,7 +15,7 @@ const LoginPage = () => (
           <Circle />
         </div>
         <h1 className={cn('text-3xl', 'font-semibold', 'text-gray-700')}>
-          2025 <span className={cn('text-[#2563EB]')}>HELLO,GSM</span> ADMIN SERVICE
+          {CURRENT_YEAR} <span className={cn('text-[#2563EB]')}>HELLO,GSM</span> ADMIN SERVICE
         </h1>
 
         <p className={cn('text-base', 'text-gray-800')}>
