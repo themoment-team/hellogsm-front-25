@@ -7,7 +7,9 @@ const ApplicationPledge = ({ oneseo }: OneseoStatusType) => {
     <div className={cn('border-r', 'border-black', 'p-2', 'text-sm')}>
       <div className={cn('mb-4')}>
         위 학생은 2025학년도 귀교 제1학년에 입학하고자 소정의 서류를 갖추어 지원하며, &nbsp;
-        <strong>다른 산업수요맞춤형(마이스터)고등학교에 이중지원하지 않을 것을 서약</strong>
+        <strong>
+          다른 산업수 요맞춤형(마이스터)고등학교를 포함한 전기고등학교에 이중지원하지 않을 것을 서약
+        </strong>
         합니다.
       </div>
       <div className={cn('mb-4', 'flex', 'justify-center')}>
