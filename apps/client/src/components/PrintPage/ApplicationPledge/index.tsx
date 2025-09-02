@@ -31,7 +31,9 @@ const ApplicationPledge = ({ oneseo }: OneseoStatusType) => {
             위 기재 사항이 사실과 다름이 없음을 증명하며,
             <br />위 학생이 귀교 교육과정을 성실히 이수할 수 있다고 판단되어 이에 추천합니다.
           </div>
-          <div className={cn('text-right', 'text-base')}>중학교장[직인]</div>
+          <div className={cn('text-right', 'text-base')}>
+            {oneseo.privacyDetail.schoolName}장[직인]
+          </div>
         </>
       )}
     </div>
