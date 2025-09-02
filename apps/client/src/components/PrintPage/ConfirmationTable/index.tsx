@@ -40,7 +40,7 @@ const ConfirmationTable = () => {
         className={cn(
           'mx-auto',
           'mt-[1.5vh]',
-          'w-[50%]',
+          'w-[80%]',
           'border-collapse',
           'border',
           'text-[1vh]',
@@ -49,10 +49,17 @@ const ConfirmationTable = () => {
         <thead>
           <tr>
             <th
-              className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}
+              className={cn(
+                'border',
+                'border-black',
+                'bg-gray-200',
+                'p-[0.3vh]',
+                'font-bold',
+                'w-[50%]',
+              )}
               rowSpan={2}
             >
-              접수자 확인
+              광주소프트웨어마이스터고 접수자 확인
             </th>
             <th className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}>
               1차
