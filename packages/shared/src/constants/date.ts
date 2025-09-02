@@ -21,3 +21,6 @@ export const passedMemberSubmitDate = {
   startDate: '2025. 11. 1.(수)',
   endDate: '2025. 11. 6.(월)',
 };
+
+export const CURRENT_YEAR = new Date().getFullYear();
+export const NEXT_YEAR = CURRENT_YEAR + 1;

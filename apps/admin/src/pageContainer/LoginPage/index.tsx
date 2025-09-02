@@ -1,6 +1,5 @@
-import { CURRENT_YEAR } from 'shared';
-
 import { LoginButton } from 'shared/components';
+import { CURRENT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const Circle = () => <div className={cn('w-1.5', 'h-1.5', 'bg-sky-300', 'rounded-full')} />;

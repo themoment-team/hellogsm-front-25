@@ -1,7 +1,5 @@
 'use client';
 
-import { NEXT_YEAR } from 'shared';
-
 import {
   Section2Icon1,
   Section2Icon2,
@@ -11,6 +9,7 @@ import {
   Section2Icon6,
 } from 'client/assets';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const stepsData = [

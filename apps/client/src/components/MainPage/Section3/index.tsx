@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { NEXT_YEAR } from 'shared';
 
 import * as I from 'client/assets';
 import { RECRUITMENT_PERIOD } from 'client/constants';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const buttonStyle = [

@@ -1,8 +1,8 @@
-import { NEXT_YEAR } from 'shared';
 import { OneseoStatusType } from 'types';
 
 import OneseoStatus from 'client/components/OneseoStatus';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 /* eslint-disable-next-line no-restricted-imports */

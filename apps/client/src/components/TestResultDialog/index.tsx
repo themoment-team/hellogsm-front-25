@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import { NEXT_YEAR } from 'shared';
 
 import { BlurIcon } from 'client/assets';
 
 import { Button, Dialog, DialogContent, DialogTitle } from 'shared/components';
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 interface TestResultProps {

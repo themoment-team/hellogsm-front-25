@@ -1,6 +1,5 @@
 'use client';
 
-import { NEXT_YEAR } from 'shared';
 import { TicketType } from 'types';
 
 import { PrintIcon } from 'shared/assets';
@@ -10,6 +9,7 @@ import {
   passedMemberAnnounceDate,
   심층면접시험기간,
   역량검사시험기간,
+  NEXT_YEAR,
 } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 

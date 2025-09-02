@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { memberQueryKeys, useGetDuplicateMember } from 'api';
 import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
-import { CURRENT_YEAR } from 'shared';
 import { MemberRegisterType, SendCodeType, SexType } from 'types';
 import { z } from 'zod';
 
@@ -38,6 +37,7 @@ import {
   AlertDialogTitle,
   InspectionDialog,
 } from 'shared/components';
+import { CURRENT_YEAR } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
 import { cn } from 'shared/lib/utils';
 

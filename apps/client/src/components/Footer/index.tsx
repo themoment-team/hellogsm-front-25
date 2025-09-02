@@ -1,7 +1,6 @@
-import { CURRENT_YEAR } from 'shared';
-
 import { FooterGSMLogo } from 'client/assets';
 
+import { CURRENT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const LINKS = [
