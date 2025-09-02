@@ -1,6 +1,6 @@
-import { CURRENT_YEAR, NEXT_YEAR } from 'shared';
 import { OneseoStatusType } from 'types';
 
+import { CURRENT_YEAR, NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 /* eslint-disable-next-line no-restricted-imports */

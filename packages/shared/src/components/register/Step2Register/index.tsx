@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from 'shared/components';
-import { CURRENT_YEAR, NEXT_YEAR } from 'shared/lib';
+import { CURRENT_YEAR, NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 interface Step2RegisterProps {
