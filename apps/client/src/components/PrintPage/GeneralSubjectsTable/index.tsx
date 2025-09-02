@@ -52,7 +52,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'font-bold',
               )}
             >
-              성취도/평어
+              성취도
             </div>
           </div>
           {!oneseo.calculatedScore.generalSubjectsScoreDetail.score1_1 ? (
@@ -115,7 +115,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'font-bold',
               )}
             >
-              성취도/평어
+              성취도
             </div>
           </div>
           {!oneseo.calculatedScore.generalSubjectsScoreDetail.score1_2 ? (
@@ -177,7 +177,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'font-bold',
             )}
           >
-            성취도/평어
+            성취도
           </div>
         </div>
         {!oneseo.calculatedScore.generalSubjectsScoreDetail.score2_1 ? (
@@ -226,7 +226,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'font-bold',
             )}
           >
-            성취도/평어
+            성취도
           </div>
         </div>
         {!oneseo.calculatedScore.generalSubjectsScoreDetail.score2_2 ? (
@@ -283,7 +283,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'font-bold',
             )}
           >
-            성취도/평어
+            성취도
           </div>
         </div>
         {!oneseo.calculatedScore.generalSubjectsScoreDetail.score3_1 ? (
@@ -333,7 +333,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'font-bold',
               )}
             >
-              성취도/평어
+              성취도
             </div>
           </div>
           {!oneseo.calculatedScore.generalSubjectsScoreDetail.score3_2 ? (

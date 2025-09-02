@@ -59,7 +59,7 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
                 'font-bold',
               )}
             >
-              성취도/평어
+              성취도
             </th>
           ))}
         </tr>
