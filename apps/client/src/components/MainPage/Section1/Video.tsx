@@ -9,8 +9,8 @@ const Video = () => (
     muted
     playsInline
   >
-    <source src="/video/promotion.webm" type="video/webm" />
-    <source src="/video/promotion.mp4" type="video/mp4" />
+    <source src={`${process.env.NEXT_PUBLIC_CDN_URL}/promotion.webm`} type="video/webm" />
+    <source src={`${process.env.NEXT_PUBLIC_CDN_URL}/promotion.mp4`} type="video/mp4" />
   </video>
 );
 
