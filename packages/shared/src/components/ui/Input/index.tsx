@@ -9,6 +9,7 @@ const inputVariants = cva(cn(''), {
     variant: {
       default: cn('focus-visible:border-slate-900'),
       blueOutline: cn('focus-visible:border-blue-500'),
+      error: cn('!border-red-600', 'focus:!border-red-600'),
     },
     width: {
       full: cn('w-full'),
@@ -55,7 +56,26 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             className={cn(
               inputVariants({ variant }),
-              'lex border-input ring-offset-background placeholder:text-muted-foreground m-0 h-10 w-full rounded-md border bg-white px-3 py-2 pr-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+              'm-0',
+              'h-10',
+              'w-full',
+              'px-3',
+              'py-2',
+              'pr-10',
+              'text-sm',
+              'rounded-md',
+              'border',
+              'bg-white',
+              'border-input',
+              'ring-offset-background',
+              'focus-visible:outline-none',
+              'disabled:cursor-not-allowed',
+              'disabled:opacity-50',
+              'file:border-0',
+              'file:bg-transparent',
+              'file:text-sm',
+              'file:font-medium',
+              'placeholder:text-muted-foreground',
             )}
             ref={ref}
             {...props}
