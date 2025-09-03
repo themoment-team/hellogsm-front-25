@@ -1,3 +1,5 @@
+import { getKoreanDate } from 'shared/utils';
+
 export const RECRUITMENT_PERIOD = {
   startDate: '2024.10.10.',
   endDate: '오전 9시 ~ 5시',
@@ -21,6 +23,5 @@ export const passedMemberSubmitDate = {
   startDate: '2025. 11. 1.(수)',
   endDate: '2025. 11. 6.(월)',
 };
-
-export const CURRENT_YEAR = new Date().getFullYear();
+export const CURRENT_YEAR = getKoreanDate().getFullYear();
 export const NEXT_YEAR = CURRENT_YEAR + 1;
