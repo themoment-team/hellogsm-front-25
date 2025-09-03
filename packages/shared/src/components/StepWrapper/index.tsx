@@ -63,6 +63,8 @@ interface StepWrapperProps {
 
 const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => {
   const step1UseForm = useForm<Step1FormType>({
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     resolver: zodResolver(step1Schema),
     defaultValues: {
       profileImg: data?.privacyDetail.profileImg,
@@ -72,6 +74,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   });
 
   const step2UseForm = useForm<Step2FormType>({
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     resolver: zodResolver(step2Schema),
     defaultValues: {
       graduationType: data?.privacyDetail.graduationType,
@@ -86,6 +90,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   });
 
   const step3UseForm = useForm<Step3FormType>({
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     resolver: zodResolver(step3Schema),
     defaultValues: {
       guardianName: data?.privacyDetail.guardianName || '',
@@ -110,6 +116,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   });
 
   const step4UseForm = useForm<Step4FormType>({
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     resolver: zodResolver(step4Schema),
     defaultValues: {
       liberalSystem:
@@ -135,6 +143,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   const [scoreCalculateDialogData, setScoreCalculateDialogData] = useState<MockScoreType | null>(
     null,
   );
+  const [errorStep, setErrorStep] = useState<StepEnum | null>(null);
+
   const { push } = useRouter();
   const graduationType = step2UseForm.watch('graduationType');
 
@@ -156,6 +166,14 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
     '2': step2Schema.safeParse(step2UseForm.watch()).success,
     '3': step3Schema.safeParse(step3UseForm.watch()).success,
     '4': step4Schema.safeParse(step4UseForm.watch()).success,
+  };
+
+  const handleStepError = (step: StepEnum) => {
+    setErrorStep(step);
+  };
+
+  const clearStepError = () => {
+    setErrorStep(null);
   };
 
   const { mutate: postMyOneseo } = usePostMyOneseo({
@@ -348,6 +366,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   };
 
   useEffect(() => {
+    clearStepError();
     if (step === StepEnum.TWO && !isStepSuccess[1]) push(`${BASE_URL}?step=1`);
 
     if (step === StepEnum.THREE && (!isStepSuccess[1] || !isStepSuccess[2]))
@@ -386,6 +405,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
             baseUrl={BASE_URL}
             isStepSuccess={isStepSuccess}
             handleCheckScoreButtonClick={handleCheckScoreButtonClick}
+            onStepError={handleStepError}
           />
           <div
             className={cn(
@@ -406,10 +426,19 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
                 birth={birth}
                 sex={sex}
                 phoneNumber={phoneNumber}
+                showError={errorStep === StepEnum.ONE}
               />
             )}
-            {step === '2' && <Step2Register {...step2UseForm} />}
-            {step === '3' && <Step3Register {...step3UseForm} isCandidate={isCandidate} />}
+            {step === '2' && (
+              <Step2Register {...step2UseForm} showError={errorStep === StepEnum.TWO} />
+            )}
+            {step === '3' && (
+              <Step3Register
+                {...step3UseForm}
+                isCandidate={isCandidate}
+                showError={errorStep === StepEnum.THREE}
+              />
+            )}
             {step === '4' && (
               <Step4Register
                 {...step4UseForm}
@@ -417,6 +446,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
                 isGED={isGED}
                 isCandidate={isCandidate}
                 isGraduate={isGraduate}
+                showError={errorStep === StepEnum.FOUR}
+                clearStepError={clearStepError}
               />
             )}
           </div>
