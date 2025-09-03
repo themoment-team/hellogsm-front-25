@@ -1,14 +1,19 @@
 'use client';
 
-import { UseFormRegister } from 'react-hook-form';
+import { useEffect } from 'react';
+
+import { FieldErrors, UseFormRegister, UseFormTrigger, get, Path } from 'react-hook-form';
 import { Step4FormType } from 'types';
 
 import { cn } from 'shared/lib/utils';
 
 interface NonSubjectFormProps {
   register: UseFormRegister<Step4FormType>;
+  trigger: UseFormTrigger<Step4FormType>;
+  errors: FieldErrors<Step4FormType>;
   isFreeGrade: boolean;
   isGraduate: boolean;
+  showError: boolean;
 }
 
 const nonSubjectArray = [
@@ -51,7 +56,22 @@ const rowStyle = [
   'items-center',
 ];
 
-const NonSubjectForm = ({ register, isFreeGrade, isGraduate }: NonSubjectFormProps) => {
+const NonSubjectForm = ({
+  register,
+  trigger,
+  errors,
+  isFreeGrade,
+  isGraduate,
+  showError,
+}: NonSubjectFormProps) => {
+  const validateForm = async () => {
+    await trigger();
+  };
+
+  useEffect(() => {
+    if (!showError) return;
+    validateForm();
+  }, [showError]);
   return (
     <div className={cn('flex', 'flex-col', 'w-full')}>
       <div
@@ -96,47 +116,54 @@ const NonSubjectForm = ({ register, isFreeGrade, isGraduate }: NonSubjectFormPro
             <h1 className={cn([...itemStyle, 'w-[3.75rem]'])}>{grade}</h1>
           </div>
           <div className={cn('flex')}>
-            {registerIndexList.map((registerIndex, index) => (
-              <div
-                key={index}
-                className={cn([
-                  ...itemStyle,
-                  'px-[0.75rem]',
-                  index === volunteerTimeIndex
-                    ? isFreeGrade || isGraduate
-                      ? 'w-[14.895625rem]'
-                      : 'w-[14.875rem]'
-                    : 'w-[5.625rem]',
-                ])}
-              >
-                <input
-                  {...register(
-                    index === 0
-                      ? `absentDays.${registerIndex}`
-                      : index === 1 || index === 2 || index === 3
-                        ? `attendanceDays.${registerIndex}`
-                        : `volunteerTime.${registerIndex}`,
-                    { valueAsNumber: true },
-                  )}
-                  type="number"
-                  className={cn(
-                    'w-full',
-                    'h-[2rem]',
-                    'text-center',
-                    'placeholder:text-slate-400',
-                    'text-slate-900',
-                    'border-[0.0625rem]',
-                    'border-slate-300',
-                    'rounded-md',
-                    'text-[0.875rem]',
-                    'font-normal',
-                    'leading-[1.25rem]',
-                    'appearance-none',
-                  )}
-                  placeholder={index === volunteerTimeIndex ? '시간 입력' : '입력'}
-                />
-              </div>
-            ))}
+            {registerIndexList.map((registerIndex, idx) => {
+              const fieldPath: Path<Step4FormType> = (
+                idx === 0
+                  ? `absentDays.${registerIndex}`
+                  : idx === 1 || idx === 2 || idx === 3
+                    ? `attendanceDays.${registerIndex}`
+                    : `volunteerTime.${registerIndex}`
+              ) as Path<Step4FormType>;
+
+              const hasError = Boolean(get(errors, fieldPath)) && showError;
+              return (
+                <div
+                  key={idx}
+                  className={cn([
+                    ...itemStyle,
+                    'px-[0.75rem]',
+                    idx === volunteerTimeIndex
+                      ? isFreeGrade || isGraduate
+                        ? 'w-[14.895625rem]'
+                        : 'w-[14.875rem]'
+                      : 'w-[5.625rem]',
+                  ])}
+                >
+                  <input
+                    {...register(fieldPath, { valueAsNumber: true })}
+                    type="number"
+                    className={cn(
+                      'w-full',
+                      'h-[2rem]',
+                      'text-center',
+                      'placeholder:text-slate-400',
+                      'text-slate-900',
+                      'border-[0.0625rem]',
+                      'border-slate-300',
+                      'rounded-md',
+                      'text-[0.875rem]',
+                      'font-normal',
+                      'leading-[1.25rem]',
+                      'appearance-none',
+                      {
+                        'border-solid !border-red-600 focus:!border-red-600': hasError,
+                      },
+                    )}
+                    placeholder={idx === volunteerTimeIndex ? '시간 입력' : '입력'}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}
