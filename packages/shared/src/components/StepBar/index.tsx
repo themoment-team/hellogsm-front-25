@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import { StepEnum } from 'types';
 
 import { StepCheckIcon, ProgressBarIcon } from 'shared/assets';
@@ -50,10 +51,26 @@ interface StepBarType {
     '3': boolean;
     '4': boolean;
   };
+  onStepError: (step: StepEnum) => void;
 }
 
-const StepBar = ({ step, baseUrl, isStepSuccess, handleCheckScoreButtonClick }: StepBarType) => {
+const StepBar = ({
+  step,
+  baseUrl,
+  isStepSuccess,
+  handleCheckScoreButtonClick,
+  onStepError,
+}: StepBarType) => {
   const { push } = useRouter();
+
+  const handleCheckNextStep = (step: StepEnum) => {
+    if (!isStepSuccess[step]) {
+      toast.error(`step${step} 잘못된 값이 입력된 필드가 존재합니다`);
+      onStepError(step);
+    } else {
+      push(`${baseUrl}?step=${Number(step) + 1}`);
+    }
+  };
 
   return (
     <>
@@ -95,17 +112,17 @@ const StepBar = ({ step, baseUrl, isStepSuccess, handleCheckScoreButtonClick }: 
 
           {step === StepEnum.FOUR ? (
             <Button
-              variant={step === StepEnum.FOUR ? 'next' : 'submit'}
-              disabled={!isStepSuccess[step]}
-              onClick={handleCheckScoreButtonClick}
+              variant={step === StepEnum.FOUR && isStepSuccess[step] ? 'next' : 'submit'}
+              onClick={
+                isStepSuccess[step] ? handleCheckScoreButtonClick : () => handleCheckNextStep(step)
+              }
             >
               내 성적 계산하기
             </Button>
           ) : (
             <Button
               variant={isStepSuccess[step] ? 'next' : 'submit'}
-              disabled={!isStepSuccess[step]}
-              onClick={() => push(`${baseUrl}?step=${Number(step) + 1}`)}
+              onClick={() => handleCheckNextStep(step)}
             >
               다음으로
             </Button>
