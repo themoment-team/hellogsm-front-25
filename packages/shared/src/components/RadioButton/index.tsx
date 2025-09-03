@@ -12,6 +12,7 @@ interface RadioButtonProps<T> {
   handleOptionClick?: (option: T) => void;
   selectedValue: string;
   list: { name: string; value: T }[];
+  error?: boolean;
 }
 
 const RadioButton = <T,>({
@@ -22,6 +23,7 @@ const RadioButton = <T,>({
   selectedValue,
   handleOptionClick,
   list,
+  error,
 }: RadioButtonProps<T>) => {
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'items-start', 'gap-[0.75rem]')}>
@@ -71,6 +73,7 @@ const RadioButton = <T,>({
                 disabled
                   ? ['cursor-not-allowed', 'after:bg-slate-400']
                   : ['cursor-pointer', 'after:bg-black'],
+                error && !selectedValue ? ['!border-red-600', 'focus:!border-red-600'] : null,
               ])}
             />
             <p className={cn([...textStyle])}>{name}</p>
