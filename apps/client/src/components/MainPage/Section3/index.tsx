@@ -5,6 +5,7 @@ import Link from 'next/link';
 import * as I from 'client/assets';
 import { RECRUITMENT_PERIOD } from 'client/constants';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const buttonStyle = [
@@ -54,7 +55,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
           >
             광주소프트웨어마이스터고등학교
             <br />
-            2025 신입생 모집
+            {NEXT_YEAR} 신입생 모집
           </h1>
           <p className={cn('mb-0', 'lg:mb-8', 'mt-[1rem]', 'hidden', 'smx:flex', 'text-gray-500')}>
             접수 기간: {RECRUITMENT_PERIOD.startDate} ~ {RECRUITMENT_PERIOD.endDate}

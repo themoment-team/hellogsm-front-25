@@ -1,4 +1,5 @@
 import { LoginButton } from 'shared/components';
+import { CURRENT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const Circle = () => <div className={cn('w-1.5', 'h-1.5', 'bg-sky-300', 'rounded-full')} />;
@@ -13,7 +14,7 @@ const LoginPage = () => (
           <Circle />
         </div>
         <h1 className={cn('text-3xl', 'font-semibold', 'text-gray-700')}>
-          2025 <span className={cn('text-[#2563EB]')}>HELLO,GSM</span> ADMIN SERVICE
+          {CURRENT_YEAR} <span className={cn('text-[#2563EB]')}>HELLO,GSM</span> ADMIN SERVICE
         </h1>
 
         <p className={cn('text-base', 'text-gray-800')}>

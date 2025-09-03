@@ -1,5 +1,6 @@
 import { FooterGSMLogo } from 'client/assets';
 
+import { CURRENT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const LINKS = [
@@ -22,8 +23,6 @@ const LINKS = [
 ] as const;
 
 const Footer = () => {
-  const year = new Date().getFullYear();
-
   return (
     <footer
       className={cn(
@@ -66,7 +65,7 @@ const Footer = () => {
                 'text-slate-600',
               )}
             >
-              ©{year} Copyright 광주소프트웨어마이스터고등학교 &nbsp;
+              ©{CURRENT_YEAR} Copyright 광주소프트웨어마이스터고등학교 &nbsp;
               <br className={cn('sm:hidden')} />
               ALL RIGHTS RESERVED.
             </p>

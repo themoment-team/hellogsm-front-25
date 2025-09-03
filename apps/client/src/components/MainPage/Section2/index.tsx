@@ -9,6 +9,7 @@ import {
   Section2Icon6,
 } from 'client/assets';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 const stepsData = [
@@ -123,7 +124,7 @@ const Section2 = () => {
           >
             광주소프트웨어마이스터고등학교
             <br />
-            2025 신입생 모집절차
+            {NEXT_YEAR} 신입생 모집절차
           </h1>
           <p
             className={cn(

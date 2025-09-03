@@ -2,6 +2,7 @@ import { OneseoStatusType } from 'types';
 
 import OneseoStatus from 'client/components/OneseoStatus';
 
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 /* eslint-disable-next-line no-restricted-imports */
@@ -10,9 +11,6 @@ import ApplicationPledge from '../ApplicationPledge';
 import PersonalInfoTable from '../PersonalInfoTable';
 
 const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
-  const date = new Date();
-  const targetDate = date.getFullYear() + 1;
-
   return (
     <div
       className={cn(
@@ -52,7 +50,7 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
 
           <div className={cn('flex', 'items-end', 'justify-between')}>
             <div className={cn('mt-[1.5vh]', 'text-lg', 'font-bold', 'leading-[2vh]')}>
-              {targetDate}학년도 신입생 입학전형
+              {NEXT_YEAR}학년도 신입생 입학전형
             </div>
             <div>
               <table>
@@ -91,7 +89,6 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
         </div>
       </div>
     </div>
-    // </div>
   );
 };
 
