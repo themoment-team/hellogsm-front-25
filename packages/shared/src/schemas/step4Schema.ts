@@ -18,7 +18,9 @@ const achievementSchema = (minLength: number) =>
     z.array(z.number().refine((value) => MAX_SCORE >= value && value >= MIN_SCORE)).min(minLength),
   );
 
-const nonSubjectSchema = z.nullable(z.array(z.number().refine((value) => !isNaN(value))));
+const nonSubjectSchema = z.nullable(
+  z.array(z.number().refine((value) => !isNaN(value) && value >= 0)),
+);
 
 export const step4Schema = z
   .object({
