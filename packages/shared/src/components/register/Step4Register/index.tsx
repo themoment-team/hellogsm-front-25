@@ -9,6 +9,8 @@ import {
   UseFormSetValue,
   UseFormUnregister,
   UseFormWatch,
+  UseFormStateReturn,
+  UseFormTrigger,
 } from 'react-hook-form';
 import {
   AchievementType,
@@ -120,10 +122,14 @@ interface Step4RegisterProps {
   unregister: UseFormUnregister<Step4FormType>;
   setValue: UseFormSetValue<Step4FormType>;
   watch: UseFormWatch<Step4FormType>;
+  trigger: UseFormTrigger<Step4FormType>;
   control: Control<Step4FormType>;
+  formState: UseFormStateReturn<Step4FormType>;
   isGED: boolean;
   isCandidate: boolean;
   isGraduate: boolean;
+  showError: boolean;
+  clearStepError: () => void;
 }
 
 const Step4Register = ({
@@ -131,12 +137,16 @@ const Step4Register = ({
   setValue,
   control,
   watch,
+  trigger,
+  formState,
   unregister,
   type,
   graduationType,
   isGED,
   isCandidate,
   isGraduate,
+  showError,
+  clearStepError,
 }: Step4RegisterProps) => {
   const [subjectArray, setSubjectArray] = useState<string[]>([...GENERAL_SUBJECTS]);
   const defaultSubjectLength = GENERAL_SUBJECTS.length;
@@ -252,6 +262,10 @@ const Step4Register = ({
     );
   }, [isFreeSemester, isGED]);
 
+  useEffect(() => {
+    clearStepError!();
+  }, [isFreeGrade, isFreeSemester]);
+
   return (
     <>
       <div className={cn(['w-[66.5rem]', 'flex', 'flex-col', type === 'admin' && 'pb-20'])}>
@@ -345,8 +359,11 @@ const Step4Register = ({
                       subjectArray={subjectArray}
                       watch={watch}
                       control={control}
+                      trigger={trigger}
+                      errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
                       isGraduate={isGraduate}
+                      showError={showError}
                     />
                   )}
                   {isFreeSemester && (
@@ -356,9 +373,12 @@ const Step4Register = ({
                       setValue={setValue}
                       subjectArray={subjectArray}
                       watch={watch}
+                      trigger={trigger}
+                      errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
                       freeSemester={watch('freeSemester')}
                       isGraduate={isGraduate}
+                      showError={showError}
                     />
                   )}
                   <button
@@ -391,6 +411,7 @@ const Step4Register = ({
                     isFreeGrade={isFreeGrade}
                     isFreeSemester={isFreeSemester}
                     isGraduate={isGraduate}
+                    showError={showError}
                   />
                 </div>
                 <div id="nonSubject" className={cn([...formWrapper])}>
@@ -402,7 +423,7 @@ const Step4Register = ({
                         'items-center',
                         'justify-center',
                         'gap-1',
-                        'text-red-500',
+                        'text-red-600',
                         'text-[0.75rem]/[1.25rem]',
                         'font-semibold',
                       )}
@@ -413,8 +434,11 @@ const Step4Register = ({
                   </div>
                   <NonSubjectForm
                     register={register}
+                    trigger={trigger}
+                    errors={formState.errors}
                     isFreeGrade={isFreeGrade}
                     isGraduate={isGraduate}
+                    showError={showError}
                   />
                 </div>
               </div>
