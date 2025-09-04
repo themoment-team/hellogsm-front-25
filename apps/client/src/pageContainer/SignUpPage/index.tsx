@@ -475,7 +475,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
             <AlertDialogAction
               onClick={() => {
                 setShowModal('');
-                if (showModal === 'success') push('/');
+                if (showModal === 'success') window.location.href = '/';
               }}
             >
               확인
