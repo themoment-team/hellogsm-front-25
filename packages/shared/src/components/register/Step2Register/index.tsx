@@ -132,13 +132,19 @@ const Step2Register = ({
     switch (fieldName) {
       case 'firstDesiredMajor':
         setValue('firstDesiredMajor', value);
-        reset({ ...watch(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined });
+        reset(
+          { ...watch(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined },
+          { keepErrors: true, keepIsSubmitted: true },
+        );
 
         return;
 
       case 'secondDesiredMajor':
         setValue('secondDesiredMajor', value);
-        reset({ ...watch(), thirdDesiredMajor: undefined });
+        reset(
+          { ...watch(), thirdDesiredMajor: undefined },
+          { keepErrors: true, keepIsSubmitted: true },
+        );
 
         return;
 
@@ -153,10 +159,12 @@ const Step2Register = ({
   const hasYearError = showError && (!year || year === '0000');
   const hasMonthError = showError && (!month || month === '00');
 
-  // 지원학과 에러 상태 체크
-  const hasFirstMajorError = showError && errors.firstDesiredMajor;
-  const hasSecondMajorError = showError && errors.secondDesiredMajor;
-  const hasThirdMajorError = showError && errors.thirdDesiredMajor;
+  const hasFirstMajorError =
+    showError && errors.firstDesiredMajor && watch('firstDesiredMajor') === undefined;
+  const hasSecondMajorError =
+    showError && errors.secondDesiredMajor && watch('secondDesiredMajor') === undefined;
+  const hasThirdMajorError =
+    showError && errors.thirdDesiredMajor && watch('thirdDesiredMajor') === undefined;
 
   useEffect(() => {
     if (!isGED && watch('schoolName') === null) {
