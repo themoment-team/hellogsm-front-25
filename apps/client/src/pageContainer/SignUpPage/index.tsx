@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { memberQueryKeys, useGetDuplicateMember } from 'api';
-import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MemberRegisterType, SendCodeType, SexType } from 'types';
 import { z } from 'zod';
@@ -48,8 +47,6 @@ interface SignUpProps {
 }
 
 const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
-  const { push } = useRouter();
-
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [btnClick, setBtnClick] = useState<boolean>(false);
   const [lastSubmittedCode, setLastSubmittedCode] = useState<string>('');
