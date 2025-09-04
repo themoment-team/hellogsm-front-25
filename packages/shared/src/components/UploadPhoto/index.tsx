@@ -111,6 +111,7 @@ const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
         <ul className={cn('text-slate-600', 'text-[0.75rem]/[1.125rem]', 'font-[400]')}>
           <li>&middot; 5MB 이하</li>
           <li>&middot; 3개월 이내의 3x4 cm 증명사진</li>
+          <li>&middot; jpg, jpeg, png 형식</li>
         </ul>
       </div>
       <AlertDialog open={showModal}>
