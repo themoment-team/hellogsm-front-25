@@ -51,7 +51,7 @@ interface StepBarType {
     '3': boolean;
     '4': boolean;
   };
-  onStepError: (step: StepEnum) => void;
+  handleStepError: (step: StepEnum) => void;
 }
 
 const StepBar = ({
@@ -59,14 +59,14 @@ const StepBar = ({
   baseUrl,
   isStepSuccess,
   handleCheckScoreButtonClick,
-  onStepError,
+  handleStepError,
 }: StepBarType) => {
   const { push } = useRouter();
 
-  const handleCheckNextStep = (step: StepEnum) => {
+  const handleCheckNextStep = async (step: StepEnum) => {
     if (!isStepSuccess[step]) {
       toast.error(`step${step} 잘못된 값이 입력된 필드가 존재합니다`);
-      onStepError(step);
+      handleStepError(step);
     } else {
       push(`${baseUrl}?step=${Number(step) + 1}`);
     }
