@@ -169,7 +169,13 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   };
 
   const handleStepError = (step: StepEnum) => {
-    setErrorStep(step);
+    setErrorStep((prev) => {
+      if (prev === step) {
+        setTimeout(() => setErrorStep(step), 0);
+        return null;
+      }
+      return step;
+    });
   };
 
   const clearStepError = () => {
@@ -405,7 +411,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
             baseUrl={BASE_URL}
             isStepSuccess={isStepSuccess}
             handleCheckScoreButtonClick={handleCheckScoreButtonClick}
-            onStepError={handleStepError}
+            handleStepError={handleStepError}
           />
           <div
             className={cn(
