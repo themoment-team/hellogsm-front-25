@@ -229,7 +229,7 @@ const FreeSemesterForm = ({
               {achievementList.map(({ value, field }) => {
                 const score = watch(`${field}.${idx}`);
 
-                const subjectHasError = Boolean(get(errors, `${field}.${idx}`));
+                const subjectHasError = score === undefined;
                 const isSubjectError =
                   subjectHasError && showError
                     ? 'border-solid !border-red-600 focus:!border-red-600'
@@ -276,7 +276,7 @@ const FreeSemesterForm = ({
                               isSubjectError,
                             )}
                           >
-                            <SelectValue placeholder="성적 선택" />
+                            <SelectValue placeholder="성적 입력" />
                           </SelectTrigger>
                           <SelectContent>
                             {GENERAL_SCORE_VALUES.map(({ name, value }, idx) => (

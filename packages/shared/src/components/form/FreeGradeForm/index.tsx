@@ -169,12 +169,12 @@ const FreeGradeForm = ({
               {achievementList.map(({ field }) => {
                 const score = watch(`${field}.${idx}`);
 
-                const subjectHasError = Boolean(get(errors, `${field}.${idx}`));
+                const subjectHasError = score === undefined;
+
                 const isSubjectError =
                   subjectHasError && showError
                     ? 'border-solid !border-red-600 focus:!border-red-600'
                     : null;
-
                 return (
                   <div key={field} className={cn([...itemStyle, 'mx-4'])}>
                     <Select
