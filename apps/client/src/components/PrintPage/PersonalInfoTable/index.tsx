@@ -38,9 +38,8 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           </td>
         </tr>
         <tr>
-          <th className={thStyle}>연락처</th>
           <th className={thStyle}>핸드폰</th>
-          <td colSpan={4} className={tdStyle}>
+          <td colSpan={5} className={tdStyle}>
             {oneseo.privacyDetail.phoneNumber}
           </td>
         </tr>
@@ -84,7 +83,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           >
             {oneseo.privacyDetail.graduationType === 'CANDIDATE' && '(인)'}
           </td>
-          <th className={thStyle}>핸드폰</th>
+          <th className={thStyle}>연락처</th>
           {oneseo.privacyDetail.graduationType === 'CANDIDATE' ? (
             <td className={cn('border-b', 'border-black')}>
               {oneseo.privacyDetail.schoolTeacherPhoneNumber}
