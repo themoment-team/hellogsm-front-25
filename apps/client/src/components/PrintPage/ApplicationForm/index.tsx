@@ -1,6 +1,6 @@
 import { OneseoStatusType } from 'types';
 
-import OneseoStatus from 'client/components/OneseoStatus';
+import OneseoStatus from 'client/components/PrintPage/OneseoStatus';
 
 import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
