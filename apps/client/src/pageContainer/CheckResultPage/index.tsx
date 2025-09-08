@@ -100,12 +100,10 @@ const CheckResultPage = ({
             </AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              <Link href={prevUrl}>확인</Link>
+            <AlertDialogAction asChild>
+              <Link href={prevUrl} onClick={() => setShowModal(false)}>
+                확인
+              </Link>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
