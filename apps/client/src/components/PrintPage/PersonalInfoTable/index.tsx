@@ -34,7 +34,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
         <tr>
           <th className={thStyle}>주 소</th>
           <td className={tdStyle} colSpan={5}>
-            {oneseo.privacyDetail.address}
+            {oneseo.privacyDetail.address} {oneseo.privacyDetail.detailAddress}
           </td>
         </tr>
         <tr>
