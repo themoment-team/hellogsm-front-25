@@ -6,6 +6,7 @@ import { XIcon } from 'lucide-react';
 import {
   Control,
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormTrigger,
@@ -38,6 +39,7 @@ interface FreeGradeFormProps {
   achievementList: AchievementType[];
   isGraduate: boolean;
   showError: boolean;
+  getValues: UseFormGetValues<Step4FormType>;
 }
 
 const itemStyle = [
@@ -72,6 +74,7 @@ const FreeGradeForm = ({
   achievementList,
   isGraduate,
   showError,
+  getValues,
 }: FreeGradeFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -167,7 +170,7 @@ const FreeGradeForm = ({
               {achievementList.map(({ field }) => {
                 const score = watch(`${field}.${idx}`);
 
-                const subjectHasError = score === undefined;
+                const subjectHasError = score === undefined || score === null;
 
                 const isSubjectError =
                   subjectHasError && showError
@@ -176,7 +179,18 @@ const FreeGradeForm = ({
                 return (
                   <div key={field} className={cn([...itemStyle, 'mx-4'])}>
                     <Select
-                      onValueChange={(value) => setValue(`${field}.${idx}`, Number(value))}
+                      onValueChange={(value) => {
+                        const prev = getValues(field) || [];
+                        const next = [...prev];
+
+                        while (next.length <= idx) {
+                          next.push(undefined!);
+                        }
+
+                        next[idx] = Number(value);
+
+                        setValue(field, next, { shouldDirty: true, shouldValidate: true });
+                      }}
                       defaultValue={Number.isInteger(score) ? String(score) : ''}
                     >
                       <SelectTrigger

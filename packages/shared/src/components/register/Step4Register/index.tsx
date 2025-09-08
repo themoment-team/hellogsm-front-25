@@ -11,6 +11,7 @@ import {
   UseFormWatch,
   UseFormStateReturn,
   UseFormTrigger,
+  UseFormGetValues,
 } from 'react-hook-form';
 import {
   AchievementType,
@@ -123,6 +124,7 @@ interface Step4RegisterProps {
   setValue: UseFormSetValue<Step4FormType>;
   watch: UseFormWatch<Step4FormType>;
   trigger: UseFormTrigger<Step4FormType>;
+  getValues: UseFormGetValues<Step4FormType>;
   control: Control<Step4FormType>;
   formState: UseFormStateReturn<Step4FormType>;
   isGED: boolean;
@@ -140,6 +142,7 @@ const Step4Register = ({
   trigger,
   formState,
   unregister,
+  getValues,
   type,
   graduationType,
   isGED,
@@ -364,6 +367,7 @@ const Step4Register = ({
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
                       isGraduate={isGraduate}
                       showError={showError}
+                      getValues={getValues}
                     />
                   )}
                   {isFreeSemester && (
@@ -379,6 +383,7 @@ const Step4Register = ({
                       freeSemester={watch('freeSemester')}
                       isGraduate={isGraduate}
                       showError={showError}
+                      getValues={getValues}
                     />
                   )}
                   <button

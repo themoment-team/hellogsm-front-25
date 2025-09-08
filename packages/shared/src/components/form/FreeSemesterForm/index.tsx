@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { XIcon } from 'lucide-react';
 import {
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormTrigger,
@@ -32,6 +33,7 @@ interface FreeSemesterFormProps {
   isGraduate: boolean;
   showError: boolean;
   errors: FieldErrors<Step4FormType>;
+  getValues: UseFormGetValues<Step4FormType>;
 }
 
 const itemStyle = [
@@ -91,6 +93,7 @@ const FreeSemesterForm = ({
   isGraduate,
   errors,
   showError,
+  getValues,
 }: FreeSemesterFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -229,7 +232,7 @@ const FreeSemesterForm = ({
               {achievementList.map(({ value, field }) => {
                 const score = watch(`${field}.${idx}`);
 
-                const subjectHasError = score === undefined;
+                const subjectHasError = score === undefined || score === null;
                 const isSubjectError =
                   subjectHasError && showError
                     ? 'border-solid !border-red-600 focus:!border-red-600'
@@ -258,7 +261,18 @@ const FreeSemesterForm = ({
                     ) : (
                       <div className={cn('w-[7.3375rem]', 'flex', 'justify-center')}>
                         <Select
-                          onValueChange={(value) => setValue(`${field}.${idx}`, Number(value))}
+                          onValueChange={(value) => {
+                            const prev = getValues(field) || [];
+                            const next = [...prev];
+
+                            while (next.length <= idx) {
+                              next.push(undefined!);
+                            }
+
+                            next[idx] = Number(value);
+
+                            setValue(field, next, { shouldDirty: true, shouldValidate: true });
+                          }}
                           defaultValue={Number.isInteger(score) ? String(score) : ''}
                         >
                           <SelectTrigger
@@ -276,7 +290,7 @@ const FreeSemesterForm = ({
                               isSubjectError,
                             )}
                           >
-                            <SelectValue placeholder="성적 입력" />
+                            <SelectValue placeholder={String(score)} />
                           </SelectTrigger>
                           <SelectContent>
                             {GENERAL_SCORE_VALUES.map(({ name, value }, idx) => (
