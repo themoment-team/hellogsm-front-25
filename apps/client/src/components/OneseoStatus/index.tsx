@@ -191,7 +191,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           )}
           <td className={cn('border', 'border-black')}>
             {oneseo.privacyDetail.graduationType === 'GED'
-              ? oneseo.middleSchoolAchievement.gedAvgScore
+              ? oneseo.calculatedScore.totalSubjectsScore
               : parseFloat(
                   (
                     oneseo.calculatedScore.generalSubjectsScore! +
@@ -234,9 +234,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
             {oneseo.calculatedScore.volunteerScore}
           </td>
           <td className={cn('border', 'border-black')}>
-            {oneseo.privacyDetail.graduationType === 'GED'
-              ? 600
-              : oneseo.calculatedScore.attendanceScore + oneseo.calculatedScore.volunteerScore}
+            {oneseo.calculatedScore.attendanceScore + oneseo.calculatedScore.volunteerScore}
           </td>
         </tr>
         <tr>

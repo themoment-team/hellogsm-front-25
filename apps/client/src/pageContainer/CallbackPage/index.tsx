@@ -23,8 +23,6 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
     const clientBaseUrl = isStage ? 'https://www.stage.hellogsm.kr' : 'https://www.hellogsm.kr';
     const nextUrl = provider === 'admin' ? `${clientBaseUrl}/?isAdmin=true` : clientBaseUrl;
     router.replace(nextUrl);
-
-    toast.success('로그인에 성공했습니다.');
   };
 
   const handleLoginError = () => {

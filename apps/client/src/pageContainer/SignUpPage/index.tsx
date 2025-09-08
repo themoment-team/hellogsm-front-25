@@ -48,8 +48,7 @@ interface SignUpProps {
 }
 
 const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
-  const { push } = useRouter();
-
+  const router = useRouter();
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [btnClick, setBtnClick] = useState<boolean>(false);
   const [lastSubmittedCode, setLastSubmittedCode] = useState<string>('');
@@ -475,7 +474,10 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
             <AlertDialogAction
               onClick={() => {
                 setShowModal('');
-                if (showModal === 'success') push('/');
+                if (showModal === 'success') {
+                  router.push('/');
+                  router.refresh();
+                }
               }}
             >
               확인
