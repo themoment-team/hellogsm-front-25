@@ -19,15 +19,15 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           </th>
           <th className={thStyle}>성 명</th>
           <td className={tdStyle}>{oneseo.privacyDetail.name}</td>
-          <th className={thStyle + 'w-[3%]'}>성별</th>
+          <th className={thStyle + 'w-[3%] leading-tight'}>성별</th>
           <td className={tdStyle}>{SexEnum[oneseo.privacyDetail.sex ?? 'MALE']}</td>
           <th className={thStyle}>생년월일</th>
           <td className={tdStyle}>{oneseo.privacyDetail.birth}</td>
-          <td rowSpan={6} className={tdStyle + 'h-[25vh] w-[18vh]'}>
+          <td rowSpan={6} className={tdStyle + 'h-[4cm] w-[3cm]'}>
             <img
               src={oneseo.privacyDetail.profileImg}
               alt="증명사진"
-              className={cn('h-[25vh]', 'w-[18vh]')}
+              className={cn('h-[4cm]', 'w-[3cm]')}
             />
           </td>
         </tr>
@@ -51,8 +51,10 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           <td className={tdStyle} colSpan={1}>
             {oneseo.privacyDetail.guardianName}
           </td>
-          <th className={thStyle} colSpan={2}>
-            지원자와의 관계
+          <th className={thStyle + 'leading-none'} colSpan={2}>
+            지원자와의
+            <br />
+            관계
           </th>
           <td className={tdStyle} colSpan={2}>
             지원자 {oneseo.privacyDetail.name}의 {oneseo.privacyDetail.relationshipWithGuardian}
@@ -66,7 +68,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
         </tr>
         <tr>
           <th className={thStyle} colSpan={3} rowSpan={6}>
-            원서작성자(담임) <br /> 성명
+            원서작성자(담임) 성명
           </th>
           <td
             colSpan={2}
