@@ -290,7 +290,7 @@ const FreeSemesterForm = ({
                               isSubjectError,
                             )}
                           >
-                            <SelectValue placeholder={String(score)} />
+                            <SelectValue placeholder="성적 입력" />
                           </SelectTrigger>
                           <SelectContent>
                             {GENERAL_SCORE_VALUES.map(({ name, value }, idx) => (
