@@ -159,9 +159,7 @@ const FreeGradeForm = ({
                     'leading-[1.25rem]',
                     isNewSubjectError,
                   )}
-                  {...register(`newSubjects.${idx - defaultSubjectLength}`, {
-                    required: '과목명을 입력하세요.',
-                  })}
+                  {...register(`newSubjects.${idx - defaultSubjectLength}`)}
                 />
               )}
             </div>
