@@ -63,7 +63,7 @@ const StepBar = ({
 }: StepBarType) => {
   const { push } = useRouter();
 
-  const handleCheckNextStep = async (step: StepEnum) => {
+  const handleCheckNextStep = (step: StepEnum) => {
     if (!isStepSuccess[step]) {
       toast.error(`step${step} 잘못된 값이 입력된 필드가 존재합니다`);
       handleStepError(step);
