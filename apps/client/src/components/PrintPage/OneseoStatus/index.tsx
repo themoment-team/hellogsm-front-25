@@ -137,7 +137,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
             3-2
           </td>
           <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
-            예체능
+            예·체능
           </td>
           <td
             className={cn(
