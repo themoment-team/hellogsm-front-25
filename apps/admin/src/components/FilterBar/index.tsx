@@ -143,7 +143,7 @@ const FilterBar = ({
             value={keyword}
             icon={<SearchIcon />}
             width="large"
-            placeholder="지원자  명, 중학교 명, 지원자 연락처 검색"
+            placeholder="지원자  명, 중학교 명, 지원자 휴대폰 번호 검색"
           />
 
           <div className={cn('w-px', 'h-6', 'bg-slate-200', 'mx-5')} />
