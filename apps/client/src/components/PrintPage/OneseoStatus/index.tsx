@@ -118,22 +118,76 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           >
             교과 <br /> 성적
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             1-1
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             1-2
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             2-1
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             2-2
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             3-1
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[8%]',
+            )}
+          >
             3-2
           </td>
           <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
