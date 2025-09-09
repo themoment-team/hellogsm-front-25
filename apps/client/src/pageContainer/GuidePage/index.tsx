@@ -11,11 +11,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
+  LoginDialog,
 } from 'shared';
 import { GetMyOneseoType } from 'types';
 
 import { BlueStarIcon, CloverIcon, CopyIcon } from 'client/assets';
-import { Footer, LoginDialog } from 'client/components';
+import { Footer } from 'client/components';
 
 import { cn } from 'shared/lib/utils';
 

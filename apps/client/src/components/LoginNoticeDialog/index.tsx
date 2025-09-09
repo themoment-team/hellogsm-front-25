@@ -10,9 +10,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  LoginDialog,
 } from 'shared';
-
-import { LoginDialog } from 'client/components';
 
 import { cn } from 'shared/lib/utils';
 
