@@ -31,17 +31,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
       <div className={cn('relative', 'z-[2]', 'w-[66vh]')}>
         <div className={cn('relative', 'z-[2]', 'w-[66vh]', 'overflow-hidden')}>
           <div className={cn('relative', 'bg-white', 'p-4', 'text-black')}>
-            <div
-              className={cn(
-                'relative',
-                'z-[2]',
-                'border',
-                'border-gray-300',
-                'bg-white',
-                'p-6',
-                'shadow-md',
-              )}
-            >
+            <div className={cn('relative', 'z-[2]', 'bg-white', 'p-6', 'py-[6.5rem]')}>
               <div
                 id="sample"
                 className={cn(
