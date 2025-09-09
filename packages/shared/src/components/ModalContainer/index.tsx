@@ -17,7 +17,9 @@ import {
   LoginDialog,
 } from 'shared/components';
 import { cn } from 'shared/lib/utils';
-import { useModalStore } from 'shared/stores/useModalStore';
+import { useModalStore } from 'shared/stores';
+
+import { useGetOperation, usePostFirstResult, usePostSecondResult } from 'api/hooks';
 
 const SUBJECT: string[] = ['교과', '일반교과'] as const;
 const TOTAL = '총합';
@@ -64,6 +66,22 @@ const ModalContainer = () => {
 
   const { back, push } = useRouter();
 
+  const { refetch: operationRefetch } = useGetOperation();
+
+  const { mutate: postFirstResult } = usePostFirstResult({
+    onSuccess: () => {
+      operationRefetch();
+    },
+    onError: () => {},
+  });
+
+  const { mutate: postSecondResult } = usePostSecondResult({
+    onSuccess: () => {
+      operationRefetch();
+    },
+    onError: () => {},
+  });
+
   const scoreArray =
     scoreCalculationCompleteModal.data?.totalSubjectsScore === undefined
       ? [
@@ -92,7 +110,7 @@ const ModalContainer = () => {
   return (
     <>
       {/* admin */}
-      <AlertDialog open={documentSubmissionChangeModal}>
+      <AlertDialog open={documentSubmissionChangeModal.isOpen}>
         <AlertDialogContent className={cn('w-[25rem]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>서류 제출 여부를 변경하시겠습니까?</AlertDialogTitle>
@@ -101,14 +119,14 @@ const ModalContainer = () => {
             <AlertDialogCancel onClick={() => setDocumentSubmissionChangeModal(false)}>
               취소
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => setDocumentSubmissionChangeModal(false)}>
+            <AlertDialogAction onClick={documentSubmissionChangeModal.onConfirm}>
               변경하기
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={admissionAgreementChangeModal}>
+      <AlertDialog open={admissionAgreementChangeModal.isOpen}>
         <AlertDialogContent className={cn('w-[25rem]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>입학동의서 제출 여부를 변경하시겠습니까?</AlertDialogTitle>
@@ -117,7 +135,7 @@ const ModalContainer = () => {
             <AlertDialogCancel onClick={() => setAdmissionAgreementChangeModal(false)}>
               취소
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => setAdmissionAgreementChangeModal(false)}>
+            <AlertDialogAction onClick={admissionAgreementChangeModal.onConfirm}>
               변경하기
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -148,7 +166,14 @@ const ModalContainer = () => {
             <Button variant="outline" onClick={() => setFirstResultAnnouncementModal(false)}>
               취소
             </Button>
-            <Button onClick={() => setFirstResultAnnouncementModal(false)}>확인</Button>
+            <Button
+              onClick={() => {
+                setFirstResultAnnouncementModal(false);
+                postFirstResult();
+              }}
+            >
+              확인
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -164,7 +189,14 @@ const ModalContainer = () => {
             <Button variant="outline" onClick={() => setSecondResultAnnouncementModal(false)}>
               취소
             </Button>
-            <Button onClick={() => setSecondResultAnnouncementModal(false)}>확인</Button>
+            <Button
+              onClick={() => {
+                setSecondResultAnnouncementModal(false);
+                postSecondResult();
+              }}
+            >
+              확인
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -296,7 +328,7 @@ const ModalContainer = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={phoneNumberDuplicateModal}>
+      <AlertDialog open={phoneNumberDuplicateModal.isOpen}>
         <AlertDialogContent className={cn('w-[520px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -309,7 +341,7 @@ const ModalContainer = () => {
             <Button variant="outline" onClick={() => setPhoneNumberDuplicateModal(false)}>
               취소
             </Button>
-            <AlertDialogAction onClick={() => setPhoneNumberDuplicateModal(false)}>
+            <AlertDialogAction onClick={phoneNumberDuplicateModal.onConfirm}>
               확인
             </AlertDialogAction>
           </AlertDialogFooter>

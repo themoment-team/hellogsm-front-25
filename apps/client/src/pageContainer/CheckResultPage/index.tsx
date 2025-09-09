@@ -2,20 +2,12 @@
 
 import { useState } from 'react';
 
-import Link from 'next/link';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from 'shared';
 import { MyMemberInfoType, MyTotalTestResultType } from 'types';
 
 import { PassResultDialog } from 'client/components';
 
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 const divStyle = [
   'text-gray-900',
@@ -38,8 +30,6 @@ const containerStyle = ['flex', 'flex-col', 'gap-10', 'items-center'] as const;
 
 const h1Style = ['text-gray-900', 'text-[1.5rem]/[2rem]', 'font-semibold'] as const;
 
-const prevUrl = '/check-result';
-
 interface CheckResultPageProps {
   memberInfo: MyMemberInfoType | undefined;
   resultInfo: MyTotalTestResultType | undefined;
@@ -53,17 +43,16 @@ const CheckResultPage = ({
   isCheckFirstResult,
   isCheckFinalResult,
 }: CheckResultPageProps) => {
+  const { setResultAnnouncementPeriodModal } = useModalStore();
   const [isFirstTest, setIsFirstTest] = useState<boolean>(true);
   const [isDialog, setIsDialog] = useState(false);
-
-  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleDialog = (resultStatus: boolean) => {
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {
       setIsDialog(true);
     } else {
-      setShowModal(true);
+      setResultAnnouncementPeriodModal(true, isFirstTest);
     }
   };
 
@@ -91,23 +80,6 @@ const CheckResultPage = ({
           </div>
         </div>
       </div>
-
-      <AlertDialog open={showModal}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              현재 {isFirstTest ? '1차 합격' : '최종 합격'} 여부를 조회할 수 없는 기간입니다.
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction asChild>
-              <Link href={prevUrl} onClick={() => setShowModal(false)}>
-                확인
-              </Link>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <PassResultDialog
         isPassOpen={isDialog}

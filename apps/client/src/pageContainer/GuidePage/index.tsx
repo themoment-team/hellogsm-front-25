@@ -1,24 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useRouter } from 'next/navigation';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  Button,
-  LoginDialog,
-} from 'shared';
+import { Button } from 'shared';
 import { GetMyOneseoType } from 'types';
 
 import { BlueStarIcon, CloverIcon, CopyIcon } from 'client/assets';
 import { Footer } from 'client/components';
 
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 import { useGetMyAuthInfo, useGetMyMemberInfo, useGetMyOneseo } from 'api/hooks';
 
@@ -211,6 +201,7 @@ interface GuideProps {
 }
 
 const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
+  const { setLoginRequiredModal } = useModalStore();
   const { data: authInfo } = useGetMyAuthInfo();
   const { data: memberInfo } = useGetMyMemberInfo();
 
@@ -231,8 +222,6 @@ const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
   })();
 
   const isTempOneseo = data && !data.step;
-
-  const [showModal, setShowModal] = useState<boolean>(false);
 
   const { push } = useRouter();
 
@@ -338,7 +327,7 @@ const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
         ])}
         onClick={() => {
           if (!authInfo?.authReferrerType) {
-            setShowModal(true);
+            setLoginRequiredModal(true);
             return;
           }
           if (!memberInfo?.name) {
@@ -351,24 +340,6 @@ const GuidePage = ({ initialData, isOneseoWrite }: GuideProps) => {
         {buttonText}
       </Button>
       <Footer />
-
-      <AlertDialog open={showModal}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>로그인을 먼저 진행해주세요</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <LoginDialog />
-            <AlertDialogAction
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              다음에
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };

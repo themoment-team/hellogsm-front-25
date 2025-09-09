@@ -13,8 +13,6 @@ export { default as RadioButton } from './RadioButton';
 export { default as CustomFormItem } from './CustomFormItem';
 export { default as ConfirmBar } from './ConfirmBar';
 export { default as EditBar } from './EditBar';
-export { default as ScoreCalculateDialog } from './ScoreCalculateDialog';
-export { default as InspectionDialog } from './InspectionDialog';
 export { default as Step1Register } from './register/Step1Register';
 export { default as Step2Register } from './register/Step2Register';
 export { default as Step3Register } from './register/Step3Register';

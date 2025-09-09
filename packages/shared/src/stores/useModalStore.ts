@@ -3,10 +3,10 @@ import { create } from 'zustand';
 
 interface ModalStore {
   // admin
-  documentSubmissionChangeModal: boolean;
-  setDocumentSubmissionChangeModal: (isOpen: boolean) => void;
-  admissionAgreementChangeModal: boolean;
-  setAdmissionAgreementChangeModal: (isOpen: boolean) => void;
+  documentSubmissionChangeModal: { isOpen: boolean; onConfirm: () => void };
+  setDocumentSubmissionChangeModal: (isOpen: boolean, onConfirm?: () => void) => void;
+  admissionAgreementChangeModal: { isOpen: boolean; onConfirm: () => void };
+  setAdmissionAgreementChangeModal: (isOpen: boolean, onConfirm?: () => void) => void;
   applicationModificationNotPossibleModal: boolean;
   setApplicationModificationNotPossibleModal: (isOpen: boolean) => void;
   firstResultAnnouncementModal: boolean;
@@ -29,8 +29,8 @@ interface ModalStore {
   setSignupSuccessModal: (isOpen: boolean) => void;
   signupErrorModal: boolean;
   setSignupErrorModal: (isOpen: boolean) => void;
-  phoneNumberDuplicateModal: boolean;
-  setPhoneNumberDuplicateModal: (isOpen: boolean) => void;
+  phoneNumberDuplicateModal: { isOpen: boolean; onConfirm: () => void };
+  setPhoneNumberDuplicateModal: (isOpen: boolean, onConfirm?: () => void) => void;
   applicationPeriodModal: boolean;
   setApplicationPeriodModal: (isOpen: boolean) => void;
 
@@ -55,10 +55,12 @@ interface ModalStore {
 
 export const useModalStore = create<ModalStore>((set) => ({
   // admin
-  documentSubmissionChangeModal: false,
-  setDocumentSubmissionChangeModal: (isOpen) => set({ documentSubmissionChangeModal: isOpen }),
-  admissionAgreementChangeModal: false,
-  setAdmissionAgreementChangeModal: (isOpen) => set({ admissionAgreementChangeModal: isOpen }),
+  documentSubmissionChangeModal: { isOpen: false, onConfirm: () => {} },
+  setDocumentSubmissionChangeModal: (isOpen, onConfirm = () => {}) =>
+    set({ documentSubmissionChangeModal: { isOpen, onConfirm } }),
+  admissionAgreementChangeModal: { isOpen: false, onConfirm: () => {} },
+  setAdmissionAgreementChangeModal: (isOpen, onConfirm = () => {}) =>
+    set({ admissionAgreementChangeModal: { isOpen, onConfirm } }),
   applicationModificationNotPossibleModal: false,
   setApplicationModificationNotPossibleModal: (isOpen) =>
     set({ applicationModificationNotPossibleModal: isOpen }),
@@ -84,8 +86,9 @@ export const useModalStore = create<ModalStore>((set) => ({
   setSignupSuccessModal: (isOpen) => set({ signupSuccessModal: isOpen }),
   signupErrorModal: false,
   setSignupErrorModal: (isOpen) => set({ signupErrorModal: isOpen }),
-  phoneNumberDuplicateModal: false,
-  setPhoneNumberDuplicateModal: (isOpen) => set({ phoneNumberDuplicateModal: isOpen }),
+  phoneNumberDuplicateModal: { isOpen: false, onConfirm: () => {} },
+  setPhoneNumberDuplicateModal: (isOpen, onConfirm = () => {}) =>
+    set({ phoneNumberDuplicateModal: { isOpen, onConfirm } }),
   applicationPeriodModal: false,
   setApplicationPeriodModal: (isOpen) => set({ applicationPeriodModal: isOpen }),
 

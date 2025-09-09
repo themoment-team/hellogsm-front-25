@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { memberQueryKeys, useGetDuplicateMember } from 'api';
-import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MemberRegisterType, SendCodeType, SexType } from 'types';
 import { z } from 'zod';
@@ -29,17 +28,11 @@ import {
   SelectContent,
   SelectValue,
   SelectItem,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  InspectionDialog,
 } from 'shared/components';
 import { CURRENT_YEAR } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 const PERMIT_YEAR = 50;
 
@@ -48,7 +41,6 @@ interface SignUpProps {
 }
 
 const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
-  const router = useRouter();
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [btnClick, setBtnClick] = useState<boolean>(false);
   const [lastSubmittedCode, setLastSubmittedCode] = useState<string>('');
@@ -56,9 +48,13 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const [isContinue, setIsContinue] = useState<boolean>(false);
   const [isVerifyClicked, setIsVerifyClicked] = useState(false);
 
-  const [showModal, setShowModal] = useState<
-    'duplicate' | 'date' | 'code' | 'success' | 'error' | ''
-  >('');
+  const {
+    setVerificationCodeSendErrorModal,
+    setSignupSuccessModal,
+    setSignupErrorModal,
+    setPhoneNumberDuplicateModal,
+    setApplicationPeriodModal,
+  } = useModalStore();
 
   const [timeLeft, setTimeLeft] = useState(0);
 
@@ -134,11 +130,11 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   });
 
   const { mutate: mutateMemberRegister } = usePostMemberRegister({
-    onError: () => setShowModal('error'),
+    onError: () => setSignupErrorModal(true),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: memberQueryKeys.getMyAuthInfo() });
       queryClient.invalidateQueries({ queryKey: memberQueryKeys.getMyMemberInfo() });
-      setShowModal('success');
+      setSignupSuccessModal(true);
     },
   });
 
@@ -148,7 +144,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       setIsVerifyClicked(true);
       formMethods.setValue('isSentCertificationNumber', true);
     },
-    onError: () => setShowModal('code'),
+    onError: () => setVerificationCodeSendErrorModal(true),
   });
 
   const { mutate: mutateVerifyCode } = useVerifyCode({
@@ -184,6 +180,15 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     mutateMemberRegister(body);
   };
 
+  const handleDuplicateConfirm = () => {
+    setPhoneNumberDuplicateModal(false);
+    if (isPastAnnouncement) {
+      setApplicationPeriodModal(true);
+    } else {
+      setIsContinue(true);
+    }
+  };
+
   const sendCodeNumber = async (number: string) => {
     const duplicateResponse = await checkDuplicateMember();
     const isDuplicate = duplicateResponse?.data?.duplicateMemberYn === 'NO';
@@ -201,7 +206,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       mutateSendCode(body);
       return;
     } else {
-      setShowModal('duplicate');
+      setPhoneNumberDuplicateModal(true, handleDuplicateConfirm);
     }
   };
 
@@ -209,7 +214,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     if (isContinue === true) {
       sendCodeNumber(phoneNumber);
     }
-  }, [isContinue]);
+  }, [isContinue, phoneNumber, sendCodeNumber]);
 
   return (
     <>
@@ -449,96 +454,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       </main>
 
       <Footer />
-
-      <AlertDialog open={showModal === 'code'}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              인증번호 전송에 실패하였습니다. <br /> (인증번호는 최대 5번만 전송 가능합니다.)
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setShowModal('')}>확인</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showModal === 'success' || showModal === 'error'}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {showModal === 'success' ? '회원가입에 성공했습니다!' : '오류가 발생했습니다.'}
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowModal('');
-                if (showModal === 'success') {
-                  router.push('/');
-                  router.refresh();
-                }
-              }}
-            >
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showModal === 'duplicate'}>
-        <AlertDialogContent className={cn('w-[520px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              같은 전화번호로 생성된 계정이 이미 존재합니다.
-              <br />
-              회원가입 시, 기존의 정보는 사라집니다. 진행하시겠습니까?
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowModal('');
-              }}
-            >
-              취소
-            </Button>
-            <AlertDialogAction
-              onClick={() => {
-                if (isPastAnnouncement) {
-                  setShowModal('date');
-                } else {
-                  setIsContinue(true);
-                  setShowModal('');
-                }
-              }}
-            >
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showModal === 'date'}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              1차 합격 결과 발표 이후에는 기존 회원 정보를 <br /> 삭제할 수 없습니다.
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowModal('');
-              }}
-            >
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <InspectionDialog showModal={false} />
     </>
   );
 };
