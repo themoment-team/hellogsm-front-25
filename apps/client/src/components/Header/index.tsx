@@ -450,14 +450,24 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
             ) : isLogin ? (
               '회원가입을 진행해주세요'
             ) : (
-              <LoginDialog variant="pc" />
+              <LoginDialog />
             )}
           </div>
         )}
 
         {/* Mobile width 일떄 */}
         <div className={cn('md:hidden')}>
-          {isLogin ? '회원가입을 진행해주세요' : <MenuToggleButton />}
+          {isLogin ? (
+            '회원가입을 진행해주세요'
+          ) : isServerHealthy ? (
+            isSignup ? (
+              <MenuToggleButton />
+            ) : (
+              <LoginDialog />
+            )
+          ) : (
+            <MenuToggleButton />
+          )}
         </div>
       </header>
 
@@ -488,28 +498,25 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
             setHoveredLink={setHoveredLink}
             setIsMenu={setIsMenu}
           />
-          {isServerHealthy &&
-            (isSignup ? (
-              <button
-                className={cn(
-                  'flex',
-                  'items-center',
-                  'gap-4',
-                  'text-red-600',
-                  'text-[1.5rem]',
-                  'leading-normal',
-                  'font-bold',
-                )}
-                onClick={() => {
-                  handleLogout();
-                  setIsMenu(false);
-                }}
-              >
-                <I.LogoutIcon /> 로그아웃
-              </button>
-            ) : (
-              <LoginDialog variant="mobile" />
-            ))}
+          {isServerHealthy && (
+            <button
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-4',
+                'text-red-600',
+                'text-[1.5rem]',
+                'leading-normal',
+                'font-bold',
+              )}
+              onClick={() => {
+                handleLogout();
+                setIsMenu(false);
+              }}
+            >
+              <I.LogoutIcon /> 로그아웃
+            </button>
+          )}
         </div>
       )}
     </>
