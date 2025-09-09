@@ -190,9 +190,7 @@ const FreeSemesterForm = ({
 
         const newSubjectHasError = Boolean(get(errors, `newSubjects.${dynamicIndex}`));
         const isNewSubjectError =
-          newSubjectHasError && showError
-            ? 'border-solid !border-red-600 focus:!border-red-600'
-            : null;
+          newSubjectHasError && showError ? '!border-red-600 focus:!border-red-600' : null;
         return (
           <div
             key={subject}
@@ -234,9 +232,7 @@ const FreeSemesterForm = ({
 
                 const subjectHasError = score === undefined || score === null;
                 const isSubjectError =
-                  subjectHasError && showError
-                    ? 'border-solid !border-red-600 focus:!border-red-600'
-                    : null;
+                  subjectHasError && showError ? '!border-red-600 focus:!border-red-600' : null;
 
                 return (
                   <div

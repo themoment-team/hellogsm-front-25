@@ -130,7 +130,7 @@ const ArtPhysicalForm = ({
                         'border-slate-300',
                         isGraduate ? 'w-[7.34rem]' : isFreeGrade ? 'w-[10.46rem]' : 'w-[5.47rem]',
                         watch(`artsPhysicalAchievement.${registerIndex}`) === undefined && showError
-                          ? 'border-solid !border-red-600 focus:!border-red-600'
+                          ? '!border-red-600 focus:!border-red-600'
                           : null,
                       ])}
                     >
