@@ -88,7 +88,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
               'font-medium',
             )}
           >
-            지역명
+            주소
           </td>
           {oneseo.privacyDetail.graduationType === 'GED' ? (
             <td colSpan={7} className={cn('border', 'border-black', 'bg-slash')} />

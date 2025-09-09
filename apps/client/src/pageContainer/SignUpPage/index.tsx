@@ -475,7 +475,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
               onClick={() => {
                 setShowModal('');
                 if (showModal === 'success') {
-                  router.push('/');
+                  router.replace('/');
                   router.refresh();
                 }
               }}
