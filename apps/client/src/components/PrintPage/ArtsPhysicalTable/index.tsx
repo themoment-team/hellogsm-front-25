@@ -30,24 +30,17 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
             <div className={cn('h-[2.2vh]', 'text-left', 'font-normal')}>과목</div>
           </th>
           {availableSemesters.map((semester) => (
-            <th
+            <td
               key={semester}
-              className={cn(
-                'h-[2.2vh]',
-                'border',
-                'border-black',
-                'bg-gray-200',
-                'p-[0.2vh]',
-                'font-bold',
-              )}
+              className={cn('h-[2.2vh]', 'border', 'border-black', 'bg-gray-200', 'p-[0.2vh]')}
             >
               {semester}
-            </th>
+            </td>
           ))}
         </tr>
         <tr>
           {availableSemesters.map((semester, idx) => (
-            <th
+            <td
               key={`achievement-${semester}-${idx}`}
               className={cn(
                 'h-[2.2vh]',
@@ -56,11 +49,10 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               성취도
-            </th>
+            </td>
           ))}
         </tr>
       </thead>

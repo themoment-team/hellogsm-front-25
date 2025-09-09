@@ -7,24 +7,24 @@ const ExtracurricularTable = ({ oneseo }: OneseoStatusType) => {
     <table className={cn('w-full', 'border-collapse', 'border', 'text-[1vh]')}>
       <thead>
         <tr>
-          <th
-            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}
+          <td
+            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}
             rowSpan={2}
           >
             학년
-          </th>
-          <th
-            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}
+          </td>
+          <td
+            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}
             colSpan={6}
           >
             미인정 출결 현황
-          </th>
-          <th
-            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}
+          </td>
+          <td
+            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}
             colSpan={2}
           >
             봉사활동
-          </th>
+          </td>
         </tr>
         <tr className={cn('text-center')}>
           <td className={cn('border', 'border-black')}>결석</td>

@@ -36,7 +36,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               1학년 1학기
@@ -49,7 +48,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               성취도
@@ -99,7 +97,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               1학년 2학기
@@ -112,7 +109,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               성취도
@@ -161,7 +157,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             2학년 1학기
@@ -174,7 +169,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             성취도
@@ -210,7 +204,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             2학년 2학기
@@ -223,7 +216,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             성취도
@@ -267,7 +259,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             3학년 1학기
@@ -280,7 +271,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
               'bg-gray-200',
               'p-[0.2vh]',
               'text-center',
-              'font-bold',
             )}
           >
             성취도
@@ -317,7 +307,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               3학년 2학기
@@ -330,7 +319,6 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               성취도
