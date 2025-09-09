@@ -12,6 +12,7 @@ import {
   UseFormStateReturn,
   UseFormTrigger,
   UseFormGetValues,
+  get,
 } from 'react-hook-form';
 import {
   AchievementType,
@@ -269,6 +270,15 @@ const Step4Register = ({
     clearStepError!();
   }, [isFreeGrade, isFreeSemester]);
 
+  const validateForm = async () => {
+    await trigger();
+  };
+
+  useEffect(() => {
+    if (!showError) return;
+    validateForm();
+  }, [showError]);
+
   return (
     <>
       <div className={cn(['w-[66.5rem]', 'flex', 'flex-col', type === 'admin' && 'pb-20'])}>
@@ -317,6 +327,12 @@ const Step4Register = ({
                   const input = e.currentTarget;
                   input.value = input.value.replace(/[^0-9]/g, '');
                 }}
+                variant={
+                  (Boolean(get(formState.errors, 'gedAvgScore')) && showError) ||
+                  watch('gedAvgScore') === undefined
+                    ? 'error'
+                    : null
+                }
               />
             </div>
           </form>
