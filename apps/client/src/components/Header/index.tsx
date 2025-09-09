@@ -7,9 +7,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { memberQueryKeys } from 'api';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { LoginDialog } from 'shared';
 
 import * as I from 'client/assets';
-import { ActiveLink, LoginDialog } from 'client/components';
+import { ActiveLink } from 'client/components';
 
 import { cn } from 'shared/lib/utils';
 
