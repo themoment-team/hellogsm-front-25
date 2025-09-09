@@ -30,7 +30,6 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
         <tr>
           <td
             className={cn(
-              'h-[26vh]',
               'w-[3%]',
               'border',
               'border-l-0',
