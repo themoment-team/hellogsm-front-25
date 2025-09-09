@@ -228,7 +228,7 @@ const Step2Register = ({
               <Select value={year === '0000' ? '' : year} onValueChange={handleYearSelectChange}>
                 <SelectTrigger
                   className={cn('w-[14.6785rem]', {
-                    '!border-red-600 focus:!border-red-600': hasYearError,
+                    '!border-red-600': hasYearError,
                   })}
                 >
                   <SelectValue placeholder="연도 선택" />
@@ -252,7 +252,7 @@ const Step2Register = ({
               >
                 <SelectTrigger
                   className={cn('w-[14.6785rem]', {
-                    '!border-red-600 focus:!border-red-600': hasMonthError,
+                    '!border-red-600': hasMonthError,
                   })}
                 >
                   <SelectValue placeholder="월 선택" />
@@ -313,7 +313,7 @@ const Step2Register = ({
                       >
                         <SelectTrigger
                           className={cn('w-[9.3785rem]', {
-                            '!border-red-600 focus:!border-red-600':
+                            '!border-red-600':
                               desiredSequence === 1
                                 ? hasFirstMajorError
                                 : desiredSequence === 2

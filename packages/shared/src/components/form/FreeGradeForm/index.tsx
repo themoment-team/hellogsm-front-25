@@ -29,7 +29,7 @@ const defaultSubjectLength = GENERAL_SUBJECTS.length;
 
 interface FreeGradeFormProps {
   subjectArray: string[];
-  control: Control<Step4FormType, unknown>;
+  control: Control<Step4FormType>;
   setValue: UseFormSetValue<Step4FormType>;
   register: UseFormRegister<Step4FormType>;
   watch: UseFormWatch<Step4FormType>;
@@ -127,8 +127,7 @@ const FreeGradeForm = ({
         const dynamicIndex = idx - defaultSubjectLength;
 
         const newSubjectHasError = Boolean(get(errors, `newSubjects.${dynamicIndex}`));
-        const isNewSubjectError =
-          newSubjectHasError && showError ? '!border-red-600 focus:!border-red-600' : null;
+        const isNewSubjectError = newSubjectHasError && showError ? '!border-red-600  ' : null;
         return (
           <div
             key={subject}
@@ -170,8 +169,7 @@ const FreeGradeForm = ({
 
                 const subjectHasError = score === undefined || score === null;
 
-                const isSubjectError =
-                  subjectHasError && showError ? '!border-red-600 focus:!border-red-600' : null;
+                const isSubjectError = subjectHasError && showError ? '!border-red-600  ' : null;
                 return (
                   <div key={field} className={cn([...itemStyle, 'mx-4'])}>
                     <Select

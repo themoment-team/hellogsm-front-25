@@ -156,7 +156,7 @@ const NonSubjectForm = ({
                       'leading-[1.25rem]',
                       'appearance-none',
                       {
-                        '!border-red-600 focus:!border-red-600': hasError,
+                        '!border-red-600': hasError,
                       },
                     )}
                     placeholder={idx === volunteerTimeIndex ? '시간 입력' : '입력'}

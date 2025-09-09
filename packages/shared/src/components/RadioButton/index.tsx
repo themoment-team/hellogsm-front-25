@@ -73,7 +73,7 @@ const RadioButton = <T,>({
                 disabled
                   ? ['cursor-not-allowed', 'after:bg-slate-400']
                   : ['cursor-pointer', 'after:bg-black'],
-                error && !selectedValue ? ['!border-red-600', 'focus:!border-red-600'] : null,
+                error && !selectedValue ? ['!border-red-600', ' '] : null,
               ])}
             />
             <p className={cn([...textStyle])}>{name}</p>
