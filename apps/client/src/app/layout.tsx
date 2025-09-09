@@ -1,3 +1,5 @@
+import { ModalContainer } from 'shared';
+
 import { Header } from 'client/components';
 import { GoogleAnalytics } from 'client/lib';
 import { getIsServerHealthy } from 'client/utils';
@@ -63,6 +65,7 @@ export default async function RootLayout({
         <Provider>
           <Header isServerHealthy={isServerHealthy} />
           {children}
+          <ModalContainer />
         </Provider>
       </body>
     </html>
