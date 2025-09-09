@@ -1,12 +1,36 @@
+import * as I from 'client/assets';
+
 import { Button, LoginButton } from 'shared/components';
 import { Dialog, DialogContent, DialogTrigger } from 'shared/components';
 import { cn } from 'shared/lib/utils';
 
-const LoginDialog = () => {
+interface LoginDialogProps {
+  variant?: 'pc' | 'mobile';
+}
+
+const LoginDialog = ({ variant = 'pc' }: LoginDialogProps) => {
+  const isPC = variant === 'pc';
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="blue">로그인</Button>
+        {isPC ? (
+          <Button variant="blue">로그인</Button>
+        ) : (
+          <button
+            className={cn(
+              'flex',
+              'items-center',
+              'gap-4',
+              'text-[1.5rem]',
+              'font-bold',
+              'leading-normal',
+              'text-slate-500',
+            )}
+          >
+            <I.LoginIcon /> 로그인
+          </button>
+        )}
       </DialogTrigger>
       <DialogContent className={cn('w-fit', 'p-0', '!rounded-[20px]')}>
         <div
