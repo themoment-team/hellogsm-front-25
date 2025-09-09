@@ -22,11 +22,10 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
         'overflow-hidden',
         'bg-white',
         'p-2',
-        'pb-0',
         'text-[1vh]',
       )}
     >
-      <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
+      <div className={cn('relative', 'z-[2]', 'w-[63vh]', 'py-[5.5rem]')}>
         <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
           <div
             id="sample"
