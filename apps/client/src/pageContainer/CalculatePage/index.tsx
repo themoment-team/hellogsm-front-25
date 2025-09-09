@@ -8,6 +8,7 @@ import { usePostMockScore } from 'api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +28,7 @@ import {
   MiddleSchoolAchievementType,
   MockScoreType,
   Step4FormType,
+  StepEnum,
 } from 'types';
 
 import { ComputerRecommendedPage } from 'client/pageContainer';
@@ -58,6 +60,9 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
   const [scoreCalculateDialogData, setScoreCalculateDialogData] = useState<MockScoreType | null>(
     null,
   );
+
+  const [errorStep, setErrorStep] = useState<StepEnum | null>(null);
+
   const isCandidate = graduationType === GraduationTypeValueEnum.CANDIDATE;
   const isGED = graduationType === GraduationTypeValueEnum.GED;
   const isGraduate = graduationType === GraduationTypeValueEnum.GRADUATE;
@@ -113,6 +118,19 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     postMockScore(body);
   };
 
+  const handleCalCulateStepError = () => {
+    setErrorStep(StepEnum.FOUR);
+  };
+
+  const handleCheckCalCulateError = () => {
+    toast.error(`step4 잘못된 값이 입력된 필드가 존재합니다`);
+    handleCalCulateStepError();
+  };
+
+  const clearStepError = () => {
+    setErrorStep(null);
+  };
+
   return (
     <>
       <AlertDialog open={!isServerHealthy}>
@@ -153,8 +171,9 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 form="scoreForm"
                 type="submit"
                 variant={isStep4Success ? 'next' : 'submit'}
-                disabled={!isStep4Success}
-                onClick={handleCalculateButtonClick}
+                onClick={
+                  isStep4Success ? handleCalculateButtonClick : () => handleCheckCalCulateError()
+                }
               >
                 내 성적 계산하기
               </Button>
@@ -167,6 +186,8 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 isGraduate={isGraduate}
                 type="calculate"
                 {...step4UseForm}
+                showError={errorStep === StepEnum.FOUR}
+                clearStepError={clearStepError}
               />
             </div>
           </div>
