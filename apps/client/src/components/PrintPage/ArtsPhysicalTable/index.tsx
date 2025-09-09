@@ -24,7 +24,7 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
         <tr>
           <th
             rowSpan={2}
-            className={cn('relative', 'w-[15%]', 'border', 'border-black', 'bg-backslash')}
+            className={cn('relative', 'w-20', 'border', 'border-black', 'bg-backslash', 'p-1')}
           >
             <div className={cn('h-[2.2vh]', 'text-right', 'font-normal')}>학년</div>
             <div className={cn('h-[2.2vh]', 'text-left', 'font-normal')}>과목</div>
