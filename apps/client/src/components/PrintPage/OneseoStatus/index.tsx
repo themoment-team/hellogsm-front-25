@@ -208,13 +208,13 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           </td>
           <td
             className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}
-            colSpan={3}
+            colSpan={4}
           >
             출석
           </td>
           <td
             className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}
-            colSpan={4}
+            colSpan={3}
           >
             봉사활동
           </td>
@@ -226,10 +226,10 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           </td>
         </tr>
         <tr>
-          <td className={cn('border', 'border-black')} colSpan={3}>
+          <td className={cn('border', 'border-black')} colSpan={4}>
             {oneseo.calculatedScore.attendanceScore}
           </td>
-          <td className={cn('border', 'border-black')} colSpan={4}>
+          <td className={cn('border', 'border-black')} colSpan={3}>
             {oneseo.calculatedScore.volunteerScore}
           </td>
           <td className={cn('border', 'border-black')}>
@@ -262,13 +262,13 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           </td>
           <td
             className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}
-            colSpan={4}
+            colSpan={3}
           >
             2지망 학과
           </td>
           <td
             className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}
-            colSpan={4}
+            colSpan={2}
           >
             3지망 학과
           </td>
@@ -277,10 +277,10 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           <td className={cn('border', 'border-black')} colSpan={4}>
             {MajorEnum[oneseo.desiredMajors.firstDesiredMajor]}
           </td>
-          <td className={cn('border', 'border-black')} colSpan={4}>
+          <td className={cn('border', 'border-black')} colSpan={3}>
             {MajorEnum[oneseo.desiredMajors.secondDesiredMajor]}
           </td>
-          <td className={cn('border', 'border-black')} colSpan={4}>
+          <td className={cn('border', 'border-black')} colSpan={2}>
             {MajorEnum[oneseo.desiredMajors.thirdDesiredMajor]}
           </td>
         </tr>
