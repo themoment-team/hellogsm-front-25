@@ -147,7 +147,7 @@ const Step1Register = ({
                   width="full"
                   disabled
                   {...register('address')}
-                  variant={showError && errors.address ? 'error' : undefined}
+                  variant={showError && errors.address ? 'error' : null}
                 />
 
                 <Button onClick={handleZipCodeButtonClick}>주소 찾기</Button>
@@ -157,7 +157,7 @@ const Step1Register = ({
               placeholder="상세주소"
               width="full"
               {...register('detailAddress')}
-              variant={showError && errors.detailAddress ? 'error' : undefined}
+              variant={showError && errors.detailAddress ? 'error' : null}
             />
           </div>
 

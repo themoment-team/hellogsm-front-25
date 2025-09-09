@@ -218,7 +218,7 @@ const Step2Register = ({
                     width="full"
                     disabled={true}
                     {...register('schoolName')}
-                    variant={showError && errors.schoolName ? 'error' : undefined}
+                    variant={showError && errors.schoolName ? 'error' : null}
                   />
                   <SearchDialog setValue={setValue} />
                 </>
