@@ -56,7 +56,7 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
                 <tr>
                   <th
                     className={cn(
-                      'w-20',
+                      'w-14',
                       'border',
                       'border-b-0',
                       'border-black',
@@ -68,7 +68,15 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
                   >
                     접수번호
                   </th>
-                  <td className={cn('w-40', 'border', 'border-b-0', 'border-black', 'text-center')}>
+                  <td
+                    className={cn(
+                      'w-[113px]',
+                      'border',
+                      'border-b-0',
+                      'border-black',
+                      'text-center',
+                    )}
+                  >
                     {oneseo.submitCode}
                   </td>
                 </tr>
