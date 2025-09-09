@@ -139,11 +139,27 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
             예체능
           </td>
-          <td className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}>
+          <td
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[15%]',
+            )}
+          >
             소계
           </td>
           <td
-            className={cn('border', 'border-black', 'bg-[#e9e9e9]', 'p-[0.2vh]', 'font-medium')}
+            className={cn(
+              'border',
+              'border-black',
+              'bg-[#e9e9e9]',
+              'p-[0.2vh]',
+              'font-medium',
+              'w-[15%]',
+            )}
             rowSpan={2}
           >
             합계 (환산총점)
