@@ -8,7 +8,15 @@ const ExtracurricularTable = ({ oneseo }: OneseoStatusType) => {
       <thead>
         <tr>
           <td
-            className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}
+            className={cn(
+              'border',
+              'border-black',
+              'bg-gray-200',
+              'p-[0.3vh]',
+              'text-center',
+              'w-[3%]',
+              'leading-tight',
+            )}
             rowSpan={2}
           >
             학년
