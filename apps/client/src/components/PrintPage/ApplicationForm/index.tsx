@@ -15,7 +15,6 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
     <div
       className={cn(
         'flex',
-        'h-fit',
         'flex-col',
         'items-center',
         'justify-center',
@@ -25,7 +24,22 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
         'text-[1vh]',
       )}
     >
-      <div className={cn('relative', 'z-[2]', 'w-[63vh]', 'py-[5.5rem]')}>
+      <div
+        className={cn(
+          'relative',
+          'z-[2]',
+          'w-[63vh]',
+          'py-20',
+
+          'print:w-[210mm]',
+          'print:h-[297mm]',
+          'print:flex',
+          'print:items-center',
+          'print:justify-center',
+          'print:p-0',
+          'print:m-0',
+        )}
+      >
         <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
           <div
             id="sample"
