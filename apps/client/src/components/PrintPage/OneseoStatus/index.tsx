@@ -57,7 +57,10 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           <td className={cn(thStyle)} colSpan={2} rowSpan={2}>
             출신중학교
           </td>
-          <td colSpan={2} className={cn(tdStyle, isGED && 'bg-slash', 'border-r')}>
+          <td
+            colSpan={2}
+            className={cn(tdStyle, isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'], 'border-r')}
+          >
             {!isGED && schoolName}
           </td>
           <td colSpan={6} className={cn('border-r', 'border-black')}>
@@ -66,7 +69,10 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
         </tr>
         <tr>
           <td className={cn(thStyle)}>주소</td>
-          <td colSpan={7} className={cn(tdStyle, isGED && 'bg-slash')}>
+          <td
+            colSpan={7}
+            className={cn(tdStyle, isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'])}
+          >
             {!isGED && schoolAddress}
           </td>
         </tr>
@@ -96,14 +102,23 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
         <tr>
           {achievementGradeValues.map((gradeKey) =>
             isGEDScore || !oneseo.middleSchoolAchievement[gradeKey]?.length ? (
-              <td key={gradeKey} className={cn(tdStyle, 'bg-slash', 'w-[2.6875rem]')} />
+              <td
+                key={gradeKey}
+                className={cn(tdStyle, 'bg-slash', 'bg-contain', 'bg-no-repeat', 'w-[2.6875rem]')}
+              />
             ) : (
               <td key={gradeKey} className={cn(tdStyle)}>
                 {generalSubjectsScoreDetail[achievementScoreMap[gradeKey]]}
               </td>
             ),
           )}
-          <td className={cn(tdStyle, isGED && 'bg-slash', 'w-[2.6875rem]')}>
+          <td
+            className={cn(
+              tdStyle,
+              isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'],
+              'w-[2.6875rem]',
+            )}
+          >
             {!isGED && artsPhysicalSubjectsScore}
           </td>
           <td className={cn(tdStyle)}>
