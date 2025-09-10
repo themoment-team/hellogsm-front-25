@@ -27,7 +27,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
             <img
               src={oneseo.privacyDetail.profileImg}
               alt="증명사진"
-              className={cn('w-[113px]', 'h-[151px]')}
+              className={cn('w-[113.38582677px]', 'h-[151.18110236px]')}
             />
           </td>
         </tr>
