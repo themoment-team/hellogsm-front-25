@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 import { StepEnum } from 'types';
 
 import { StepCheckIcon, ProgressBarIcon } from 'shared/assets';
@@ -65,7 +64,6 @@ const StepBar = ({
 
   const handleCheckNextStep = (step: StepEnum) => {
     if (!isStepSuccess[step]) {
-      toast.error(`step${step} 잘못된 값이 입력된 필드가 존재합니다`);
       handleStepError(step);
     } else {
       push(`${baseUrl}?step=${Number(step) + 1}`);
