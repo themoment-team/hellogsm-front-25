@@ -347,7 +347,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                   <div className={cn(['w-[18rem]', btnClick === true ? 'absolute' : ''])}>
                     <Input
                       {...formMethods.register('phoneNumber')}
-                      placeholder="번호 입력"
+                      placeholder="번호 입력 (하이픈 '-' 제외)"
                       disabled={isSentCertificationNumber}
                     />
                   </div>
