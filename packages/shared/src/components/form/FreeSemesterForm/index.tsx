@@ -166,16 +166,25 @@ const FreeSemesterForm = ({
                     'text-emerald-500',
                   ])}
                   type="button"
-                  onClick={() => setValue('freeSemester', null)}
+                  onClick={() => {
+                    setValue('freeSemester', null);
+                    validateForm();
+                  }}
                 >
                   <PinIcon type="ON" />
                   on
                 </button>
               ) : (
                 <button
-                  className={cn([...freeSemesterButtonStyle])}
+                  className={cn([
+                    ...freeSemesterButtonStyle,
+                    showError && errors.freeSemester && !isGraduate && '!border-red-600',
+                  ])}
                   type="button"
-                  onClick={() => setValue('freeSemester', value!)}
+                  onClick={() => {
+                    setValue('freeSemester', value!);
+                    validateForm();
+                  }}
                 >
                   <PinIcon type="OFF" />
                   off

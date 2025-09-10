@@ -64,6 +64,7 @@ export const step4Schema = z
       if ((hasAchievement11 || hasAchievement12) && !data.freeSemester) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
+          path: ['freeSemester'],
         });
       }
     }
