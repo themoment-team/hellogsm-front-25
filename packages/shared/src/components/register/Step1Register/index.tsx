@@ -95,7 +95,7 @@ const Step1Register = ({
 
       <div className={cn('flex', 'items-end', 'gap-[3rem]')}>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-[2rem]')}>
-          <UploadPhoto setValue={setValue} watch={watch} />
+          <UploadPhoto setValue={setValue} watch={watch} errors={errors} showError={showError} />
           <CustomFormItem text={'이름'} className={cn('gap-1')} required={true} fullWidth={true}>
             <Input placeholder={name} disabled={true} />
           </CustomFormItem>
