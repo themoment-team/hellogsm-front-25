@@ -94,7 +94,7 @@ const Step3Register = ({
               variant={showError && errors.guardianName ? 'error' : null}
             />
             <Input
-              placeholder="보호자 휴대폰 번호 입력"
+              placeholder="보호자 휴대폰 번호 입력 (하이픈 '-' 제외)"
               width="full"
               {...register('guardianPhoneNumber')}
               variant={showError && errors.guardianPhoneNumber ? 'error' : null}
@@ -133,7 +133,7 @@ const Step3Register = ({
                 variant={showError && errors.schoolTeacherName ? 'error' : null}
               />
               <Input
-                placeholder="담임선생님 연락처 입력"
+                placeholder="담임선생님 연락처 입력 (하이픈 '-' 제외)"
                 width="full"
                 {...register('schoolTeacherPhoneNumber')}
                 variant={showError && errors.schoolTeacherPhoneNumber ? 'error' : null}
