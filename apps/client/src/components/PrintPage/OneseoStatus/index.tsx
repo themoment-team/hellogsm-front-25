@@ -54,12 +54,17 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           </td>
         </tr>
         <tr>
-          <td className={cn(thStyle)} colSpan={2} rowSpan={2}>
+          <td className={cn(thStyle, 'border-t-0')} colSpan={2} rowSpan={2}>
             출신중학교
           </td>
           <td
             colSpan={2}
-            className={cn(tdStyle, isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'], 'border-r')}
+            className={cn(
+              tdStyle,
+              isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'],
+              'border-r',
+              'border-t-0',
+            )}
           >
             {!isGED && schoolName}
           </td>
