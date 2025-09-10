@@ -68,9 +68,10 @@ const UploadPhoto = ({ setValue, watch, errors, showError }: UploadPhotoProps) =
                 'w-[8.75rem]',
                 'h-[10rem]',
                 'bg-[#F5F6F8]',
-                'border-2',
                 'rounded-lg',
-                errors.profileImg && showError && !isSuccess ? 'border-red-600' : 'border-gray-200',
+                errors.profileImg && showError && !isSuccess
+                  ? 'border border-red-600'
+                  : 'border-2 border-gray-200',
                 'justify-center',
                 'items-center',
                 'gap-[0.625rem]',
