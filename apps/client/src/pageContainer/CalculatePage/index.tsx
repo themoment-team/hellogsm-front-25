@@ -8,7 +8,6 @@ import { usePostMockScore } from 'api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -123,7 +122,6 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
   };
 
   const handleCheckCalCulateError = () => {
-    toast.error(`step4 잘못된 값이 입력된 필드가 존재합니다`);
     handleCalCulateStepError();
   };
 
