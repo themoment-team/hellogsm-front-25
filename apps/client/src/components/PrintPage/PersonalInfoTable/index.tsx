@@ -5,6 +5,7 @@ const thStyle = 'border border-black bg-[#e9e9e9] ';
 const tdStyle = 'border border-black ';
 
 const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
+  const [year, month, day] = oneseo.privacyDetail.birth.split('-');
   return (
     <table className={cn('w-full', 'border-collapse', 'text-center', 'text-[1.2vh]')}>
       <thead>
@@ -22,7 +23,9 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           <td className={cn(thStyle) + 'w-[3%] leading-none'}>성별</td>
           <td className={cn(tdStyle)}>{SexEnum[oneseo.privacyDetail.sex ?? 'MALE']}</td>
           <td className={cn(thStyle)}>생년월일</td>
-          <td className={cn(tdStyle)}>{oneseo.privacyDetail.birth}</td>
+          <td className={cn(tdStyle)}>
+            {year}년 {month}월 {day}일
+          </td>
           <td rowSpan={6} className={cn(tdStyle, 'h-[151px]', 'w-[113px]')}>
             <img
               src={oneseo.privacyDetail.profileImg}
