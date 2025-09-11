@@ -18,6 +18,15 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
     return false;
   });
 
+  const semesterLabelMap: Record<string, string> = {
+    '1-1': '1학년 1학기',
+    '1-2': '1학년 2학기',
+    '2-1': '2학년 1학기',
+    '2-2': '2학년 2학기',
+    '3-1': '3학년 1학기',
+    '3-2': '3학년 2학기',
+  };
+
   return (
     <table className={cn('w-full', 'border', 'border-black', 'text-center')}>
       <thead>
@@ -34,7 +43,7 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
               key={semester}
               className={cn('h-[2.2vh]', 'border', 'border-black', 'bg-gray-200', 'p-[0.2vh]')}
             >
-              {semester}
+              {semesterLabelMap[semester] ?? semester}
             </td>
           ))}
         </tr>
