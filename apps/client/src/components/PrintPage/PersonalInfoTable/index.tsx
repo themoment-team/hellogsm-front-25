@@ -9,21 +9,21 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
     <table className={cn('w-full', 'border-collapse', 'text-center', 'text-[1.2vh]')}>
       <thead>
         <tr>
-          <td className={thStyle + 'w-[3%] border-l-0'} rowSpan={8}>
+          <td className={cn(thStyle, 'w-[3%]', 'border-l-0')} rowSpan={8}>
             인적사항
           </td>
         </tr>
         <tr>
-          <td className={thStyle + 'w-[3%] leading-tight'} rowSpan={3}>
+          <td className={cn(thStyle, 'w-[3%]', 'leading-tight')} rowSpan={3}>
             지원자
           </td>
-          <td className={thStyle}>성 명</td>
-          <td className={tdStyle}>{oneseo.privacyDetail.name}</td>
-          <td className={thStyle + 'w-[3%] leading-none'}>성별</td>
-          <td className={tdStyle}>{SexEnum[oneseo.privacyDetail.sex ?? 'MALE']}</td>
-          <td className={thStyle}>생년월일</td>
-          <td className={tdStyle}>{oneseo.privacyDetail.birth}</td>
-          <td rowSpan={6} className={tdStyle + 'h-[151px] w-[113px]'}>
+          <td className={cn(thStyle)}>성 명</td>
+          <td className={cn(tdStyle)}>{oneseo.privacyDetail.name}</td>
+          <td className={cn(thStyle) + 'w-[3%] leading-none'}>성별</td>
+          <td className={cn(tdStyle)}>{SexEnum[oneseo.privacyDetail.sex ?? 'MALE']}</td>
+          <td className={cn(thStyle)}>생년월일</td>
+          <td className={cn(tdStyle)}>{oneseo.privacyDetail.birth}</td>
+          <td rowSpan={6} className={cn(tdStyle, 'h-[151px]', 'w-[113px]')}>
             <img
               src={oneseo.privacyDetail.profileImg}
               alt="증명사진"
@@ -32,42 +32,42 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           </td>
         </tr>
         <tr>
-          <td className={thStyle}>주 소</td>
-          <td className={tdStyle} colSpan={5}>
+          <td className={cn(thStyle)}>주 소</td>
+          <td className={cn(tdStyle)} colSpan={5}>
             {oneseo.privacyDetail.address} {oneseo.privacyDetail.detailAddress}
           </td>
         </tr>
         <tr>
-          <td className={thStyle}>핸드폰</td>
-          <td className={tdStyle} colSpan={5}>
+          <td className={cn(thStyle)}>핸드폰</td>
+          <td className={cn(tdStyle)} colSpan={5}>
             {oneseo.privacyDetail.phoneNumber}
           </td>
         </tr>
         <tr>
-          <td className={thStyle + 'w-[3%] leading-tight'} rowSpan={2}>
+          <td className={cn(thStyle, 'w-[3%]', 'leading-tight')} rowSpan={2}>
             보호자
           </td>
-          <td className={thStyle}>성 명</td>
-          <td className={tdStyle} colSpan={1}>
+          <td className={cn(thStyle)}>성 명</td>
+          <td className={cn(tdStyle)} colSpan={1}>
             {oneseo.privacyDetail.guardianName}
           </td>
-          <td className={thStyle + 'leading-none'} colSpan={2}>
+          <td className={cn(thStyle, 'leading-none')} colSpan={2}>
             지원자와의
             <br />
             관계
           </td>
-          <td className={tdStyle} colSpan={2}>
+          <td className={cn(tdStyle)} colSpan={2}>
             지원자 {oneseo.privacyDetail.name}의 {oneseo.privacyDetail.relationshipWithGuardian}
           </td>
         </tr>
         <tr>
-          <td className={thStyle}>핸드폰</td>
-          <td className={tdStyle} colSpan={5}>
+          <td className={cn(thStyle)}>핸드폰</td>
+          <td className={cn(tdStyle)} colSpan={5}>
             {oneseo.privacyDetail.guardianPhoneNumber}
           </td>
         </tr>
         <tr>
-          <td className={thStyle} colSpan={3} rowSpan={6}>
+          <td className={cn(thStyle)} colSpan={3} rowSpan={6}>
             원서작성자(담임) 성명
           </td>
           <td
@@ -85,7 +85,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           >
             {oneseo.privacyDetail.graduationType === 'CANDIDATE' && '(인)'}
           </td>
-          <td className={thStyle}>연락처</td>
+          <td className={cn(thStyle)}>연락처</td>
           {oneseo.privacyDetail.graduationType === 'CANDIDATE' ? (
             <td className={cn('border-b', 'border-black')}>
               {oneseo.privacyDetail.schoolTeacherPhoneNumber}
