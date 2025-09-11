@@ -15,23 +15,23 @@ const ConfirmationTable = () => {
       >
         <thead>
           <tr>
-            <th
-              className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}
+            <td
+              className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}
               colSpan={4}
             >
               입력자 확인
-            </th>
+            </td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}>
+            <td className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}>
               담임교사
-            </th>
+            </td>
             <td className={cn('border', 'border-black', 'p-[0.3vh]', 'text-right')}>(인)</td>
-            <th className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}>
+            <td className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}>
               지원자
-            </th>
+            </td>
             <td className={cn('border', 'border-black', 'p-[0.3vh]', 'text-right')}>(인)</td>
           </tr>
         </tbody>
@@ -48,28 +48,28 @@ const ConfirmationTable = () => {
       >
         <thead>
           <tr>
-            <th
+            <td
               className={cn(
                 'border',
                 'border-black',
                 'bg-gray-200',
                 'p-[0.3vh]',
-                'font-bold',
                 'w-[50%]',
+                'text-center',
               )}
               rowSpan={2}
             >
               광주소프트웨어마이스터고 접수자 확인
-            </th>
-            <th className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}>
+            </td>
+            <td className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}>
               1차
-            </th>
+            </td>
             <td className={cn('border', 'border-black', 'p-[0.3vh]', 'text-right')}>(인)</td>
           </tr>
           <tr>
-            <th className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'font-bold')}>
+            <td className={cn('border', 'border-black', 'bg-gray-200', 'p-[0.3vh]', 'text-center')}>
               2차
-            </th>
+            </td>
             <td className={cn('border', 'border-black', 'p-[0.3vh]', 'text-right')}>(인)</td>
           </tr>
         </thead>

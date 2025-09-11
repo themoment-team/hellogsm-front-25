@@ -18,36 +18,38 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
     return false;
   });
 
+  const semesterLabelMap: Record<string, string> = {
+    '1-1': '1학년 1학기',
+    '1-2': '1학년 2학기',
+    '2-1': '2학년 1학기',
+    '2-2': '2학년 2학기',
+    '3-1': '3학년 1학기',
+    '3-2': '3학년 2학기',
+  };
+
   return (
     <table className={cn('w-full', 'border', 'border-black', 'text-center')}>
       <thead>
         <tr>
           <th
             rowSpan={2}
-            className={cn('relative', 'w-[15%]', 'border', 'border-black', 'bg-backslash')}
+            className={cn('relative', 'w-20', 'border', 'border-black', 'bg-backslash', 'p-1')}
           >
-            <div className={cn('h-[2.2vh]', 'text-right', 'font-normal')}>학년</div>
-            <div className={cn('h-[2.2vh]', 'text-left', 'font-normal')}>과목</div>
+            <div className={cn('h-[1.2vh]', 'text-right', 'font-normal')}>학년</div>
+            <div className={cn('h-[1.2vh]', 'text-left', 'font-normal')}>과목</div>
           </th>
           {availableSemesters.map((semester) => (
-            <th
+            <td
               key={semester}
-              className={cn(
-                'h-[2.2vh]',
-                'border',
-                'border-black',
-                'bg-gray-200',
-                'p-[0.2vh]',
-                'font-bold',
-              )}
+              className={cn('h-[2.2vh]', 'border', 'border-black', 'bg-gray-200', 'p-[0.2vh]')}
             >
-              {semester}
-            </th>
+              {semesterLabelMap[semester] ?? semester}
+            </td>
           ))}
         </tr>
         <tr>
           {availableSemesters.map((semester, idx) => (
-            <th
+            <td
               key={`achievement-${semester}-${idx}`}
               className={cn(
                 'h-[2.2vh]',
@@ -56,11 +58,10 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-gray-200',
                 'p-[0.2vh]',
                 'text-center',
-                'font-bold',
               )}
             >
               성취도
-            </th>
+            </td>
           ))}
         </tr>
       </thead>

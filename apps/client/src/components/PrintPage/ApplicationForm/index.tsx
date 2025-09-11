@@ -1,6 +1,6 @@
 import { OneseoStatusType } from 'types';
 
-import OneseoStatus from 'client/components/OneseoStatus';
+import OneseoStatus from 'client/components/PrintPage/OneseoStatus';
 
 import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
@@ -15,18 +15,31 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
     <div
       className={cn(
         'flex',
-        'h-fit',
         'flex-col',
         'items-center',
         'justify-center',
         'overflow-hidden',
         'bg-white',
         'p-2',
-        'pb-0',
         'text-[1vh]',
       )}
     >
-      <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
+      <div
+        className={cn(
+          'relative',
+          'z-[2]',
+          'w-[63vh]',
+          'py-20',
+
+          'print:w-[210mm]',
+          'print:h-[297mm]',
+          'print:flex',
+          'print:items-center',
+          'print:justify-center',
+          'print:p-0',
+          'print:m-0',
+        )}
+      >
         <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
           <div
             id="sample"
@@ -57,7 +70,7 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
                 <tr>
                   <th
                     className={cn(
-                      'w-20',
+                      'w-14',
                       'border',
                       'border-b-0',
                       'border-black',
@@ -69,7 +82,15 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
                   >
                     접수번호
                   </th>
-                  <td className={cn('w-40', 'border', 'border-b-0', 'border-black', 'text-center')}>
+                  <td
+                    className={cn(
+                      'w-[113px]',
+                      'border',
+                      'border-b-0',
+                      'border-black',
+                      'text-center',
+                    )}
+                  >
                     {oneseo.submitCode}
                   </td>
                 </tr>
