@@ -91,7 +91,7 @@ const ConfirmBar = ({
   isStep4,
   handleStepError,
 }: ConfirmBarProps) => {
-  const handleCheckErrorStepFour = async () => {
+  const handleCheckErrorStepFour = () => {
     handleStepError(StepEnum.FOUR);
   };
   return (
