@@ -19,3 +19,4 @@ export { default as Step3Register } from './register/Step3Register';
 export { default as Step4Register } from './register/Step4Register';
 export { default as LoginDialog } from './LoginDialog';
 export { default as ModalContainer } from './ModalContainer';
+export * from './modal';
