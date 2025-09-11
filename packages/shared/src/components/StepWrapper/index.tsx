@@ -465,6 +465,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
           isStep4={isStep4}
           handleOneseoSubmitButtonClick={handleOneseoSubmitButtonClick}
           handleTemporarySaveButtonClick={handleTemporarySaveButtonClick}
+          handleStepError={handleStepError}
         />
       ) : (
         <EditBar

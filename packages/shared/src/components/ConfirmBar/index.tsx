@@ -1,5 +1,7 @@
 'use client';
 
+import { StepEnum } from 'types';
+
 import { MouseIcon } from 'shared/assets';
 import {
   Dialog,
@@ -18,12 +20,13 @@ interface ConfirmBarProps {
   handleOneseoSubmitButtonClick: () => void;
   isStep4Success: boolean;
   isStep4: boolean;
+  handleStepError: (step: StepEnum) => void;
 }
 
 interface FinalSubmitDialogProps {
   isStep4Success: boolean;
-  handleOneseoSubmitButtonClick: () => void;
   isStep4: boolean;
+  handleOneseoSubmitButtonClick: () => void;
 }
 
 const FinalSubmitDialog = ({
@@ -86,41 +89,49 @@ const ConfirmBar = ({
   handleOneseoSubmitButtonClick,
   isStep4Success,
   isStep4,
-}: ConfirmBarProps) => (
-  <div
-    className={cn(
-      'w-full',
-      'h-[5rem]',
-      'bg-white',
-      'border-t-solid',
-      'border-t-[0.0625rem]',
-      'border-gray-100',
-      'px-[20rem]',
-      'sm:flex',
-      'hidden',
-      'justify-between',
-      'items-center',
-      'fixed',
-      'bottom-0',
-    )}
-  >
-    <div>
-      <span className={cn('text-body1', 'text-blue-600')}>
-        📎 최종 제출 후에는 정보를 수정할 수 없습니다. &nbsp;
-      </span>
-      <span className={cn('text-body1', 'text-slate-900')}>정확히 입력 후 제출해주세요!</span>
+  handleStepError,
+}: ConfirmBarProps) => {
+  const handleCheckErrorStepFour = async () => {
+    handleStepError(StepEnum.FOUR);
+  };
+  return (
+    <div
+      className={cn(
+        'w-full',
+        'h-[5rem]',
+        'bg-white',
+        'border-t-solid',
+        'border-t-[0.0625rem]',
+        'border-gray-100',
+        'px-[20rem]',
+        'sm:flex',
+        'hidden',
+        'justify-between',
+        'items-center',
+        'fixed',
+        'bottom-0',
+      )}
+    >
+      <div>
+        <span className={cn('text-body1', 'text-blue-600')}>
+          📎 최종 제출 후에는 정보를 수정할 수 없습니다. &nbsp;
+        </span>
+        <span className={cn('text-body1', 'text-slate-900')}>정확히 입력 후 제출해주세요!</span>
+      </div>
+      <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
+        <Button onClick={handleTemporarySaveButtonClick} variant="outline">
+          임시저장
+        </Button>
+        <div onClick={isStep4 && !isStep4Success ? handleCheckErrorStepFour : undefined}>
+          <FinalSubmitDialog
+            handleOneseoSubmitButtonClick={handleOneseoSubmitButtonClick}
+            isStep4={isStep4}
+            isStep4Success={isStep4Success}
+          />
+        </div>
+      </div>
     </div>
-    <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
-      <Button onClick={handleTemporarySaveButtonClick} variant="outline">
-        임시저장
-      </Button>
-      <FinalSubmitDialog
-        handleOneseoSubmitButtonClick={handleOneseoSubmitButtonClick}
-        isStep4={isStep4}
-        isStep4Success={isStep4Success}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 export default ConfirmBar;
