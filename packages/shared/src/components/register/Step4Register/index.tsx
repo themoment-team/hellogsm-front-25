@@ -328,8 +328,9 @@ const Step4Register = ({
                   input.value = input.value.replace(/[^0-9]/g, '');
                 }}
                 variant={
-                  (Boolean(get(formState.errors, 'gedAvgScore')) && showError) ||
-                  watch('gedAvgScore') === undefined
+                  (Boolean(get(formState.errors, 'gedAvgScore')) ||
+                    watch('gedAvgScore') === undefined) &&
+                  showError
                     ? 'error'
                     : null
                 }
