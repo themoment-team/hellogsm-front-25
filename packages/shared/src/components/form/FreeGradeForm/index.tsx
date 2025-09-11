@@ -127,7 +127,7 @@ const FreeGradeForm = ({
         const dynamicIndex = idx - defaultSubjectLength;
 
         const newSubjectHasError = Boolean(get(errors, `newSubjects.${dynamicIndex}`));
-        const isNewSubjectError = newSubjectHasError && showError ? '!border-red-600  ' : null;
+        const isNewSubjectError = newSubjectHasError && showError ? '!border-red-600' : null;
         return (
           <div
             key={subject}
@@ -169,7 +169,7 @@ const FreeGradeForm = ({
 
                 const subjectHasError = score === undefined || score === null;
 
-                const isSubjectError = subjectHasError && showError ? '!border-red-600  ' : null;
+                const isSubjectError = subjectHasError && showError ? '!border-red-600' : null;
                 return (
                   <div key={field} className={cn([...itemStyle, 'mx-4'])}>
                     <Select
