@@ -99,7 +99,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
               {label}
             </td>
           ))}
-          <td className={cn(thStyle)}>{isGED ? '환산점' : '소계'}</td>
+          <td className={cn(thStyle)}>소계</td>
           <td className={cn(thStyle)} rowSpan={2}>
             합계 (환산총점)
           </td>
