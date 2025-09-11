@@ -37,19 +37,15 @@ export const useModalStore = create<ModalStore>((set) => ({
   setDocumentSubmissionChangeModal: (isOpen, onConfirm = () => {}) => {
     set({ documentSubmissionChangeModal: { isOpen, onConfirm } });
   },
-
   setAdmissionAgreementChangeModal: (isOpen, onConfirm = () => {}) => {
     set({ admissionAgreementChangeModal: { isOpen, onConfirm } });
   },
-
   setApplicationModificationNotPossibleModal: (isOpen) => {
     set({ applicationModificationNotPossibleModal: isOpen });
   },
-
   setFirstResultAnnouncementModal: (isOpen) => {
     set({ firstResultAnnouncementModal: isOpen });
   },
-
   setSecondResultAnnouncementModal: (isOpen) => {
     set({ secondResultAnnouncementModal: isOpen });
   },
@@ -58,35 +54,27 @@ export const useModalStore = create<ModalStore>((set) => ({
   setLoginRequiredModal: (isOpen, isMain = false) => {
     set({ loginRequiredModal: { isOpen, isMain } });
   },
-
   setMockScoreCalculationPeriodModal: (isOpen) => {
     set({ mockScoreCalculationPeriodModal: isOpen });
   },
-
   setResultAnnouncementPeriodModal: (isOpen, isFirstTest = true) => {
     set({ resultAnnouncementPeriodModal: { isOpen, isFirstTest } });
   },
-
   setDevServerNoticeModal: (isOpen) => {
     set({ devServerNoticeModal: isOpen });
   },
-
   setVerificationCodeSendErrorModal: (isOpen) => {
     set({ verificationCodeSendErrorModal: isOpen });
   },
-
   setSignupSuccessModal: (isOpen) => {
     set({ signupSuccessModal: isOpen });
   },
-
   setSignupErrorModal: (isOpen) => {
     set({ signupErrorModal: isOpen });
   },
-
   setPhoneNumberDuplicateModal: (isOpen, onConfirm = () => {}) => {
     set({ phoneNumberDuplicateModal: { isOpen, onConfirm } });
   },
-
   setApplicationPeriodModal: (isOpen) => {
     set({ applicationPeriodModal: isOpen });
   },
@@ -95,15 +83,12 @@ export const useModalStore = create<ModalStore>((set) => ({
   setSystemInspectionModal: (isOpen) => {
     set({ systemInspectionModal: isOpen });
   },
-
   setScoreCalculationCompleteModal: (isOpen, data = null, type = 'mock') => {
     set({ scoreCalculationCompleteModal: { isOpen, data, type } });
   },
-
   setApplicationSubmitModal: (isOpen, type = 'client') => {
     set({ applicationSubmitModal: { isOpen, type } });
   },
-
   setImageUploadSizeLimitModal: (isOpen) => {
     set({ imageUploadSizeLimitModal: isOpen });
   },
