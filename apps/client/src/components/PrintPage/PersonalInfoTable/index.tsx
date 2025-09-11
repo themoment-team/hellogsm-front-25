@@ -20,7 +20,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
           </td>
           <td className={cn(thStyle)}>성 명</td>
           <td className={cn(tdStyle)}>{oneseo.privacyDetail.name}</td>
-          <td className={cn(thStyle) + 'w-[3%] leading-none'}>성별</td>
+          <td className={cn(thStyle, 'w-[3%]', 'leading-none')}>성별</td>
           <td className={cn(tdStyle)}>{SexEnum[oneseo.privacyDetail.sex ?? 'MALE']}</td>
           <td className={cn(thStyle)}>생년월일</td>
           <td className={cn(tdStyle)}>
