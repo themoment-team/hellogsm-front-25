@@ -121,10 +121,6 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     setErrorStep(StepEnum.FOUR);
   };
 
-  const handleCheckCalCulateError = () => {
-    handleCalCulateStepError();
-  };
-
   const clearStepError = () => {
     setErrorStep(null);
   };
@@ -170,7 +166,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 type="submit"
                 variant={isStep4Success ? 'next' : 'submit'}
                 onClick={
-                  isStep4Success ? handleCalculateButtonClick : () => handleCheckCalCulateError()
+                  isStep4Success ? handleCalculateButtonClick : () => handleCalCulateStepError()
                 }
               >
                 내 성적 계산하기
