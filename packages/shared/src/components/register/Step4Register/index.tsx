@@ -267,7 +267,7 @@ const Step4Register = ({
   }, [isFreeSemester, isGED]);
 
   useEffect(() => {
-    clearStepError!();
+    if (clearStepError) clearStepError();
   }, [isFreeGrade, isFreeSemester]);
 
   const validateForm = async () => {
