@@ -8,7 +8,6 @@ import {
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormTrigger,
   UseFormWatch,
   get,
 } from 'react-hook-form';
@@ -27,13 +26,13 @@ interface FreeSemesterFormProps {
   register: UseFormRegister<Step4FormType>;
   watch: UseFormWatch<Step4FormType>;
   handleDeleteSubjectClick: (idx: number) => void;
-  trigger: UseFormTrigger<Step4FormType>;
   freeSemester: FreeSemesterValueEnum | null;
   achievementList: AchievementType[];
   isGraduate: boolean;
   showError: boolean;
   errors: FieldErrors<Step4FormType>;
   getValues: UseFormGetValues<Step4FormType>;
+  validateForm: () => void;
 }
 
 const itemStyle = [
@@ -87,13 +86,13 @@ const FreeSemesterForm = ({
   setValue,
   watch,
   handleDeleteSubjectClick,
-  trigger,
   freeSemester,
   achievementList,
   isGraduate,
   errors,
   showError,
   getValues,
+  validateForm,
 }: FreeSemesterFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -115,10 +114,6 @@ const FreeSemesterForm = ({
         : setValue(field, watch(field) || undefined!);
     });
   }, [freeSemester]);
-
-  const validateForm = async () => {
-    await trigger();
-  };
 
   useEffect(() => {
     if (!showError) return;

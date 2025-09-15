@@ -9,7 +9,6 @@ import {
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormTrigger,
   UseFormWatch,
   get,
 } from 'react-hook-form';
@@ -34,12 +33,12 @@ interface FreeGradeFormProps {
   register: UseFormRegister<Step4FormType>;
   watch: UseFormWatch<Step4FormType>;
   handleDeleteSubjectClick: (idx: number) => void;
-  trigger: UseFormTrigger<Step4FormType>;
   errors: FieldErrors<Step4FormType>;
   achievementList: AchievementType[];
   isGraduate: boolean;
   showError: boolean;
   getValues: UseFormGetValues<Step4FormType>;
+  validateForm: () => void;
 }
 
 const itemStyle = [
@@ -69,12 +68,12 @@ const FreeGradeForm = ({
   register,
   watch,
   handleDeleteSubjectClick,
-  trigger,
   errors,
   achievementList,
   isGraduate,
   showError,
   getValues,
+  validateForm,
 }: FreeGradeFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -91,12 +90,9 @@ const FreeGradeForm = ({
     );
   }, []);
 
-  const validateForm = async () => {
-    await trigger();
-  };
-
   useEffect(() => {
     if (!showError) return;
+
     validateForm();
   }, [showError]);
 

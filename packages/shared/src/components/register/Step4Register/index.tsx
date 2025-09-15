@@ -276,6 +276,7 @@ const Step4Register = ({
 
   useEffect(() => {
     if (!showError) return;
+
     validateForm();
   }, [showError]);
 
@@ -379,12 +380,12 @@ const Step4Register = ({
                       subjectArray={subjectArray}
                       watch={watch}
                       control={control}
-                      trigger={trigger}
                       errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
                       isGraduate={isGraduate}
                       showError={showError}
                       getValues={getValues}
+                      validateForm={validateForm}
                     />
                   )}
                   {isFreeSemester && (
@@ -394,13 +395,13 @@ const Step4Register = ({
                       setValue={setValue}
                       subjectArray={subjectArray}
                       watch={watch}
-                      trigger={trigger}
                       errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
                       freeSemester={watch('freeSemester')}
                       isGraduate={isGraduate}
                       showError={showError}
                       getValues={getValues}
+                      validateForm={validateForm}
                     />
                   )}
                   <button

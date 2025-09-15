@@ -71,12 +71,13 @@ const Step1Register = ({
       onComplete: handleDaumPostCodePopupComplete,
     });
 
-  const validateForm = async () => {
-    await trigger();
-  };
-
   useEffect(() => {
     if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
     validateForm();
   }, [showError]);
 

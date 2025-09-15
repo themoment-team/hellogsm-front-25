@@ -64,14 +64,16 @@ const NonSubjectForm = ({
   isGraduate,
   showError,
 }: NonSubjectFormProps) => {
-  const validateForm = async () => {
-    await trigger();
-  };
-
   useEffect(() => {
     if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
     validateForm();
   }, [showError]);
+
   return (
     <div className={cn('flex', 'flex-col', 'w-full')}>
       <div
