@@ -15,9 +15,9 @@ const SmallTheMomentIcon = () => (
         width="97.1429"
         height="97.1429"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -47,9 +47,9 @@ const SmallTheMomentIcon = () => (
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(48.7249 47.2718) rotate(90) scale(25.225 25.2249)"
       >
-        <stop stop-color="#2438F8" />
-        <stop offset="0.296875" stop-color="#6A76E9" />
-        <stop offset="1" stop-color="#6A76E9" stop-opacity="0" />
+        <stop stopColor="#2438F8" />
+        <stop offset="0.296875" stopColor="#6A76E9" />
+        <stop offset="1" stopColor="#6A76E9" stopOpacity="0" />
       </radialGradient>
     </defs>
   </svg>
