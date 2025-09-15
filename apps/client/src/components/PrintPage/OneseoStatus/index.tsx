@@ -23,7 +23,6 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
   } = oneseo.calculatedScore;
 
   const isGED = graduationType === 'GED';
-  const isGEDScore = !!oneseo.middleSchoolAchievement.gedAvgScore;
 
   const [year, month] = graduationDate.split('-');
 
@@ -95,37 +94,38 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           <td className={cn(thStyle)} rowSpan={2} style={{ width: '10%' }}>
             교과 <br /> 성적
           </td>
-          {['1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '예체능', '소계'].map((label) => (
-            <td key={label} className={cn(thStyle)}>
+          {['1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '예체능'].map((label) => (
+            <td key={label} className={cn(thStyle, 'w-[3rem]')}>
               {label}
             </td>
           ))}
+          <td className={cn(thStyle)}>소계</td>
           <td className={cn(thStyle)} rowSpan={2}>
             합계 (환산총점)
           </td>
         </tr>
         <tr>
-          {achievementGradeValues.map((gradeKey) =>
-            isGEDScore || !oneseo.middleSchoolAchievement[gradeKey]?.length ? (
-              <td
-                key={gradeKey}
-                className={cn(tdStyle, 'bg-slash', 'bg-contain', 'bg-no-repeat', 'w-[2.6875rem]')}
-              />
-            ) : (
-              <td key={gradeKey} className={cn(tdStyle)}>
-                {generalSubjectsScoreDetail[achievementScoreMap[gradeKey]]}
-              </td>
-            ),
+          {isGED ? (
+            <td className={cn(tdStyle)} colSpan={achievementGradeValues.length + 1}>
+              {oneseo.middleSchoolAchievement.gedAvgScore}
+            </td>
+          ) : (
+            <>
+              {achievementGradeValues.map((gradeKey) =>
+                !oneseo.middleSchoolAchievement[gradeKey]?.length ? (
+                  <td
+                    key={gradeKey}
+                    className={cn(tdStyle, 'bg-slash', 'bg-contain', 'bg-no-repeat')}
+                  />
+                ) : (
+                  <td key={gradeKey} className={cn(tdStyle)}>
+                    {generalSubjectsScoreDetail[achievementScoreMap[gradeKey]]}
+                  </td>
+                ),
+              )}
+              <td className={cn(tdStyle)}>{artsPhysicalSubjectsScore}</td>
+            </>
           )}
-          <td
-            className={cn(
-              tdStyle,
-              isGED && ['bg-slash', 'bg-contain', 'bg-no-repeat'],
-              'w-[2.6875rem]',
-            )}
-          >
-            {!isGED && artsPhysicalSubjectsScore}
-          </td>
           <td className={cn(tdStyle)}>
             {isGED
               ? totalSubjectsScore
