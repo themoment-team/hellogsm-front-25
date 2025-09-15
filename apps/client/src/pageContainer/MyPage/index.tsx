@@ -78,6 +78,12 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
     desiredMajors?.thirdDesiredMajor,
   ];
 
+  const departmentLabels: Record<string, string> = {
+    SW: 'SW개발과',
+    IOT: '스마트IoT과',
+    AI: '인공지능과',
+  };
+
   const relatedDocuments = [
     {
       icon: <DocumentIcon />,
@@ -213,8 +219,6 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
                     className={cn(
                       'flex',
                       'flex-col',
-                      'px-[0.75rem]',
-                      'xs:px-[1.1875rem]',
                       'py-4',
                       'justify-center',
                       'items-center',
@@ -226,7 +230,7 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
                     )}
                   >
                     <p className={cn('text-slate-600', 'text-[1rem]/[1.75rem]', 'font-normal')}>
-                      {index + 1}지망 : {dept}
+                      {index + 1}지망 : {dept ? departmentLabels[dept] : '미지정'}
                     </p>
                   </div>
                 ))}
