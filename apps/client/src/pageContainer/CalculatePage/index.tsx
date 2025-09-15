@@ -117,7 +117,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     postMockScore(body);
   };
 
-  const handleCalCulateStepError = () => {
+  const handleCalculateStepError = () => {
     setErrorStep(StepEnum.FOUR);
   };
 
@@ -166,7 +166,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 type="submit"
                 variant={isStep4Success ? 'next' : 'submit'}
                 onClick={
-                  isStep4Success ? handleCalculateButtonClick : () => handleCalCulateStepError()
+                  isStep4Success ? handleCalculateButtonClick : () => handleCalculateStepError()
                 }
               >
                 내 성적 계산하기
