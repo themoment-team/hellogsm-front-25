@@ -425,7 +425,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
               'rounded-b-lg-[1.125rem]',
             )}
           >
-            {step === '1' && (
+            {step === StepEnum.ONE && (
               <Step1Register
                 {...step1UseForm}
                 name={name}
@@ -435,17 +435,17 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
                 showError={errorStep === StepEnum.ONE}
               />
             )}
-            {step === '2' && (
+            {step === StepEnum.TWO && (
               <Step2Register {...step2UseForm} showError={errorStep === StepEnum.TWO} />
             )}
-            {step === '3' && (
+            {step === StepEnum.THREE && (
               <Step3Register
                 {...step3UseForm}
                 isCandidate={isCandidate}
                 showError={errorStep === StepEnum.THREE}
               />
             )}
-            {step === '4' && (
+            {step === StepEnum.FOUR && (
               <Step4Register
                 {...step4UseForm}
                 graduationType={graduationType}
