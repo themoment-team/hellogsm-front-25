@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { BlurIcon } from 'client/assets';
 
 import { Button, Dialog, DialogContent, DialogTitle } from 'shared/components';
+import { NEXT_YEAR } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
 interface TestResultProps {
@@ -73,7 +74,7 @@ const TestResultDialog = ({
             <p
               className={cn('text-gray-500', 'text-[1rem]/[1.5rem]', 'font-medium', 'text-center')}
             >
-              2025학년도 광주소프트웨어마이스터고등학교
+              {NEXT_YEAR}학년도 광주소프트웨어마이스터고등학교
               <br />
               {isFinishFirstTest === null ? '1차 서류 합격 ' : '최종 합격자 '}
               결과를 확인해보세요!

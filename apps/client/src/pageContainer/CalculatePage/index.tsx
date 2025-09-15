@@ -121,7 +121,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
             <AlertDialogTitle>모의 성적 계산은 10월 13일부터 가능합니다.</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction>
+            <AlertDialogAction asChild>
               <Link href={'/'}>확인</Link>
             </AlertDialogAction>
           </AlertDialogFooter>

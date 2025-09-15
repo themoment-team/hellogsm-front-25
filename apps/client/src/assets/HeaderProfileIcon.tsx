@@ -1,9 +1,6 @@
-interface Props {
-  size: string;
-  color: string;
-}
+import { IconProps } from 'types';
 
-const HeaderProfileIcon = ({ size, color }: Props) => (
+const HeaderProfileIcon = ({ size, color }: IconProps) => (
   <svg
     width={size}
     height={size}

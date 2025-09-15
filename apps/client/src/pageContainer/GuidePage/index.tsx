@@ -70,7 +70,7 @@ const Elements: ElementType[] = [
           className={cn('flex', 'items-center', 'gap-3', 'mt-5', 'cursor-pointer', 'w-fit')}
           href="/입학원서 작성 요령.hwp"
         >
-          <CopyIcon />
+          <CopyIcon color="#94A3B8" />
           <span
             className={cn('text-slate-400', 'font-semibold', 'text-[1rem]/[1.5rem]', 'underline')}
           >

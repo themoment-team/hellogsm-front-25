@@ -9,6 +9,7 @@ import {
   passedMemberAnnounceDate,
   심층면접시험기간,
   역량검사시험기간,
+  NEXT_YEAR,
 } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 
@@ -296,7 +297,7 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                     'font-normal',
                   )}
                 >
-                  위 사람은 2025학년도 <br /> 본교 신입생 입학전형 지원자임을 확인함.
+                  위 사람은 {NEXT_YEAR}학년도 <br /> 본교 신입생 입학전형 지원자임을 확인함.
                   <p className={cn('pr-[0.625rem]', 'text-center', 'font-normal')}>
                     2024년 10월 25일
                   </p>

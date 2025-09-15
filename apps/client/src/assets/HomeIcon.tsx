@@ -1,9 +1,6 @@
-interface Props {
-  size: string;
-  color: string;
-}
+import { IconProps } from 'types';
 
-const HomeIcon = ({ size, color }: Props) => (
+const HomeIcon = ({ size, color }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}

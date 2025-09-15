@@ -55,10 +55,15 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
 
       <div className={cn('flex', 'items-start', 'gap-12')}>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-8')}>
-          <CustomFormItem text={'보호자 이름 / 연락처'} className={cn('gap-1')} required fullWidth>
+          <CustomFormItem
+            text={'보호자 이름 / 휴대폰 번호'}
+            className={cn('gap-1')}
+            required
+            fullWidth
+          >
             <Input placeholder="보호자 이름 입력" width="full" {...register('guardianName')} />
             <Input
-              placeholder="보호자 연락처 입력"
+              placeholder="보호자 휴대폰 번호 입력 (하이픈 '-' 제외)"
               width="full"
               {...register('guardianPhoneNumber')}
             />
@@ -90,7 +95,7 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
                 {...register('schoolTeacherName')}
               />
               <Input
-                placeholder="담임선생님 연락처 입력"
+                placeholder="담임선생님 연락처 입력 (하이픈 '-' 제외)"
                 width="full"
                 {...register('schoolTeacherPhoneNumber')}
               />

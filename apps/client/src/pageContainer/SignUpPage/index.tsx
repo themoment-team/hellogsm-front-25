@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
   InspectionDialog,
 } from 'shared/components';
+import { CURRENT_YEAR } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
 import { cn } from 'shared/lib/utils';
 
@@ -47,8 +48,7 @@ interface SignUpProps {
 }
 
 const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
-  const { push } = useRouter();
-
+  const router = useRouter();
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [btnClick, setBtnClick] = useState<boolean>(false);
   const [lastSubmittedCode, setLastSubmittedCode] = useState<string>('');
@@ -126,8 +126,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const isCertificationButtonDisabled = !/^\d{10,11}$/.test(phoneNumber);
   const isCertificationValid = isSuccess === true;
   const isSubmitButtonDisabled = !isCertificationValid || !isAgreed;
-
-  const targetYear = new Date().getFullYear();
 
   const queryClient = useQueryClient();
 
@@ -279,13 +277,14 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>연도 선택</SelectLabel>
-                        {Array.from({ length: PERMIT_YEAR }, (_, index) => targetYear - index).map(
-                          (year) => (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          ),
-                        )}
+                        {Array.from(
+                          { length: PERMIT_YEAR },
+                          (_, index) => CURRENT_YEAR - index,
+                        ).map((year) => (
+                          <SelectItem key={year} value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -348,7 +347,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                   <div className={cn(['w-[18rem]', btnClick === true ? 'absolute' : ''])}>
                     <Input
                       {...formMethods.register('phoneNumber')}
-                      placeholder="번호 입력"
+                      placeholder="번호 입력 (하이픈 '-' 제외)"
                       disabled={isSentCertificationNumber}
                     />
                   </div>
@@ -475,7 +474,10 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
             <AlertDialogAction
               onClick={() => {
                 setShowModal('');
-                if (showModal === 'success') push('/');
+                if (showModal === 'success') {
+                  router.replace('/');
+                  router.refresh();
+                }
               }}
             >
               확인

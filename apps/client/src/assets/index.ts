@@ -20,6 +20,7 @@ export { default as NotFoundZeroIcon } from './NotFoundZeroIcon';
 export { default as BackIcon } from './BackIcon';
 export { default as HomeIcon } from './HomeIcon';
 export { default as LogoutIcon } from './LogoutIcon';
+export { default as LoginIcon } from './LoginIcon';
 export { default as HelloGSMLogo } from './HelloGSMLogo';
 export { default as HamburgerIcon } from './HamburgerIcon';
 export { default as XIcon } from './XIcon';

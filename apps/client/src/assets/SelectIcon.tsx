@@ -1,8 +1,6 @@
-interface SelectIconProps {
-  style?: string;
-}
+import { IconProps } from 'types';
 
-const SelectIcon: React.FC<SelectIconProps> = ({ style }) => (
+const SelectIcon = ({ style }: IconProps) => (
   <svg
     className={style}
     width="11"
