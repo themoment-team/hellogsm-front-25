@@ -63,11 +63,9 @@ const StepBar = ({
   const { push } = useRouter();
 
   const handleCheckNextStep = (step: StepEnum) => {
-    if (!isStepSuccess[step]) {
-      handleStepError(step);
-    } else {
-      push(`${baseUrl}?step=${Number(step) + 1}`);
-    }
+    if (!isStepSuccess[step]) return handleStepError(step);
+
+    push(`${baseUrl}?step=${Number(step) + 1}`);
   };
 
   return (
