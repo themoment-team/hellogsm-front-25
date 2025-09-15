@@ -125,6 +125,14 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     setErrorStep(null);
   };
 
+  const handleCalculateClick = () => {
+    if (isStep4Success) {
+      handleCalculateButtonClick();
+    } else {
+      handleCalculateStepError();
+    }
+  };
+
   return (
     <>
       <AlertDialog open={!isServerHealthy}>
@@ -165,9 +173,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 form="scoreForm"
                 type="submit"
                 variant={isStep4Success ? 'next' : 'submit'}
-                onClick={
-                  isStep4Success ? handleCalculateButtonClick : () => handleCalculateStepError()
-                }
+                onClick={handleCalculateClick}
               >
                 내 성적 계산하기
               </Button>
