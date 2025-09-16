@@ -77,6 +77,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       graduationType: data?.privacyDetail.graduationType,
       schoolName: data?.privacyDetail.schoolName,
       schoolAddress: data?.privacyDetail.schoolAddress,
+      studentNumber: data?.privacyDetail.studentNumber,
       graduationDate: data?.privacyDetail.graduationDate || '0000-00',
       screening: data?.wantedScreening,
       firstDesiredMajor: data?.desiredMajors.firstDesiredMajor,
@@ -192,6 +193,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       graduationType,
       schoolName,
       schoolAddress,
+      studentNumber,
       graduationDate,
       screening,
       firstDesiredMajor,
@@ -233,6 +235,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       graduationType: graduationType || undefined,
       schoolName: schoolName || undefined,
       schoolAddress: schoolAddress || undefined,
+      studentNumber: studentNumber || undefined,
       graduationDate:
         graduationDate.split('-')[0] !== '0000' && graduationDate.split('-')[1] !== '00'
           ? graduationDate
