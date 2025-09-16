@@ -7,6 +7,12 @@ export const step2Schema = z.object({
   graduationType: z.enum(getValuesByEnum(GraduationTypeValueEnum)),
   schoolName: z.nullable(z.string().min(1)),
   schoolAddress: z.nullable(z.string().min(1)),
+  studentNumber: z.nullable(
+    z
+      .string()
+      .length(5)
+      .refine((val) => /^\d{5}$/.test(val)),
+  ),
   graduationDate: z
     .string()
     .refine((date) => date.split('-')[0] !== '0000' && date.split('-')[1] !== '00'),
