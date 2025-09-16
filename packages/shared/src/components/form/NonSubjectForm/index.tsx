@@ -14,6 +14,7 @@ interface NonSubjectFormProps {
   isFreeGrade: boolean;
   isGraduate: boolean;
   showError: boolean;
+  validateForm: () => void;
 }
 
 const nonSubjectArray = [
@@ -63,13 +64,10 @@ const NonSubjectForm = ({
   isFreeGrade,
   isGraduate,
   showError,
+  validateForm,
 }: NonSubjectFormProps) => {
   useEffect(() => {
     if (!showError) return;
-
-    const validateForm = async () => {
-      await trigger();
-    };
 
     validateForm();
   }, [showError]);

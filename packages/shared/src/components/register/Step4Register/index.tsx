@@ -462,6 +462,7 @@ const Step4Register = ({
                     isFreeGrade={isFreeGrade}
                     isGraduate={isGraduate}
                     showError={showError}
+                    validateForm={validateForm}
                   />
                 </div>
               </div>
