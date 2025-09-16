@@ -71,6 +71,19 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
     },
   });
 
+  const extractClassroomAndNumber = (studentNumber: string | null | undefined) => {
+    if (studentNumber && studentNumber.length === 5) {
+      const classroom = parseInt(studentNumber.substring(1, 3)).toString();
+      const number = parseInt(studentNumber.substring(3, 5)).toString();
+      return { classroom, number };
+    }
+    return { classroom: '', number: '' };
+  };
+
+  const { classroom: initialClassroom, number: initialNumber } = extractClassroomAndNumber(
+    data?.privacyDetail.studentNumber,
+  );
+
   const step2UseForm = useForm<Step2FormType>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
@@ -78,6 +91,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       schoolName: data?.privacyDetail.schoolName,
       schoolAddress: data?.privacyDetail.schoolAddress,
       studentNumber: data?.privacyDetail.studentNumber,
+      classroom: initialClassroom,
+      number: initialNumber,
       graduationDate: data?.privacyDetail.graduationDate || '0000-00',
       screening: data?.wantedScreening,
       firstDesiredMajor: data?.desiredMajors.firstDesiredMajor,
