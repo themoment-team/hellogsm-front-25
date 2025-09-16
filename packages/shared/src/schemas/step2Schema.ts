@@ -13,6 +13,8 @@ export const step2Schema = z.object({
       .length(5)
       .refine((val) => /^\d{5}$/.test(val)),
   ),
+  classroom: z.string().optional(),
+  number: z.string().optional(),
   graduationDate: z
     .string()
     .refine((date) => date.split('-')[0] !== '0000' && date.split('-')[1] !== '00'),
