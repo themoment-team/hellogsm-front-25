@@ -151,6 +151,13 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
     }
   };
 
+  useEffect(() => {
+    if (!isGED && watch('schoolName') === null) {
+      setValue('schoolName', '');
+      setValue('schoolAddress', '');
+    }
+  }, []);
+
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'items-start', 'gap-10')}>
       <div className={cn('flex', 'flex-col', 'items-start', 'gap-[0.125rem]')}>
