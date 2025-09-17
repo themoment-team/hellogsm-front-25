@@ -58,7 +58,7 @@ const SharedModals = () => {
 
   return (
     <>
-      <AlertDialog open={systemInspectionModal}>
+      <AlertDialog open={systemInspectionModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]', 'rounded-[1.125rem]', 'gap-6')}>
           <div className={cn('flex', 'justify-center', 'items-center')}>
             <InspectionIcon />
@@ -111,7 +111,7 @@ const SharedModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={imageUploadSizeLimitModal}>
+      <AlertDialog open={imageUploadSizeLimitModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>이미지는 5MB 이하만 가능합니다.</AlertDialogTitle>

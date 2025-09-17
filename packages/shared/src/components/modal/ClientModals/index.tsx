@@ -72,7 +72,7 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={mockScoreCalculationPeriodModal}>
+      <AlertDialog open={mockScoreCalculationPeriodModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>모의 성적 계산은 10월 13일부터 가능합니다.</AlertDialogTitle>
@@ -105,7 +105,10 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={devServerNoticeModal} onOpenChange={() => setDevServerNoticeModal(false)}>
+      <AlertDialog
+        open={devServerNoticeModal.isOpen}
+        onOpenChange={() => setDevServerNoticeModal(false)}
+      >
         <AlertDialogContent className={cn('w-[25rem]')}>
           <AlertDialogTitle
             className={cn('flex', 'flex-col', 'text-center', 'gap-4', 'items-center')}
@@ -124,7 +127,7 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={verificationCodeSendErrorModal}>
+      <AlertDialog open={verificationCodeSendErrorModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -139,7 +142,7 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={signupSuccessModal}>
+      <AlertDialog open={signupSuccessModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>회원가입에 성공했습니다!</AlertDialogTitle>
@@ -157,7 +160,7 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={signupErrorModal}>
+      <AlertDialog open={signupErrorModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>오류가 발생했습니다.</AlertDialogTitle>
@@ -188,7 +191,7 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={applicationPeriodModal}>
+      <AlertDialog open={applicationPeriodModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>

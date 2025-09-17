@@ -1,31 +1,27 @@
 import { MockScoreType } from 'types';
 
-// 공통 모달 타입들 정의
-export type SimpleModal = boolean;
-
-export interface ConfirmModal {
+export interface SimpleModal {
   isOpen: boolean;
+}
+
+export interface ConfirmModal extends SimpleModal {
   onConfirm: () => void;
 }
 
-export interface LoginModal {
-  isOpen: boolean;
+export interface LoginModal extends SimpleModal {
   isMain: boolean;
 }
 
-export interface ResultModal {
-  isOpen: boolean;
+export interface ResultModal extends SimpleModal {
   isFirstTest: boolean;
 }
 
-export interface ScoreModal {
-  isOpen: boolean;
+export interface ScoreModal extends SimpleModal {
   data: MockScoreType | null;
   type: 'score' | 'mock';
 }
 
-export interface ApplicationModal {
-  isOpen: boolean;
+export interface ApplicationModal extends SimpleModal {
   type: 'client' | 'admin';
 }
 

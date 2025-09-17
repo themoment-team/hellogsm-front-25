@@ -79,7 +79,7 @@ const AdminModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={applicationModificationNotPossibleModal}>
+      <AlertDialog open={applicationModificationNotPossibleModal.isOpen}>
         <AlertDialogContent className={cn('w-[25rem]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>원서 수정을 할 수 없는 기간입니다.</AlertDialogTitle>
@@ -92,7 +92,7 @@ const AdminModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={firstResultAnnouncementModal}>
+      <AlertDialog open={firstResultAnnouncementModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -115,7 +115,7 @@ const AdminModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={secondResultAnnouncementModal}>
+      <AlertDialog open={secondResultAnnouncementModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>
