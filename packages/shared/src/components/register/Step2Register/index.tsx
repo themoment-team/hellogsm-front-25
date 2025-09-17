@@ -179,19 +179,17 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
               required
               fullWidth
             >
-              <div className={cn('flex', 'gap-2')}>
-                {!isGED && (
-                  <>
-                    <Input
-                      placeholder="내 중학교 찾기"
-                      width="full"
-                      disabled={true}
-                      {...register('schoolName')}
-                    />
-                    <SearchDialog setValue={setValue} />
-                  </>
-                )}
-              </div>
+              {!isGED && (
+                <div className={cn('flex', 'gap-2')}>
+                  <Input
+                    placeholder="내 중학교 찾기"
+                    width="full"
+                    disabled={true}
+                    {...register('schoolName')}
+                  />
+                  <SearchDialog setValue={setValue} />
+                </div>
+              )}
               <div className={cn('flex', 'w-full', 'justify-between')}>
                 <Select value={year === '0000' ? '' : year} onValueChange={handleYearSelectChange}>
                   <SelectTrigger className={cn('w-[14.6785rem]')}>
