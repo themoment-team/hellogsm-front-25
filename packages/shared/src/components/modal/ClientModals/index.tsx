@@ -36,8 +36,8 @@ const ClientModals = () => {
     setPhoneNumberDuplicateModal,
     applicationPeriodModal,
     setApplicationPeriodModal,
-    nonSubmitterModal,
-    setNonSubmitterModal,
+    oneseoNotSubmittedModal,
+    setOneseoNotSubmittedModal,
   } = useModalStore();
 
   const { back, push } = useRouter();
@@ -107,14 +107,14 @@ const ClientModals = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={nonSubmitterModal.isOpen}>
+      <AlertDialog open={oneseoNotSubmittedModal.isOpen}>
         <AlertDialogContent className={cn('w-[400px]')}>
           <AlertDialogHeader>
             <AlertDialogTitle>원서 미제출시 합격자 조회를 진행할 수 없습니다</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction asChild>
-              <Link href={'/check-result'} onClick={() => setNonSubmitterModal(false)}>
+              <Link href={'/check-result'} onClick={() => setOneseoNotSubmittedModal(false)}>
                 확인
               </Link>
             </AlertDialogAction>
