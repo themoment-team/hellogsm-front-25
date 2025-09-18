@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { AxiosError } from 'axios';
 
-import { useGetOperation, usePostExcel, usePostFirstResult, usePostSecondResult } from 'api';
+import { useGetOperation, usePostExcel } from 'api';
 import { toast } from 'react-toastify';
 
 import { SearchIcon, FileIcon, CloverIcon, MedalIcon, UploadIcon } from 'admin/assets';
@@ -20,13 +20,9 @@ import {
   Button,
   SelectLabel,
   SelectGroup,
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from 'shared/components';
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 import { oneseoUrl } from 'api/libs';
 
@@ -53,25 +49,11 @@ const FilterBar = ({
   isAfterFirstResults,
   isAfterSecondResults,
 }: FilterBarProps) => {
-  const [showFirstModal, setShowFirstModal] = useState<boolean>(false);
-  const [showSecondModal, setShowSecondModal] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { setFirstResultAnnouncementModal, setSecondResultAnnouncementModal } = useModalStore();
+
   const { data: operationData, refetch: operationRefetch } = useGetOperation();
-
-  const { mutate: postFirstResult } = usePostFirstResult({
-    onSuccess: () => {
-      operationRefetch();
-    },
-    onError: () => {},
-  });
-
-  const { mutate: postSecondResult } = usePostSecondResult({
-    onSuccess: () => {
-      operationRefetch();
-    },
-    onError: () => {},
-  });
 
   const { mutate: postExcel, isPending } = usePostExcel({
     onSuccess: () => {
@@ -189,7 +171,7 @@ const FilterBar = ({
             disabled={
               operationData?.firstTestResultAnnouncementYn === 'YES' || !isAfterFirstResults
             }
-            onClick={() => setShowFirstModal(true)}
+            onClick={() => setFirstResultAnnouncementModal(true)}
           >
             <CloverIcon />
             1차 결과 발표
@@ -200,7 +182,7 @@ const FilterBar = ({
             disabled={
               operationData?.secondTestResultAnnouncementYn === 'YES' || !isAfterSecondResults
             }
-            onClick={() => setShowSecondModal(true)}
+            onClick={() => setSecondResultAnnouncementModal(true)}
           >
             <MedalIcon />
             2차 결과 발표
@@ -238,61 +220,6 @@ const FilterBar = ({
           </Button>
         </div>
       </div>
-      <AlertDialog open={showFirstModal}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              확인 버튼 클릭시 전체 지원자들에게 합격, 불합격 여부가 공개됩니다.
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowFirstModal(false);
-              }}
-            >
-              취소
-            </Button>
-            <Button
-              onClick={() => {
-                setShowFirstModal(false);
-                postFirstResult();
-              }}
-            >
-              확인
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showSecondModal}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              확인 버튼 클릭시 전체 지원자들에게 합격, 불합격 여부가 공개됩니다.
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowSecondModal(false);
-              }}
-            >
-              취소
-            </Button>
-            <Button
-              onClick={() => {
-                setShowSecondModal(false);
-                postSecondResult();
-              }}
-            >
-              확인
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };

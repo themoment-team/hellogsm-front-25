@@ -1,31 +1,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostMockScore } from 'api';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  Button,
-  ScoreCalculateDialog,
-  Step4Register,
-  step4Schema,
-} from 'shared';
+import { Button, Step4Register, step4Schema } from 'shared';
 import {
   GEDAchievementType,
   GraduationTypeValueEnum,
   LiberalSystemValueEnum,
   MiddleSchoolAchievementType,
-  MockScoreType,
   Step4FormType,
   StepEnum,
 } from 'types';
@@ -34,6 +21,7 @@ import { ComputerRecommendedPage } from 'client/pageContainer';
 
 import { ARTS_PHYSICAL_SUBJECTS, GENERAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 const graduationArray = [
   { text: '졸업 예정', value: GraduationTypeValueEnum.CANDIDATE, img: '/images/candidate.png' },
@@ -46,6 +34,14 @@ interface CalculateProps {
 }
 
 const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
+  const { setScoreCalculationCompleteModal, setMockScoreCalculationPeriodModal } = useModalStore();
+
+  useEffect(() => {
+    if (!isServerHealthy) {
+      setMockScoreCalculationPeriodModal(true);
+    }
+  }, [isServerHealthy, setMockScoreCalculationPeriodModal]);
+
   const step4UseForm = useForm<Step4FormType>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
@@ -55,13 +51,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
   });
 
   const [graduationType, setGraduationType] = useState<GraduationTypeValueEnum | null>(null);
-  const [isDialog, setIsDialog] = useState<boolean>(false);
-  const [scoreCalculateDialogData, setScoreCalculateDialogData] = useState<MockScoreType | null>(
-    null,
-  );
-
   const [errorStep, setErrorStep] = useState<StepEnum | null>(null);
-
   const isCandidate = graduationType === GraduationTypeValueEnum.CANDIDATE;
   const isGED = graduationType === GraduationTypeValueEnum.GED;
   const isGraduate = graduationType === GraduationTypeValueEnum.GRADUATE;
@@ -69,8 +59,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
 
   const { mutate: postMockScore } = usePostMockScore(graduationType!, {
     onSuccess: (data) => {
-      setScoreCalculateDialogData(data);
-      setIsDialog(true);
+      setScoreCalculationCompleteModal(true, data, 'mock');
     },
   });
 
@@ -135,19 +124,6 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
 
   return (
     <>
-      <AlertDialog open={!isServerHealthy}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>모의 성적 계산은 10월 13일부터 가능합니다.</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction asChild>
-              <Link href={'/'}>확인</Link>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <ComputerRecommendedPage />
       {graduationType ? (
         <div className={cn('sm:flex', 'justify-center', 'rounded-[1.25rem]', 'hidden')}>
@@ -238,13 +214,6 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
           </div>
         </div>
       )}
-
-      <ScoreCalculateDialog
-        isDialog={isDialog}
-        setIsDialog={setIsDialog}
-        scoreCalculateDialogData={scoreCalculateDialogData}
-        type="score"
-      />
     </>
   );
 };
