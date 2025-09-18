@@ -49,7 +49,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
   const step4UseForm = useForm<Step4FormType>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      liberalSystem: LiberalSystemValueEnum.FREE_GRADE,
+      liberalSystem: LiberalSystemValueEnum.FREE_SEMESTER,
       freeSemester: null,
     },
   });
