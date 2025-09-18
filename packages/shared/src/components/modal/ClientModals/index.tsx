@@ -38,7 +38,7 @@ const ClientModals = () => {
     setApplicationPeriodModal,
   } = useModalStore();
 
-  const { back, push } = useRouter();
+  const { back } = useRouter();
 
   return (
     <>
@@ -148,13 +148,10 @@ const ClientModals = () => {
             <AlertDialogTitle>회원가입에 성공했습니다!</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setSignupSuccessModal(false);
-                push('/');
-              }}
-            >
-              확인
+            <AlertDialogAction asChild>
+              <Link href={'/'} onClick={() => setSignupSuccessModal(false)}>
+                확인
+              </Link>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
