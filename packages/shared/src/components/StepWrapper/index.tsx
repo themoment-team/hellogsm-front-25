@@ -45,6 +45,7 @@ import {
 import { ARTS_PHYSICAL_SUBJECTS, GENERAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 import { step1Schema, step2Schema, step3Schema, step4Schema } from 'shared/schemas';
+import { extractClassroomAndNumber } from 'shared/utils';
 
 import {
   usePostMockScore,
@@ -70,15 +71,6 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       detailAddress: data?.privacyDetail.detailAddress,
     },
   });
-
-  const extractClassroomAndNumber = (studentNumber: string | null | undefined) => {
-    if (studentNumber && studentNumber.length === 5) {
-      const classroom = parseInt(studentNumber.substring(1, 3)).toString();
-      const number = parseInt(studentNumber.substring(3, 5)).toString();
-      return { classroom, number };
-    }
-    return { classroom: '', number: '' };
-  };
 
   const { classroom: initialClassroom, number: initialNumber } = extractClassroomAndNumber(
     data?.privacyDetail.studentNumber,
