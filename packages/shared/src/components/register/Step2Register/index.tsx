@@ -179,6 +179,9 @@ const Step2Register = ({
   const hasYearError = showError && (!year || year === '0000');
   const hasMonthError = showError && (!month || month === '00');
 
+  const hasClassroomError = showError && classroom === '';
+  const hasNumberError = showError && number === '';
+
   const hasFirstMajorError =
     showError && errors.firstDesiredMajor && watch('firstDesiredMajor') === undefined;
   const hasSecondMajorError =
@@ -303,7 +306,11 @@ const Step2Register = ({
                     value={classroom || ''}
                     onValueChange={(value) => setValue('classroom', value)}
                   >
-                    <SelectTrigger className={cn('w-[9.3785rem]')}>
+                    <SelectTrigger
+                      className={cn('w-[9.3785rem]', {
+                        '!border-red-600': hasClassroomError,
+                      })}
+                    >
                       <SelectValue placeholder="반 선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -319,7 +326,11 @@ const Step2Register = ({
                   </Select>
 
                   <Select value={number || ''} onValueChange={(value) => setValue('number', value)}>
-                    <SelectTrigger className={cn('w-[9.3785rem]')}>
+                    <SelectTrigger
+                      className={cn('w-[9.3785rem]', {
+                        '!border-red-600': hasNumberError,
+                      })}
+                    >
                       <SelectValue placeholder="번호 선택" />
                     </SelectTrigger>
                     <SelectContent>
