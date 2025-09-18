@@ -43,6 +43,7 @@ export interface ClientModals {
   signupErrorModal: SimpleModal;
   phoneNumberDuplicateModal: ConfirmModal;
   applicationPeriodModal: SimpleModal;
+  nonSubmitterModal: SimpleModal;
 }
 
 export interface SharedModals {
@@ -68,6 +69,7 @@ export interface ModalActions {
   setSignupErrorModal: (isOpen: boolean) => void;
   setPhoneNumberDuplicateModal: (isOpen: boolean, onConfirm?: () => void) => void;
   setApplicationPeriodModal: (isOpen: boolean) => void;
+  setNonSubmitterModal: (isOpen: boolean) => void;
 
   setSystemInspectionModal: (isOpen: boolean) => void;
   setScoreCalculationCompleteModal: (

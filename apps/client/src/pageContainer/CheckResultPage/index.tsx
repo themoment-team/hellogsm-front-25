@@ -43,11 +43,14 @@ const CheckResultPage = ({
   isCheckFirstResult,
   isCheckFinalResult,
 }: CheckResultPageProps) => {
-  const { setResultAnnouncementPeriodModal } = useModalStore();
+  const { setResultAnnouncementPeriodModal, setNonSubmitterModal } = useModalStore();
   const [isFirstTest, setIsFirstTest] = useState<boolean>(true);
   const [isDialog, setIsDialog] = useState(false);
 
   const handleDialog = (resultStatus: boolean) => {
+    if (resultInfo && resultInfo.firstTestPassYn === null && isCheckFinalResult)
+      return setNonSubmitterModal(true);
+
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {
       setIsDialog(true);
