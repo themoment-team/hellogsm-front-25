@@ -9,3 +9,4 @@ export { default as formattedBirthDate } from './formatBirth';
 export { default as getKoreanDate } from './getKoreanDate';
 export { default as isTimeAfter } from './isTimeAfter';
 export { default as isTimeBefore } from './isTimeBefore';
+export { default as extractClassroomAndNumber } from './extractClassroomAndNumber';
