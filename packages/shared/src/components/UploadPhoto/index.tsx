@@ -1,21 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-
 import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Step1FormType } from 'types';
 
 import { UploadIcon } from 'shared/assets';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  CustomFormItem,
-} from 'shared/components';
+import { CustomFormItem } from 'shared/components';
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 
 import { usePostImage } from 'api/hooks';
 
@@ -25,8 +16,8 @@ interface UploadPhotoProps {
 }
 
 const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
+  const { setImageUploadSizeLimitModal } = useModalStore();
   const profileImg = watch('profileImg');
-  const [showModal, setShowModal] = useState(false);
 
   const { mutate: postImage } = usePostImage({
     onSuccess: ({ url }) => setValue('profileImg', url),
@@ -38,7 +29,10 @@ const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size >= MAX_FILE_SIZE) return setShowModal(true);
+    if (file.size >= MAX_FILE_SIZE) {
+      setImageUploadSizeLimitModal(true);
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', file);
@@ -114,22 +108,6 @@ const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
           <li>&middot; jpg, jpeg, png 형식</li>
         </ul>
       </div>
-      <AlertDialog open={showModal}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>이미지는 5MB 이하만 가능합니다.</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };

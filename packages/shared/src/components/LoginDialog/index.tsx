@@ -1,5 +1,4 @@
-import * as I from 'client/assets';
-
+import * as I from 'shared/assets';
 import { Button, LoginButton } from 'shared/components';
 import { Dialog, DialogContent, DialogTrigger } from 'shared/components';
 import { cn } from 'shared/lib/utils';

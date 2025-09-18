@@ -12,25 +12,11 @@ import { EditabilityType, OneseoListType, OneseoType, ScreeningEnum } from 'type
 import { TextField } from 'admin/components';
 
 import { CheckIcon } from 'shared/assets';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  Toggle,
-  TableRow,
-  Badge,
-  Button,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from 'shared/components';
+import { Table, TableBody, TableCell, Toggle, TableRow, Badge, Button } from 'shared/components';
 import { 심층면접일자, 역량검사일자 } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
 import { cn } from 'shared/lib/utils';
+import { useModalStore } from 'shared/stores';
 import { formatScore } from 'shared/utils';
 
 import {
@@ -68,9 +54,11 @@ const ApplicantTR = ({
   editableData,
   editableRefetch,
 }: ApplicationTRProps) => {
-  const [realOneseoDialogOpen, setRealOneseoDialogOpen] = useState(false);
-  const [agreeDocDialogOpen, setAgreeDocDialogOpen] = useState(false);
-  const [editOneseoDialogOpen, setEditOneseoDialogOpen] = useState(false);
+  const {
+    setDocumentSubmissionChangeModal,
+    setAdmissionAgreementChangeModal,
+    setApplicationModificationNotPossibleModal,
+  } = useModalStore();
 
   const { push } = useRouter();
 
@@ -147,7 +135,7 @@ const ApplicantTR = ({
   }, [debounced역량검사점수, debounced심층면접점수, setValue]);
 
   const handleRealOneseoArrived = () => {
-    setRealOneseoDialogOpen(false);
+    setDocumentSubmissionChangeModal(false);
     patchArrivedStatus();
     setIsRealOneseoArrived((prev) => !prev);
   };
@@ -155,7 +143,7 @@ const ApplicantTR = ({
   const handleAgreeDocArrived = () => {
     const updatedIntention = entranceIntention === 'YES' ? 'NO' : 'YES';
     setEntranceIntention(updatedIntention);
-    setAgreeDocDialogOpen(false);
+    setAdmissionAgreementChangeModal(false);
     patchAgreeDocStatus({ entranceIntentionYn: updatedIntention });
   };
 
@@ -179,7 +167,7 @@ const ApplicantTR = ({
     if (editableData?.oneseoEditability === true) {
       push(`/edit/${memberId}?step=1`);
     } else {
-      setEditOneseoDialogOpen(true);
+      setApplicationModificationNotPossibleModal(true);
     }
   };
 
@@ -189,26 +177,13 @@ const ApplicantTR = ({
         <TableRow>
           <TableCell className={cn('w-[6.5rem]', 'text-zinc-900')}>{submitCode}</TableCell>
           <TableCell className={cn('w-[7.25rem]', 'p-0')}>
-            <AlertDialog open={realOneseoDialogOpen}>
-              <Toggle
-                onClick={() => setRealOneseoDialogOpen(true)}
-                pressed={isRealOneseoArrived}
-                icon={<CheckIcon />}
-              >
-                제출 완료
-              </Toggle>
-              <AlertDialogContent className={cn('w-[25rem]')}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>서류 제출 여부를 변경하시겠습니까?</AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setRealOneseoDialogOpen(false)}>
-                    취소
-                  </AlertDialogCancel>
-                  <AlertDialogAction onClick={handleRealOneseoArrived}>변경하기</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Toggle
+              onClick={() => setDocumentSubmissionChangeModal(true, handleRealOneseoArrived)}
+              pressed={isRealOneseoArrived}
+              icon={<CheckIcon />}
+            >
+              제출 완료
+            </Toggle>
           </TableCell>
           <TableCell className={cn('w-[7.5rem]', 'font-semibold', 'text-zinc-900')}>
             {name} <br />
@@ -276,44 +251,19 @@ const ApplicantTR = ({
             <Badge variant={secondTestResult}>{secondTestResult}</Badge>
           </TableCell>
           <TableCell className={cn('w-[8.125rem]')}>
-            <AlertDialog open={agreeDocDialogOpen}>
-              <Toggle
-                onClick={() => setAgreeDocDialogOpen(true)}
-                pressed={entranceIntention === 'YES'}
-                icon={<CheckIcon />}
-                disabled={secondTestPassYn !== 'YES'}
-              >
-                제출 완료
-              </Toggle>
-              <AlertDialogContent className={cn('w-[25rem]')}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>입학동의서 제출 여부를 변경하시겠습니까?</AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setAgreeDocDialogOpen(false)}>
-                    취소
-                  </AlertDialogCancel>
-                  <AlertDialogAction onClick={handleAgreeDocArrived}>변경하기</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Toggle
+              onClick={() => setAdmissionAgreementChangeModal(true, handleAgreeDocArrived)}
+              pressed={entranceIntention === 'YES'}
+              icon={<CheckIcon />}
+              disabled={secondTestPassYn !== 'YES'}
+            >
+              제출 완료
+            </Toggle>
           </TableCell>
           <TableCell className={cn('w-[5rem]')}>
             <Button onClick={handleOneseoEdit} variant="outline">
               원서수정
             </Button>
-            <AlertDialog open={editOneseoDialogOpen}>
-              <AlertDialogContent className={cn('w-[25rem]')}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>원서 수정을 할 수 없는 기간입니다.</AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setEditOneseoDialogOpen(false)}>
-                    닫기
-                  </AlertDialogCancel>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </TableCell>
         </TableRow>
       </TableBody>

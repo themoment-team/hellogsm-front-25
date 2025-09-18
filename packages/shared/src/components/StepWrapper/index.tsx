@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,6 @@ import {
   GraduationTypeValueEnum,
   LiberalSystemValueEnum,
   MiddleSchoolAchievementType,
-  MockScoreType,
   MyMemberInfoType,
   PostOneseoType,
   RelationshipWithGuardianValueEnum,
@@ -27,15 +26,8 @@ import {
 
 import { CloseIcon, InfoIcon } from 'shared/assets';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   ConfirmBar,
   EditBar,
-  ScoreCalculateDialog,
   Step1Register,
   Step2Register,
   Step3Register,
@@ -45,6 +37,7 @@ import {
 import { ARTS_PHYSICAL_SUBJECTS, GENERAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 import { step1Schema, step2Schema, step3Schema, step4Schema } from 'shared/schemas';
+import { useModalStore } from 'shared/stores';
 import { extractClassroomAndNumber } from 'shared/utils';
 
 import {
@@ -63,6 +56,8 @@ interface StepWrapperProps {
 }
 
 const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => {
+  const { setScoreCalculationCompleteModal, setApplicationSubmitModal } = useModalStore();
+
   const step1UseForm = useForm<Step1FormType>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
@@ -138,11 +133,6 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
     },
   });
 
-  const [isScoreCalculateDialog, setIsScoreCalculateDialog] = useState<boolean>(false);
-  const [isOneseoSubmitDialog, setIsOneseoSubmitDialog] = useState<boolean>(false);
-  const [scoreCalculateDialogData, setScoreCalculateDialogData] = useState<MockScoreType | null>(
-    null,
-  );
   const { push } = useRouter();
   const graduationType = step2UseForm.watch('graduationType');
 
@@ -167,11 +157,11 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   };
 
   const { mutate: postMyOneseo } = usePostMyOneseo({
-    onSuccess: () => setIsOneseoSubmitDialog(true),
+    onSuccess: () => setApplicationSubmitModal(true, type),
   });
 
   const { mutate: putOneseoByMemberId } = usePutOneseoByMemberId(memberId!, {
-    onSuccess: () => setIsOneseoSubmitDialog(true),
+    onSuccess: () => setApplicationSubmitModal(true, type),
   });
 
   const { mutate: postTempStorage } = usePostTempStorage(Number(step), {
@@ -189,8 +179,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
 
   const { mutate: postMockScore } = usePostMockScore(graduationType, {
     onSuccess: (data) => {
-      setScoreCalculateDialogData(data);
-      setIsScoreCalculateDialog(true);
+      setScoreCalculationCompleteModal(true, data, 'score');
     },
   });
 
@@ -365,7 +354,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
 
     if (step === StepEnum.FOUR && (!isStepSuccess[1] || !isStepSuccess[2] || !isStepSuccess[3]))
       push(`${BASE_URL}?step=3`);
-  }, [step]);
+  }, [step, isStepSuccess, push, BASE_URL]);
 
   return (
     <>
@@ -446,43 +435,6 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
           handleOneseoEditButtonClick={handleOneseoEditButtonClick}
         />
       )}
-
-      <ScoreCalculateDialog
-        isDialog={isScoreCalculateDialog}
-        setIsDialog={setIsScoreCalculateDialog}
-        scoreCalculateDialogData={scoreCalculateDialogData}
-        type="score"
-      />
-
-      <AlertDialog open={isOneseoSubmitDialog}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {type === 'client' ? (
-                <>
-                  원서가 제출되었습니다.
-                  <br />
-                  문제가 있다면
-                  <br />
-                  062-949-6800(교무실)로 연락주세요.
-                </>
-              ) : (
-                <>원서가 수정되었습니다.</>
-              )}
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                push(type === 'client' ? '/mypage' : '/');
-                setIsOneseoSubmitDialog(false);
-              }}
-            >
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };
