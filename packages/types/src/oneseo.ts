@@ -112,6 +112,7 @@ export interface PrivacyDetailType {
   relationshipWithGuardian: RelationshipWithGuardianValueEnum | string;
   schoolName: string;
   schoolAddress: string;
+  studentNumber: string;
   graduationDate: string;
   year: string;
   month: string;
@@ -136,6 +137,7 @@ export interface PostOneseoType {
   middleSchoolAchievement?: MiddleSchoolAchievementType | GEDAchievementType;
   schoolName?: string;
   schoolAddress?: string;
+  studentNumber?: string;
   graduationDate?: string;
   screening?: ScreeningValueEnum;
   step?: number;

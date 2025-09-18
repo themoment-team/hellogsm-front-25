@@ -38,6 +38,7 @@ import { ARTS_PHYSICAL_SUBJECTS, GENERAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';
 import { step1Schema, step2Schema, step3Schema, step4Schema } from 'shared/schemas';
 import { useModalStore } from 'shared/stores';
+import { extractClassroomAndNumber } from 'shared/utils';
 
 import {
   usePostMockScore,
@@ -66,12 +67,19 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
     },
   });
 
+  const { classroom: initialClassroom, number: initialNumber } = extractClassroomAndNumber(
+    data?.privacyDetail.studentNumber,
+  );
+
   const step2UseForm = useForm<Step2FormType>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
       graduationType: data?.privacyDetail.graduationType,
       schoolName: data?.privacyDetail.schoolName,
       schoolAddress: data?.privacyDetail.schoolAddress,
+      studentNumber: data?.privacyDetail.studentNumber,
+      classroom: initialClassroom,
+      number: initialNumber,
       graduationDate: data?.privacyDetail.graduationDate || '0000-00',
       screening: data?.wantedScreening,
       firstDesiredMajor: data?.desiredMajors.firstDesiredMajor,
@@ -181,6 +189,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       graduationType,
       schoolName,
       schoolAddress,
+      studentNumber,
       graduationDate,
       screening,
       firstDesiredMajor,
@@ -222,6 +231,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
       graduationType: graduationType || undefined,
       schoolName: schoolName || undefined,
       schoolAddress: schoolAddress || undefined,
+      studentNumber: studentNumber || undefined,
       graduationDate:
         graduationDate.split('-')[0] !== '0000' && graduationDate.split('-')[1] !== '00'
           ? graduationDate

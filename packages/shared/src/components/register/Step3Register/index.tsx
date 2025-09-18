@@ -63,7 +63,7 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
           >
             <Input placeholder="보호자 이름 입력" width="full" {...register('guardianName')} />
             <Input
-              placeholder="보호자 휴대폰 번호 입력"
+              placeholder="보호자 휴대폰 번호 입력 (하이픈 '-' 제외)"
               width="full"
               {...register('guardianPhoneNumber')}
             />
@@ -95,7 +95,7 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
                 {...register('schoolTeacherName')}
               />
               <Input
-                placeholder="담임선생님 연락처 입력"
+                placeholder="담임선생님 연락처 입력 (하이픈 '-' 제외)"
                 width="full"
                 {...register('schoolTeacherPhoneNumber')}
               />
