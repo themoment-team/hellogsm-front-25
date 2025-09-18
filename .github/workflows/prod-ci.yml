@@ -20,6 +20,8 @@ jobs:
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
       NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
       NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
+      NEXT_PUBLIC_MOCK_SCORE_URL: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }}
+      NEXT_PUBLIC_MOCK_SCORE_API_KEY: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -51,6 +53,8 @@ jobs:
           --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
           --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
           -f ./client.Dockerfile \
           -t hello-prod-client:latest \
           .
@@ -62,6 +66,8 @@ jobs:
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
           --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
           --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
           -f ./admin.Dockerfile \
           -t hello-prod-admin:latest \
           .

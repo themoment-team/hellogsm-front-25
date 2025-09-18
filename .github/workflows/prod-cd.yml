@@ -20,6 +20,8 @@ jobs:
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
       NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
       NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
+      NEXT_PUBLIC_MOCK_SCORE_URL: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }}
+      NEXT_PUBLIC_MOCK_SCORE_API_KEY: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -61,6 +63,8 @@ jobs:
           --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
           --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
           --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
           -f ./client.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest \
           .
@@ -72,6 +76,8 @@ jobs:
           --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
           --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
           --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest \
           .
@@ -123,6 +129,8 @@ jobs:
               -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
               -e NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
               -e NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
+              -e NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+              -e NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
               ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
 
             docker stop hello-gsm-client-$OLD_COLOR || true
@@ -146,6 +154,8 @@ jobs:
               -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
               -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
               -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
+              -e NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
+              -e NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
               ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
 
             docker stop hello-gsm-admin-$OLD_COLOR || true

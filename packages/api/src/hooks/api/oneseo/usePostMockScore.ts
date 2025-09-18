@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import {
   GEDAchievementType,
@@ -9,7 +9,7 @@ import {
   MockScoreType,
 } from 'types';
 
-import { oneseoQueryKeys, oneseoUrl, post } from 'api/libs';
+import { oneseoQueryKeys } from 'api/libs';
 
 export const usePostMockScore = (
   type: GraduationType,
@@ -21,7 +21,20 @@ export const usePostMockScore = (
 ) =>
   useMutation({
     mutationKey: oneseoQueryKeys.postMockScore(type),
-    mutationFn: (data: MiddleSchoolAchievementType | GEDAchievementType) =>
-      post<MockScoreType>(oneseoUrl.postMockScore(type), data),
+    mutationFn: async (data: MiddleSchoolAchievementType | GEDAchievementType) => {
+      const response = await axios.post<MockScoreType>(
+        process.env.NEXT_PUBLIC_MOCK_SCORE_URL!,
+        {
+          ...data,
+          graduationType: type,
+        },
+        {
+          headers: {
+            'X-HG-API-KEY': process.env.NEXT_PUBLIC_MOCK_SCORE_API_KEY!,
+          },
+        },
+      );
+      return response.data;
+    },
     ...options,
   });
