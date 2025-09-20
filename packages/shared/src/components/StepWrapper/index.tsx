@@ -371,7 +371,8 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
   };
 
   useEffect(() => {
-    clearStepError();
+    if (errorStep !== step) clearStepError();
+
     if (step === StepEnum.TWO && !isStepSuccess[1]) push(`${BASE_URL}?step=1`);
 
     if (step === StepEnum.THREE && (!isStepSuccess[1] || !isStepSuccess[2]))
