@@ -108,9 +108,9 @@ const ClientModals = () => {
       </AlertDialog>
 
       <AlertDialog open={oneseoNotSubmittedModal.isOpen}>
-        <AlertDialogContent className={cn('w-[400px]')}>
+        <AlertDialogContent className={cn('w-[410px]')}>
           <AlertDialogHeader>
-            <AlertDialogTitle>원서 미제출시 합격자 조회를 진행할 수 없습니다</AlertDialogTitle>
+            <AlertDialogTitle>합격자 조회는 원서를 작성한 지원자만 가능합니다.</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction asChild>
