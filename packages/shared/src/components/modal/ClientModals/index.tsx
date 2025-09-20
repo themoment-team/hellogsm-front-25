@@ -148,10 +148,13 @@ const ClientModals = () => {
             <AlertDialogTitle>회원가입에 성공했습니다!</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction asChild>
-              <Link href={'/'} onClick={() => setSignupSuccessModal(false)}>
-                확인
-              </Link>
+            <AlertDialogAction
+              onClick={() => {
+                setSignupSuccessModal(false);
+                window.location.replace('/');
+              }}
+            >
+              확인
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
