@@ -19,6 +19,7 @@ const createInitialClientModals = (): ClientModals => ({
   signupErrorModal: { isOpen: false },
   phoneNumberDuplicateModal: { isOpen: false, onConfirm: () => {} },
   applicationPeriodModal: { isOpen: false },
+  oneseoNotSubmittedModal: { isOpen: false },
 });
 
 const createInitialSharedModals = (): SharedModals => ({
@@ -77,6 +78,9 @@ export const useModalStore = create<ModalStore>((set) => ({
   },
   setApplicationPeriodModal: (isOpen) => {
     set({ applicationPeriodModal: { isOpen } });
+  },
+  setOneseoNotSubmittedModal: (isOpen) => {
+    set({ oneseoNotSubmittedModal: { isOpen } });
   },
 
   // shared modal action
