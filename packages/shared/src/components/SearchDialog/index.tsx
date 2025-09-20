@@ -80,9 +80,9 @@ const SearchDialog = ({ setValue }: SearchDialogProps) => {
     setKeyword(school.SCHUL_NM);
     setSchools([]);
     setIsSelecting(true);
-    setValue('schoolName', school.SCHUL_NM);
+    setValue('schoolName', school.SCHUL_NM, { shouldValidate: true, shouldDirty: true });
     // eslint-disable-next-line @cspell/spellchecker
-    setValue('schoolAddress', school.ORG_RDNMA);
+    setValue('schoolAddress', school.ORG_RDNMA, { shouldValidate: true, shouldDirty: true });
   };
 
   return (

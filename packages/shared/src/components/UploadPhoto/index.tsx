@@ -1,6 +1,6 @@
 'use client';
 
-import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Step1FormType } from 'types';
 
 import { UploadIcon } from 'shared/assets';
@@ -13,13 +13,15 @@ import { usePostImage } from 'api/hooks';
 interface UploadPhotoProps {
   setValue: UseFormSetValue<Step1FormType>;
   watch: UseFormWatch<Step1FormType>;
+  errors: FieldErrors<Step1FormType>;
+  showError: boolean;
 }
 
-const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
+const UploadPhoto = ({ setValue, watch, errors, showError }: UploadPhotoProps) => {
   const { setImageUploadSizeLimitModal } = useModalStore();
   const profileImg = watch('profileImg');
 
-  const { mutate: postImage } = usePostImage({
+  const { mutate: postImage, isSuccess } = usePostImage({
     onSuccess: ({ url }) => setValue('profileImg', url),
   });
 
@@ -60,9 +62,10 @@ const UploadPhoto = ({ setValue, watch }: UploadPhotoProps) => {
                 'w-[8.75rem]',
                 'h-[10rem]',
                 'bg-[#F5F6F8]',
-                'border-2',
                 'rounded-lg',
-                'border-gray-200',
+                errors.profileImg && showError && !isSuccess
+                  ? 'border border-red-600'
+                  : 'border-2 border-gray-200',
                 'justify-center',
                 'items-center',
                 'gap-[0.625rem]',

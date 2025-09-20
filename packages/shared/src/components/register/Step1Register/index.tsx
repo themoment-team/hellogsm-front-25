@@ -1,7 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
+  FormState,
+} from 'react-hook-form';
 import { SexType, SexValueEnum, Step1FormType } from 'types';
 
 import {
@@ -24,6 +32,9 @@ interface Step1RegisterProps {
   register: UseFormRegister<Step1FormType>;
   setValue: UseFormSetValue<Step1FormType>;
   watch: UseFormWatch<Step1FormType>;
+  trigger: UseFormTrigger<Step1FormType>;
+  formState: FormState<Step1FormType>;
+  showError: boolean;
 }
 
 const Step1Register = ({
@@ -34,6 +45,9 @@ const Step1Register = ({
   register,
   setValue,
   watch,
+  trigger,
+  formState: { errors },
+  showError,
 }: Step1RegisterProps) => {
   const daumPostCode = useDaumPostcodePopup();
 
@@ -48,7 +62,7 @@ const Step1Register = ({
   ];
 
   const handleDaumPostCodePopupComplete = ({ address }: Address) => {
-    setValue('address', address);
+    setValue('address', address, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleZipCodeButtonClick = () =>
@@ -56,6 +70,16 @@ const Step1Register = ({
       popupTitle: 'Hello, GSM 2024',
       onComplete: handleDaumPostCodePopupComplete,
     });
+
+  useEffect(() => {
+    if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
+    validateForm();
+  }, [showError]);
 
   return (
     <div
@@ -72,7 +96,7 @@ const Step1Register = ({
 
       <div className={cn('flex', 'items-end', 'gap-[3rem]')}>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-[2rem]')}>
-          <UploadPhoto setValue={setValue} watch={watch} />
+          <UploadPhoto setValue={setValue} watch={watch} errors={errors} showError={showError} />
           <CustomFormItem text={'이름'} className={cn('gap-1')} required={true} fullWidth={true}>
             <Input placeholder={name} disabled={true} />
           </CustomFormItem>
@@ -124,12 +148,18 @@ const Step1Register = ({
                   width="full"
                   disabled
                   {...register('address')}
+                  variant={showError && errors.address ? 'error' : null}
                 />
 
                 <Button onClick={handleZipCodeButtonClick}>주소 찾기</Button>
               </div>
             </CustomFormItem>
-            <Input placeholder="상세주소" width="full" {...register('detailAddress')} />
+            <Input
+              placeholder="상세주소"
+              width="full"
+              {...register('detailAddress')}
+              variant={showError && errors.detailAddress ? 'error' : null}
+            />
           </div>
 
           <CustomFormItem
