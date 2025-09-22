@@ -2,7 +2,8 @@ name: hello-gsm-stage-cd
 
 on:
   push:
-    branches: develop
+    branches:
+    - develop
   workflow_dispatch:
 
 jobs:

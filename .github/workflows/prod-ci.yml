@@ -2,7 +2,8 @@ name: hello-gsm-prod-ci
 
 on:
   pull_request:
-    branches: main
+    branches:
+    - main
   workflow_dispatch:
 
 jobs:

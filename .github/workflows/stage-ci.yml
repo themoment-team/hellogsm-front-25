@@ -2,7 +2,8 @@ name: hello-gsm-stage-ci
 
 on:
   pull_request:
-    branches: develop
+    branches:
+    - develop
   workflow_dispatch:
 
 jobs:
