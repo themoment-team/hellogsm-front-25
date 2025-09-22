@@ -21,19 +21,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env for build
+      - name: Create .env files for build
         run: |
-          cat > .env << EOF
-          ${{ secrets.PROD_ENV_FILE }}
+          cat > .env.client << EOF
+          ${{ secrets.PROD_CLIENT_ENV_FILE }}
+          EOF
+          cat > .env.admin << EOF
+          ${{ secrets.PROD_ADMIN_ENV_FILE }}
           EOF
 
       - name: All Package Build
-        run: pnpm build
+        run: |
+          cp .env.client apps/client/.env
+          cp .env.admin apps/admin/.env
+          pnpm build
 
       - name: Docker Client build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./client.Dockerfile \
           -t hello-prod-client:latest \
           .
@@ -41,7 +47,7 @@ jobs:
       - name: Docker Admin build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./admin.Dockerfile \
           -t hello-prod-admin:latest \
           .

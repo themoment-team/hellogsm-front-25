@@ -3,7 +3,7 @@ name: hello-gsm-prod-cd
 on:
   push:
     branches:
-    - main
+      - main
   workflow_dispatch:
 
 jobs:
@@ -21,14 +21,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env for build
+      - name: Create .env files for build
         run: |
-          cat > .env << EOF
-          ${{ secrets.PROD_ENV_FILE }}
+          cat > .env.client << EOF
+          ${{ secrets.PROD_CLIENT_ENV_FILE }}
+          EOF
+          cat > .env.admin << EOF
+          ${{ secrets.PROD_ADMIN_ENV_FILE }}
           EOF
 
       - name: All Package Build
-        run: pnpm build
+        run: |
+          cp .env.client apps/client/.env
+          cp .env.admin apps/admin/.env
+          pnpm build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -43,7 +49,7 @@ jobs:
       - name: Docker Client build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./client.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest \
           .
@@ -51,7 +57,7 @@ jobs:
       - name: Docker Admin build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest \
           .
@@ -90,13 +96,13 @@ jobs:
               OLD_PORT=3001
             fi
 
-            cat > .env.prod << 'ENVEOF'
-            ${{ secrets.PROD_ENV_FILE }}
+            cat > .env.client.prod << 'ENVEOF'
+            ${{ secrets.PROD_CLIENT_ENV_FILE }}
             ENVEOF
 
             docker run -d --name hello-gsm-client-$NEW_COLOR \
               -p $NEW_PORT:3000 \
-              --env-file .env.prod \
+              --env-file .env.client.prod \
               ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
 
             docker stop hello-gsm-client-$OLD_COLOR || true
@@ -114,9 +120,13 @@ jobs:
               OLD_PORT=3003
             fi
 
+            cat > .env.admin.prod << 'ENVEOF'
+            ${{ secrets.PROD_ADMIN_ENV_FILE }}
+            ENVEOF
+
             docker run -d --name hello-gsm-admin-$NEW_COLOR \
               -p $NEW_PORT:3000 \
-              --env-file .env.prod \
+              --env-file .env.admin.prod \
               ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
 
             docker stop hello-gsm-admin-$OLD_COLOR || true

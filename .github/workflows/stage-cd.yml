@@ -21,14 +21,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env for build
+      - name: Create .env files for build
         run: |
-          cat > .env << EOF
-          ${{ secrets.STAGE_ENV_FILE }}
+          cat > .env.client << EOF
+          ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+          EOF
+          cat > .env.admin << EOF
+          ${{ secrets.STAGE_ADMIN_ENV_FILE }}
           EOF
 
       - name: All Package Build
-        run: pnpm build
+        run: |
+          # Client build with client env
+          cp .env.client apps/client/.env
+          # Admin build with admin env
+          cp .env.admin apps/admin/.env
+          pnpm build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -43,7 +51,7 @@ jobs:
       - name: Docker Client build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./client.Dockerfile \
           -t ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest \
           .
@@ -51,7 +59,7 @@ jobs:
       - name: Docker Admin build
         run: |
           docker build \
-          $(cat .env | sed 's/^/--build-arg /' | tr '\n' ' ') \
+          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest \
           .
@@ -82,20 +90,24 @@ jobs:
             docker rm hello-stage-client || true
             docker rm hello-stage-admin || true
 
-            cat > .env.stage << 'ENVEOF'
-            ${{ secrets.STAGE_ENV_FILE }}
+            cat > .env.client.stage << 'ENVEOF'
+            ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+            ENVEOF
+
+            cat > .env.admin.stage << 'ENVEOF'
+            ${{ secrets.STAGE_ADMIN_ENV_FILE }}
             ENVEOF
 
             docker run -d \
               --name hello-stage-client \
               -p 3004:3000 \
-              --env-file .env.stage \
+              --env-file .env.client.stage \
               ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest
 
             docker run -d \
               --name hello-stage-admin \
               -p 3005:3000 \
-              --env-file .env.stage \
+              --env-file .env.admin.stage \
               ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
 
             docker image prune -a -f
