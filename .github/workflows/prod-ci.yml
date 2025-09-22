@@ -45,24 +45,24 @@ jobs:
           -t hello-prod-admin:latest \
           .
 
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '✅ hello-gsm prod CI'
-          status: ${{ job.status }}
-          content: 'PR을 확인해주세요.'
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '❌ hello-gsm prod CI'
-          content: '에러를 확인해주세요.'
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+#      - name: Success Discord Notification
+#        uses: sarisia/actions-status-discord@v1.11.0
+#        if: success()
+#        with:
+#          webhook: ${{ secrets.WEBHOOK_URL }}
+#          title: '✅ hello-gsm prod CI'
+#          status: ${{ job.status }}
+#          content: 'PR을 확인해주세요.'
+#          username: hello-gsm bot
+#          color: 4CAF50
+#
+#      - name: Failure notification to discord
+#        uses: sarisia/actions-status-discord@v1.11.0
+#        if: failure()
+#        with:
+#          webhook: ${{ secrets.WEBHOOK_URL }}
+#          title: '❌ hello-gsm prod CI'
+#          content: '에러를 확인해주세요.'
+#          status: ${{ job.status }}
+#          username: hello-gsm bot
+#          color: e74c3c

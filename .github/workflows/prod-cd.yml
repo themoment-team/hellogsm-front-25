@@ -124,24 +124,24 @@ jobs:
             docker image prune -a -f
             EOF
 
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '✅ hello-gsm prod CD'
-          status: ${{ job.status }}
-          content: '배포가 성공적으로 완료되었습니다.'
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '❌ hello-gsm prod CD'
-          content: '배포 중 에러가 발생했습니다.'
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+#      - name: Success Discord Notification
+#        uses: sarisia/actions-status-discord@v1.11.0
+#        if: success()
+#        with:
+#          webhook: ${{ secrets.WEBHOOK_URL }}
+#          title: '✅ hello-gsm prod CD'
+#          status: ${{ job.status }}
+#          content: '배포가 성공적으로 완료되었습니다.'
+#          username: hello-gsm bot
+#          color: 4CAF50
+#
+#      - name: Failure notification to discord
+#        uses: sarisia/actions-status-discord@v1.11.0
+#        if: failure()
+#        with:
+#          webhook: ${{ secrets.WEBHOOK_URL }}
+#          title: '❌ hello-gsm prod CD'
+#          content: '배포 중 에러가 발생했습니다.'
+#          status: ${{ job.status }}
+#          username: hello-gsm bot
+#          color: e74c3c
