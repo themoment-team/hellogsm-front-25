@@ -2,59 +2,44 @@ name: hello-gsm-prod-ci
 
 on:
   pull_request:
-    branches: main
+    branches:
+    - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }}
-      NEXT_PUBLIC_CHANNEL_IO_KEY: ${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }}
-      NEXT_PUBLIC_IMAGE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_URL }}
-      NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF: ${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }}
-      NEXT_PUBLIC_NEIS_API_KEY: ${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }}
-      NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_SECRET_API_KEY: ${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }}
-      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-      NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
-      NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
-      NEXT_PUBLIC_MOCK_SCORE_URL: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }}
-      NEXT_PUBLIC_MOCK_SCORE_API_KEY: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }}
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.4.0
 
       - name: Install dependencies
         run: pnpm install
 
+      - name: Create .env files for build
+        run: |
+          cat > .env.client << EOF
+          ${{ secrets.PROD_CLIENT_ENV_FILE }}
+          EOF
+          cat > .env.admin << EOF
+          ${{ secrets.PROD_ADMIN_ENV_FILE }}
+          EOF
+
       - name: All Package Build
         run: |
+          cp .env.client apps/client/.env
+          cp .env.admin apps/admin/.env
           pnpm build
 
       - name: Docker Client build
         run: |
           docker build \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF=${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
-          --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./client.Dockerfile \
           -t hello-prod-client:latest \
           .
@@ -62,12 +47,7 @@ jobs:
       - name: Docker Admin build
         run: |
           docker build \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./admin.Dockerfile \
           -t hello-prod-admin:latest \
           .

@@ -2,46 +2,44 @@ name: hello-gsm-stage-cd
 
 on:
   push:
-    branches: develop
+    branches:
+    - develop
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_STAGE: ${{ secrets.NEXT_PUBLIC_STAGE }}
-      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }}
-      NEXT_PUBLIC_CHANNEL_IO_KEY: ${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }}
-      NEXT_PUBLIC_IMAGE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_URL }}
-      NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF: ${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }}
-      NEXT_PUBLIC_NEIS_API_KEY: ${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }}
-      NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_SECRET_API_KEY: ${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }}
-      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-      NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
-      NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
-      NEXT_PUBLIC_MOCK_SCORE_URL: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }}
-      NEXT_PUBLIC_MOCK_SCORE_API_KEY: ${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }}
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.4.0
 
       - name: Install dependencies
         run: pnpm install
 
+      - name: Create .env files for build
+        run: |
+          cat > .env.client << EOF
+          ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+          EOF
+          cat > .env.admin << EOF
+          ${{ secrets.STAGE_ADMIN_ENV_FILE }}
+          EOF
+
       - name: All Package Build
         run: |
+          # Client build with client env
+          cp .env.client apps/client/.env
+          # Admin build with admin env
+          cp .env.admin apps/admin/.env
           pnpm build
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -53,20 +51,7 @@ jobs:
       - name: Docker Client build
         run: |
           docker build \
-          --build-arg NEXT_PUBLIC_STAGE=${{ secrets.NEXT_PUBLIC_STAGE }} \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF=${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
-          --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./client.Dockerfile \
           -t ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest \
           .
@@ -74,12 +59,7 @@ jobs:
       - name: Docker Admin build
         run: |
           docker build \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-          --build-arg NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
           -f ./admin.Dockerfile \
           -t ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest \
           .
@@ -110,36 +90,27 @@ jobs:
             docker rm hello-stage-client || true
             docker rm hello-stage-admin || true
 
+            cat > .env.client.stage << 'ENVEOF'
+            ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+            ENVEOF
+
+            cat > .env.admin.stage << 'ENVEOF'
+            ${{ secrets.STAGE_ADMIN_ENV_FILE }}
+            ENVEOF
+
             docker run -d \
               --name hello-stage-client \
               -p 3004:3000 \
-              -e NEXT_PUBLIC_STAGE=${{ secrets.NEXT_PUBLIC_STAGE }} \
-              -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
-              -e NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
-              -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-              -e NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF=${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }} \
-              -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-              -e NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }} \
-              -e NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }} \
-              -e NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
-              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-              -e NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
-              -e NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
-              -e NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-              -e NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+              --env-file .env.client.stage \
               ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest
+
             docker run -d \
               --name hello-stage-admin \
               -p 3005:3000 \
-              -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_STAGE_API_BASE_URL }} \
-              -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-              -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-              -e NEXT_PUBLIC_MOCK_SCORE_URL=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_URL }} \
-              -e NEXT_PUBLIC_MOCK_SCORE_API_KEY=${{ secrets.NEXT_PUBLIC_MOCK_SCORE_API_KEY }} \
+              --env-file .env.admin.stage \
               ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
 
-             docker image prune -a -f
+            docker image prune -a -f
             EOF
 
       - name: Success Discord Notification
