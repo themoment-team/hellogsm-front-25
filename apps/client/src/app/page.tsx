@@ -10,11 +10,7 @@ import {
   getMySecondTestResult,
 } from './apis';
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: { isAdmin?: string; error?: string };
-}) {
+export default async function Home({ searchParams }: { searchParams?: { isAdmin?: string } }) {
   const [memberInfo, authInfo, firstResultInfo, secondResultInfo, isServerHealthy] =
     await Promise.all([
       getMyMemberInfo('/'),
@@ -25,7 +21,6 @@ export default async function Home({
     ]);
 
   const isAdminRequested = searchParams?.isAdmin === 'true';
-  const errorParam = searchParams?.error;
   const isAdminRole = authInfo?.role === 'ADMIN' || authInfo?.role === 'ROOT';
 
   if (isAdminRequested && isAdminRole) {
@@ -45,11 +40,6 @@ export default async function Home({
   };
 
   return (
-    <MainPage
-      memberInfo={memberInfo}
-      resultInfo={resultInfo}
-      isServerHealthy={isServerHealthy}
-      errorParam={errorParam}
-    />
+    <MainPage memberInfo={memberInfo} resultInfo={resultInfo} isServerHealthy={isServerHealthy} />
   );
 }

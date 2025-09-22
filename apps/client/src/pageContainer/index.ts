@@ -10,3 +10,4 @@ export { default as NotFoundPage } from './NotFoundPage';
 export { default as ComputerRecommendedPage } from './ComputerRecommendedPage';
 export { default as IntroducePage } from './IntroducePage';
 export { default as CheckResultPage } from './CheckResultPage';
+export { default as CallbackPage } from './CallbackPage';

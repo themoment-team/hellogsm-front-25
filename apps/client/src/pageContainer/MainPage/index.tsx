@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import { toast } from 'react-toastify';
 import { MyMemberInfoType, MyTotalTestResultType } from 'types';
 
 import {
@@ -23,18 +22,11 @@ interface MainPageProps {
   memberInfo: MyMemberInfoType | undefined;
   resultInfo: MyTotalTestResultType | undefined;
   isServerHealthy: boolean;
-  errorParam?: string;
 }
 
-const MainPage = ({ memberInfo, resultInfo, isServerHealthy, errorParam }: MainPageProps) => {
+const MainPage = ({ memberInfo, resultInfo, isServerHealthy }: MainPageProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isPassOpen, setIsPassOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (errorParam) {
-      toast.error('로그인에 실패했습니다.');
-    }
-  }, [errorParam]);
 
   useEffect(() => {
     const today = new Date().toDateString();
