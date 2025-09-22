@@ -183,11 +183,14 @@ const Step2Register = ({
   const hasNumberError = showError && number === '';
 
   const hasFirstMajorError =
-    showError && errors.firstDesiredMajor && watch('firstDesiredMajor') === undefined;
+    (showError && errors.firstDesiredMajor && watch('firstDesiredMajor') === undefined) ||
+    watch('firstDesiredMajor') === null;
   const hasSecondMajorError =
-    showError && errors.secondDesiredMajor && watch('secondDesiredMajor') === undefined;
+    (showError && errors.secondDesiredMajor && watch('secondDesiredMajor') === undefined) ||
+    watch('secondDesiredMajor') === null;
   const hasThirdMajorError =
-    showError && errors.thirdDesiredMajor && watch('thirdDesiredMajor') === undefined;
+    (showError && errors.thirdDesiredMajor && watch('thirdDesiredMajor') === undefined) ||
+    watch('thirdDesiredMajor') === null;
 
   useEffect(() => {
     if (!isGED && watch('schoolName') === null) {
