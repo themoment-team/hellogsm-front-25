@@ -36,6 +36,8 @@ const ClientModals = () => {
     setPhoneNumberDuplicateModal,
     applicationPeriodModal,
     setApplicationPeriodModal,
+    oneseoNotSubmittedModal,
+    setOneseoNotSubmittedModal,
   } = useModalStore();
 
   const { back } = useRouter();
@@ -98,6 +100,21 @@ const ClientModals = () => {
           <AlertDialogFooter>
             <AlertDialogAction asChild>
               <Link href={'/check-result'} onClick={() => setResultAnnouncementPeriodModal(false)}>
+                확인
+              </Link>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={oneseoNotSubmittedModal.isOpen}>
+        <AlertDialogContent className={cn('w-[410px]')}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>합격자 조회는 원서를 작성한 지원자만 가능합니다.</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction asChild>
+              <Link href={'/check-result'} onClick={() => setOneseoNotSubmittedModal(false)}>
                 확인
               </Link>
             </AlertDialogAction>
