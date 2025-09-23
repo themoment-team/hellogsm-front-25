@@ -69,6 +69,11 @@ const Step3Register = ({
     validateForm();
   }, [showError]);
 
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(watch('otherRelationshipWithGuardian'));
+  }, [watch('otherRelationshipWithGuardian')]);
+
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'items-start', 'gap-10')}>
       <div className={cn('flex', 'flex-col', 'items-start', 'gap-0.5')}>
@@ -114,7 +119,13 @@ const Step3Register = ({
               <Input
                 placeholder="직접 입력"
                 {...register('otherRelationshipWithGuardian')}
-                variant={showError && errors.otherRelationshipWithGuardian ? 'error' : null}
+                variant={
+                  showError &&
+                  (errors.otherRelationshipWithGuardian ||
+                    watch('otherRelationshipWithGuardian') === null)
+                    ? 'error'
+                    : null
+                }
               />
             )}
           </div>
