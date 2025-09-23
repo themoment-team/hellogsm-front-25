@@ -77,7 +77,9 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
             colSpan={2}
             className={cn([
               tdStyle,
-              'text-end',
+              'relative',
+              'text-center',
+              'w-[20%]',
               oneseo.privacyDetail.graduationType !== 'CANDIDATE' && [
                 'bg-slash',
                 'bg-contain',
@@ -86,7 +88,12 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
             ])}
             rowSpan={3}
           >
-            {oneseo.privacyDetail.graduationType === 'CANDIDATE' && '(인)'}
+            {oneseo.privacyDetail.graduationType === 'CANDIDATE' && (
+              <>
+                {oneseo.privacyDetail.schoolTeacherName}
+                <span className="absolute right-1 top-1/2 -translate-y-1/2">(인)</span>
+              </>
+            )}
           </td>
           <td className={cn(thStyle)}>연락처</td>
           {oneseo.privacyDetail.graduationType === 'CANDIDATE' ? (
