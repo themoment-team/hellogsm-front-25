@@ -69,11 +69,6 @@ const Step3Register = ({
     validateForm();
   }, [showError]);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(watch('otherRelationshipWithGuardian'));
-  }, [watch('otherRelationshipWithGuardian')]);
-
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'items-start', 'gap-10')}>
       <div className={cn('flex', 'flex-col', 'items-start', 'gap-0.5')}>
