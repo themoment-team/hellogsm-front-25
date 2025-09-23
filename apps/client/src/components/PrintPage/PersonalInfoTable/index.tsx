@@ -86,6 +86,7 @@ const PersonalInfoTable = ({ oneseo }: OneseoStatusType) => {
                 'bg-no-repeat',
               ],
             ])}
+            rowSpan={3}
           >
             {oneseo.privacyDetail.graduationType === 'CANDIDATE' && (
               <>
