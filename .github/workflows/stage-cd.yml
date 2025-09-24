@@ -3,134 +3,51 @@ name: hello-gsm-stage-cd
 on:
   push:
     branches:
-    - develop
+      - develop
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.4.0
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Create .env files for build
-        run: |
-          cat > .env.client << EOF
-          ${{ secrets.STAGE_CLIENT_ENV_FILE }}
-          EOF
-          cat > .env.admin << EOF
-          ${{ secrets.STAGE_ADMIN_ENV_FILE }}
-          EOF
-
-      - name: All Package Build
-        run: |
-          # Client build with client env
-          cp .env.client apps/client/.env
-          # Admin build with admin env
-          cp .env.admin apps/admin/.env
-          pnpm build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Docker Client build
-        run: |
-          docker build \
-          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
-          -f ./client.Dockerfile \
-          -t ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest \
-          .
-
-      - name: Docker Admin build
-        run: |
-          docker build \
-          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
-          -f ./admin.Dockerfile \
-          -t ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest \
-          .
-
-      - name: Push image to ECR
-        run: |
-          docker push ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest
-          docker push ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      environment: stage
+      push_to_ecr: true
+    secrets:
+      CLIENT_ENV_FILE: ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+      ADMIN_ENV_FILE: ${{ secrets.STAGE_ADMIN_ENV_FILE }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ECR_CLIENT_REPOSITORY: ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}
+      AWS_ECR_ADMIN_REPOSITORY: ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}
 
   deploy:
-    runs-on: ubuntu-latest
     needs: build
-    steps:
-      - name: Connect to Bastion EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.BASTION_EC2_IP }}
-          port: ${{ secrets.BASTION_EC2_PORT }}
-          username: ${{ secrets.BASTION_EC2_USERNAME }}
-          key: ${{ secrets.BASTION_EC2_SSH_KEY }}
-          script: |
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY_NAME }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_IP }} << 'EOF'
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}
-            docker pull ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest
-            docker pull ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
-            docker stop hello-stage-client || true
-            docker stop hello-stage-admin || true
-            docker rm hello-stage-client || true
-            docker rm hello-stage-admin || true
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: stage
+      client_port: '3004'
+      admin_port: '3005'
+      use_blue_green: false
+    secrets:
+      CLIENT_ENV_FILE: ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+      ADMIN_ENV_FILE: ${{ secrets.STAGE_ADMIN_ENV_FILE }}
+      BASTION_EC2_IP: ${{ secrets.BASTION_EC2_IP }}
+      BASTION_EC2_PORT: ${{ secrets.BASTION_EC2_PORT }}
+      BASTION_EC2_USERNAME: ${{ secrets.BASTION_EC2_USERNAME }}
+      BASTION_EC2_SSH_KEY: ${{ secrets.BASTION_EC2_SSH_KEY }}
+      EC2_SSH_KEY_NAME: ${{ secrets.EC2_SSH_KEY_NAME }}
+      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+      EC2_IP: ${{ secrets.EC2_IP }}
+      AWS_ECR_URL: ${{ secrets.AWS_ECR_URL }}
+      AWS_ECR_CLIENT_REPOSITORY: ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}
+      AWS_ECR_ADMIN_REPOSITORY: ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}
 
-            cat > .env.client.stage << 'ENVEOF'
-            ${{ secrets.STAGE_CLIENT_ENV_FILE }}
-            ENVEOF
-
-            cat > .env.admin.stage << 'ENVEOF'
-            ${{ secrets.STAGE_ADMIN_ENV_FILE }}
-            ENVEOF
-
-            docker run -d \
-              --name hello-stage-client \
-              -p 3004:3000 \
-              --env-file .env.client.stage \
-              ${{ secrets.AWS_ECR_STAGE_CLIENT_REPOSITORY }}:latest
-
-            docker run -d \
-              --name hello-stage-admin \
-              -p 3005:3000 \
-              --env-file .env.admin.stage \
-              ${{ secrets.AWS_ECR_STAGE_ADMIN_REPOSITORY }}:latest
-
-            docker image prune -a -f
-            EOF
-
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '✅ hello-gsm stage CD'
-          status: ${{ job.status }}
-          content: '배포가 성공적으로 완료되었습니다.'
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '❌ hello-gsm stage CD'
-          content: '배포 중 에러가 발생했습니다.'
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+  notify:
+    needs: [build, deploy]
+    uses: ./.github/workflows/reusable-notifications.yml
+    with:
+      workflow_name: hello-gsm stage
+      workflow_type: CD
+    secrets:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}

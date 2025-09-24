@@ -1,0 +1,136 @@
+name: Reusable Deploy Workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: 'Environment (prod or stage)'
+      client_port:
+        required: true
+        type: string
+        description: 'Client port mapping'
+      admin_port:
+        required: true
+        type: string
+        description: 'Admin port mapping'
+      use_blue_green:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether to use blue-green deployment'
+    secrets:
+      CLIENT_ENV_FILE:
+        required: true
+      ADMIN_ENV_FILE:
+        required: true
+      BASTION_EC2_IP:
+        required: true
+      BASTION_EC2_PORT:
+        required: true
+      BASTION_EC2_USERNAME:
+        required: true
+      BASTION_EC2_SSH_KEY:
+        required: true
+      EC2_SSH_KEY_NAME:
+        required: true
+      EC2_USERNAME:
+        required: true
+      EC2_IP:
+        required: true
+      AWS_ECR_URL:
+        required: true
+      AWS_ECR_CLIENT_REPOSITORY:
+        required: true
+      AWS_ECR_ADMIN_REPOSITORY:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect to Bastion EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.BASTION_EC2_IP }}
+          port: ${{ secrets.BASTION_EC2_PORT }}
+          username: ${{ secrets.BASTION_EC2_USERNAME }}
+          key: ${{ secrets.BASTION_EC2_SSH_KEY }}
+          script: |
+            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY_NAME }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_IP }} << 'EOF'
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}
+            docker pull ${{ secrets.AWS_ECR_CLIENT_REPOSITORY }}:latest
+            docker pull ${{ secrets.AWS_ECR_ADMIN_REPOSITORY }}:latest
+
+            ${{ inputs.use_blue_green && 'deploy_blue_green' || 'deploy_simple' }}() {
+              if [ "$1" = "deploy_blue_green" ]; then
+                # Blue-Green deployment for client
+                if [ "$(docker ps -q -f name=hello-gsm-client-blue)" ]; then
+                  NEW_COLOR=green; OLD_COLOR=blue; NEW_PORT=3001; OLD_PORT=3000
+                else
+                  NEW_COLOR=blue; OLD_COLOR=green; NEW_PORT=3000; OLD_PORT=3001
+                fi
+
+                cat > .env.client.${{ inputs.environment }} << 'ENVEOF'
+                ${{ secrets.CLIENT_ENV_FILE }}
+                ENVEOF
+
+                docker run -d --name hello-gsm-client-$NEW_COLOR \
+                  -p $NEW_PORT:3000 \
+                  --env-file .env.client.${{ inputs.environment }} \
+                  ${{ secrets.AWS_ECR_CLIENT_REPOSITORY }}:latest
+
+                docker stop hello-gsm-client-$OLD_COLOR || true
+                docker rm hello-gsm-client-$OLD_COLOR || true
+
+                # Blue-Green deployment for admin
+                if [ "$(docker ps -q -f name=hello-gsm-admin-blue)" ]; then
+                  NEW_COLOR=green; OLD_COLOR=blue; NEW_PORT=3003; OLD_PORT=3002
+                else
+                  NEW_COLOR=blue; OLD_COLOR=green; NEW_PORT=3002; OLD_PORT=3003
+                fi
+
+                cat > .env.admin.${{ inputs.environment }} << 'ENVEOF'
+                ${{ secrets.ADMIN_ENV_FILE }}
+                ENVEOF
+
+                docker run -d --name hello-gsm-admin-$NEW_COLOR \
+                  -p $NEW_PORT:3000 \
+                  --env-file .env.admin.${{ inputs.environment }} \
+                  ${{ secrets.AWS_ECR_ADMIN_REPOSITORY }}:latest
+
+                docker stop hello-gsm-admin-$OLD_COLOR || true
+                docker rm hello-gsm-admin-$OLD_COLOR || true
+              else
+                # Simple deployment
+                docker stop hello-${{ inputs.environment }}-client || true
+                docker stop hello-${{ inputs.environment }}-admin || true
+                docker rm hello-${{ inputs.environment }}-client || true
+                docker rm hello-${{ inputs.environment }}-admin || true
+
+                cat > .env.client.${{ inputs.environment }} << 'ENVEOF'
+                ${{ secrets.CLIENT_ENV_FILE }}
+                ENVEOF
+
+                cat > .env.admin.${{ inputs.environment }} << 'ENVEOF'
+                ${{ secrets.ADMIN_ENV_FILE }}
+                ENVEOF
+
+                docker run -d \
+                  --name hello-${{ inputs.environment }}-client \
+                  -p ${{ inputs.client_port }}:3000 \
+                  --env-file .env.client.${{ inputs.environment }} \
+                  ${{ secrets.AWS_ECR_CLIENT_REPOSITORY }}:latest
+
+                docker run -d \
+                  --name hello-${{ inputs.environment }}-admin \
+                  -p ${{ inputs.admin_port }}:3000 \
+                  --env-file .env.admin.${{ inputs.environment }} \
+                  ${{ secrets.AWS_ECR_ADMIN_REPOSITORY }}:latest
+              fi
+            }
+
+            ${{ inputs.use_blue_green && 'deploy_blue_green' || 'deploy_simple' }}
+            docker image prune -a -f
+            EOF
