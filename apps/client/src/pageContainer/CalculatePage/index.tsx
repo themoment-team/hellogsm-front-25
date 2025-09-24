@@ -14,6 +14,7 @@ import {
   LiberalSystemValueEnum,
   MiddleSchoolAchievementType,
   Step4FormType,
+  StepEnum,
 } from 'types';
 
 import { ComputerRecommendedPage } from 'client/pageContainer';
@@ -50,7 +51,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
   });
 
   const [graduationType, setGraduationType] = useState<GraduationTypeValueEnum | null>(null);
-
+  const [errorStep, setErrorStep] = useState<StepEnum | null>(null);
   const isCandidate = graduationType === GraduationTypeValueEnum.CANDIDATE;
   const isGED = graduationType === GraduationTypeValueEnum.GED;
   const isGraduate = graduationType === GraduationTypeValueEnum.GRADUATE;
@@ -105,6 +106,22 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     postMockScore(body);
   };
 
+  const handleCalculateStepError = () => {
+    setErrorStep(StepEnum.FOUR);
+  };
+
+  const clearStepError = () => {
+    setErrorStep(null);
+  };
+
+  const handleCalculateClick = () => {
+    if (isStep4Success) {
+      handleCalculateButtonClick();
+    } else {
+      handleCalculateStepError();
+    }
+  };
+
   return (
     <>
       <ComputerRecommendedPage />
@@ -132,8 +149,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 form="scoreForm"
                 type="submit"
                 variant={isStep4Success ? 'next' : 'submit'}
-                disabled={!isStep4Success}
-                onClick={handleCalculateButtonClick}
+                onClick={handleCalculateClick}
               >
                 내 성적 계산하기
               </Button>
@@ -146,6 +162,8 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
                 isGraduate={isGraduate}
                 type="calculate"
                 {...step4UseForm}
+                showError={errorStep === StepEnum.FOUR}
+                clearStepError={clearStepError}
               />
             </div>
           </div>

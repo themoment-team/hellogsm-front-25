@@ -2,7 +2,13 @@
 
 import { useEffect } from 'react';
 
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  FormState,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
+} from 'react-hook-form';
 import { RelationshipWithGuardianValueEnum, Step3FormType } from 'types';
 
 import { CustomFormItem, RadioButton } from 'shared/components';
@@ -13,7 +19,10 @@ interface Step3RegisterProps {
   register: UseFormRegister<Step3FormType>;
   setValue: UseFormSetValue<Step3FormType>;
   watch: UseFormWatch<Step3FormType>;
+  trigger: UseFormTrigger<Step3FormType>;
+  formState: FormState<Step3FormType>;
   isCandidate: boolean;
+  showError: boolean;
 }
 const relationshipWithGuardianList = [
   { name: '부', value: RelationshipWithGuardianValueEnum.FATHER },
@@ -21,7 +30,15 @@ const relationshipWithGuardianList = [
   { name: '기타 (직접입력)', value: RelationshipWithGuardianValueEnum.OTHER },
 ] as const;
 
-const Step3Register = ({ register, setValue, watch, isCandidate }: Step3RegisterProps) => {
+const Step3Register = ({
+  register,
+  setValue,
+  watch,
+  trigger,
+  formState: { errors },
+  isCandidate,
+  showError,
+}: Step3RegisterProps) => {
   const handleRelationshipWithGuardianOptionClick = (value: RelationshipWithGuardianValueEnum) => {
     if (value !== RelationshipWithGuardianValueEnum.OTHER) {
       setValue('otherRelationshipWithGuardian', null);
@@ -42,6 +59,16 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
     }
   }, []);
 
+  useEffect(() => {
+    if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
+    validateForm();
+  }, [showError]);
+
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'items-start', 'gap-10')}>
       <div className={cn('flex', 'flex-col', 'items-start', 'gap-0.5')}>
@@ -61,11 +88,17 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
             required
             fullWidth
           >
-            <Input placeholder="보호자 이름 입력" width="full" {...register('guardianName')} />
+            <Input
+              placeholder="보호자 이름 입력"
+              width="full"
+              {...register('guardianName')}
+              variant={showError && errors.guardianName ? 'error' : null}
+            />
             <Input
               placeholder="보호자 휴대폰 번호 입력 (하이픈 '-' 제외)"
               width="full"
               {...register('guardianPhoneNumber')}
+              variant={showError && errors.guardianPhoneNumber ? 'error' : null}
             />
           </CustomFormItem>
           <div className={cn('flex', 'flex-col', 'gap-3')}>
@@ -74,10 +107,21 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
               list={[...relationshipWithGuardianList]}
               selectedValue={watch('relationshipWithGuardian')}
               handleOptionClick={handleRelationshipWithGuardianOptionClick}
+              error={showError}
               required
             />
             {watch('relationshipWithGuardian') === RelationshipWithGuardianValueEnum.OTHER && (
-              <Input placeholder="직접 입력" {...register('otherRelationshipWithGuardian')} />
+              <Input
+                placeholder="직접 입력"
+                {...register('otherRelationshipWithGuardian')}
+                variant={
+                  showError &&
+                  (errors.otherRelationshipWithGuardian ||
+                    watch('otherRelationshipWithGuardian') === null)
+                    ? 'error'
+                    : null
+                }
+              />
             )}
           </div>
         </div>
@@ -93,11 +137,13 @@ const Step3Register = ({ register, setValue, watch, isCandidate }: Step3Register
                 placeholder="담임선생님 이름 입력"
                 width="full"
                 {...register('schoolTeacherName')}
+                variant={showError && errors.schoolTeacherName ? 'error' : null}
               />
               <Input
                 placeholder="담임선생님 연락처 입력 (하이픈 '-' 제외)"
                 width="full"
                 {...register('schoolTeacherPhoneNumber')}
+                variant={showError && errors.schoolTeacherPhoneNumber ? 'error' : null}
               />
             </CustomFormItem>
           )}
