@@ -3,75 +3,24 @@ name: hello-gsm-stage-ci
 on:
   pull_request:
     branches:
-    - develop
+      - develop
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      environment: stage
+      push_to_ecr: false
+    secrets:
+      CLIENT_ENV_FILE: ${{ secrets.STAGE_CLIENT_ENV_FILE }}
+      ADMIN_ENV_FILE: ${{ secrets.STAGE_ADMIN_ENV_FILE }}
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.4.0
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Create .env files for build
-        run: |
-          cat > .env.client << EOF
-          ${{ secrets.STAGE_CLIENT_ENV_FILE }}
-          EOF
-          cat > .env.admin << EOF
-          ${{ secrets.STAGE_ADMIN_ENV_FILE }}
-          EOF
-
-      - name: All Package Build
-        run: |
-          # Client build with client env
-          cp .env.client apps/client/.env
-          # Admin build with admin env
-          cp .env.admin apps/admin/.env
-          pnpm build
-
-      - name: Docker Client build
-        run: |
-          docker build \
-          $(cat .env.client | sed 's/^/--build-arg /' | tr '\n' ' ') \
-          -f ./client.Dockerfile \
-          -t hello-stage-client:latest \
-          .
-
-      - name: Docker Admin build
-        run: |
-          docker build \
-          $(cat .env.admin | sed 's/^/--build-arg /' | tr '\n' ' ') \
-          -f ./admin.Dockerfile \
-          -t hello-stage-admin:latest \
-          .
-
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '✅ hello-gsm stage CI'
-          status: ${{ job.status }}
-          content: 'PR을 확인해주세요.'
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '❌ hello-gsm stage CI'
-          content: '에러를 확인해주세요.'
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+  notify:
+    needs: build
+    uses: ./.github/workflows/reusable-notifications.yml
+    with:
+      workflow_name: hello-gsm stage
+      workflow_type: CI
+    secrets:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}

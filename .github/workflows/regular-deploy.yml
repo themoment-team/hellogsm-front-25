@@ -2,7 +2,7 @@ name: regular deploy PR creation
 
 on:
   schedule:
-    - cron: "0 0 1,15 * *"
+    - cron: '0 0 1,15 * *'
   workflow_dispatch:
 
 permissions:
@@ -13,7 +13,6 @@ permissions:
 jobs:
   create-pr:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,24 +72,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: "✅ regular deploy PR 생성 성공"
-          status: ${{ job.status }}
-          content: "정기 배포 PR이 성공적으로 생성되었습니다."
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: "❌ regular deploy PR 생성 실패"
-          content: "정기 배포 PR 생성 중 에러가 발생했습니다."
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+  notify:
+    needs: create-pr
+    uses: ./.github/workflows/reusable-notifications.yml
+    with:
+      workflow_name: regular deploy PR 생성
+      workflow_type: ''
+      success_message: '정기 배포 PR이 성공적으로 생성되었습니다.'
+      failure_message: '정기 배포 PR 생성 중 에러가 발생했습니다.'
+    secrets:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
