@@ -227,9 +227,13 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                     'font-normal',
                   )}
                 >
-                  (1) 입학등록동의서 1부 (11. 4.(월) 17시 마감) <br />
-                  (2) 건강진단서 1부 (11. 11.(월) 17시 마감) <br />
-                  토, 일요일 제외 / 마감시간 이전 도착분에 한하여 유효함.
+                  (1) 입학등록동의서 1부
+                  <br />
+                  (2) 건강진단서 1부
+                  <br />
+                  2025. 11. 05.(수)~ 11. 10.(월) 16:30
+                  <br />
+                  (※ 휴무일과 공휴일은 서류 접수하지 않음)
                 </td>
                 <td
                   rowSpan={2}
@@ -299,7 +303,7 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                 >
                   위 사람은 {NEXT_YEAR}학년도 <br /> 본교 신입생 입학전형 지원자임을 확인함.
                   <p className={cn('pr-[0.625rem]', 'text-center', 'font-normal')}>
-                    2024년 10월 25일
+                    2025년 10월 31일
                   </p>
                   <p>광주소프트웨어마이스터고등학교장 [직인생략]</p>
                 </td>
