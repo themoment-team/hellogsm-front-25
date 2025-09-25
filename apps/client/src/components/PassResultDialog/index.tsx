@@ -35,8 +35,8 @@ const PassResultDialog = ({
     firstTestPassYes: {
       title: (
         <>
-          축하합니다! {userName} 님은 1차 서류 전형에{' '}
-          <span className={cn('text-sky-600')}>합격</span> 하셨습니다.
+          축하합니다! {userName} 님은 1차 전형에 <span className={cn('text-sky-600')}>합격</span>{' '}
+          하셨습니다.
         </>
       ),
       message: (
@@ -61,8 +61,7 @@ const PassResultDialog = ({
     firstTestPassNo: {
       title: (
         <>
-          {userName} 님은 1차 서류 전형에 <span className={cn('text-red-600')}>불합격</span>{' '}
-          하셨습니다.
+          {userName} 님은 1차 전형에 <span className={cn('text-red-600')}>불합격</span> 하셨습니다.
         </>
       ),
       message: (
