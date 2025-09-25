@@ -86,7 +86,7 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                   {역량검사시험기간}
                 </td>
 
-                <td rowSpan={6} className={cn('h-[200px]', 'w-[150px]', 'border', 'border-black')}>
+                <td rowSpan={7} className={cn('h-[200px]', 'w-[150px]', 'border', 'border-black')}>
                   {ticket.profileImg && (
                     <img
                       src={ticket.profileImg}
