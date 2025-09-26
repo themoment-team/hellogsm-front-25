@@ -62,7 +62,26 @@ const Step1Register = ({
   ];
 
   const handleDaumPostCodePopupComplete = ({ address }: Address) => {
-    setValue('address', address, { shouldValidate: true, shouldDirty: true });
+    const formattedAddress = address
+      .replace(/^서울\s/, '서울특별시 ')
+      .replace(/^부산\s/, '부산광역시 ')
+      .replace(/^대구\s/, '대구광역시 ')
+      .replace(/^인천\s/, '인천광역시 ')
+      .replace(/^광주\s/, '광주광역시 ')
+      .replace(/^대전\s/, '대전광역시 ')
+      .replace(/^울산\s/, '울산광역시 ')
+      .replace(/^세종\s/, '세종특별자치시 ')
+      .replace(/^경기\s/, '경기도 ')
+      .replace(/^강원\s/, '강원특별자치도 ')
+      .replace(/^충북\s/, '충청북도 ')
+      .replace(/^충남\s/, '충청남도 ')
+      .replace(/^전북\s/, '전북특별자치도 ')
+      .replace(/^전남\s/, '전라남도 ')
+      .replace(/^경북\s/, '경상북도 ')
+      .replace(/^경남\s/, '경상남도 ')
+      .replace(/^제주\s/, '제주특별자치도 ');
+
+    setValue('address', formattedAddress, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleZipCodeButtonClick = () =>
