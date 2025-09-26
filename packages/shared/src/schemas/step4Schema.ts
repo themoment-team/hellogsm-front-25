@@ -33,12 +33,33 @@ export const step4Schema = z
     achievement3_2: achievementSchema(GENERAL_SUBJECTS.length),
     newSubjects: z.optional(
       z
-        .array(z.string().min(1))
-        .refine((items) => new Set(items).size === items.length, {
-          message: '과목이 중복되어 작성되어 있습니다.',
-        })
-        .refine((items) => items.every((item) => !FORBIDDEN_SUBJECTS.includes(item)), {
-          message: '기본 과목이 작성되어 있습니다.',
+        .array(
+          z
+            .string()
+            .min(1)
+            .refine((item) => !FORBIDDEN_SUBJECTS.includes(item), {
+              message: '기본 과목이 작성되어 있습니다.',
+            }),
+        )
+        .superRefine((items, ctx) => {
+          const valueToIndexesMap = new Map<string, number[]>();
+
+          items.forEach((value, index) => {
+            const indexes = valueToIndexesMap.get(value) || [];
+            indexes.push(index);
+            valueToIndexesMap.set(value, indexes);
+          });
+
+          valueToIndexesMap.forEach((indexes) => {
+            if (indexes.length <= 1) return;
+            indexes.forEach((dupIndex) => {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: [dupIndex],
+                message: '과목이 중복되어 작성되어 있습니다.',
+              });
+            });
+          });
         }),
     ),
     artsPhysicalAchievement: achievementSchema(ARTS_PHYSICAL_SUBJECTS.length * 3),
