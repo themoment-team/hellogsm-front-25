@@ -390,7 +390,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
           'h-full',
           'bg-slate-50',
           'pt-[3.56rem]',
-          'sm:flex',
+          'mdx:flex',
           'hidden',
           'justify-center',
           'pb-[5rem]',

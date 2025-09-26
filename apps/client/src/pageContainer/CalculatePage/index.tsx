@@ -126,7 +126,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
     <>
       <ComputerRecommendedPage />
       {graduationType ? (
-        <div className={cn('sm:flex', 'justify-center', 'rounded-[1.25rem]', 'hidden')}>
+        <div className={cn('mdx:flex', 'justify-center', 'rounded-[1.25rem]', 'hidden')}>
           <div className={cn('mb-[3.56rem]', 'bg-white', 'mt-[3.56rem]', 'rounded-[1.25rem]')}>
             <header
               className={cn(
