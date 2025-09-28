@@ -13,7 +13,7 @@ const sexSchema = z.string().refine((value) => ['MALE', 'FEMALE'].includes(value
 
 const phoneNumberSchema = z
   .string()
-  .regex(/^\d{10,11}$/, { message: '번호 형식을 확인해 주세요.' })
+  .regex(/^010\d{8}$/, { message: '010으로 시작하는 11자리 번호를 입력해주세요.' })
   .min(1, { message: '전화번호를 입력해주세요.' });
 
 const birthSchema = z.object({
