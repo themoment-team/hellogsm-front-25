@@ -36,7 +36,10 @@ export const step4Schema = z
         .array(
           z
             .string()
-            .min(1)
+            .transform((val) => val.trim())
+            .refine((val) => val.length > 0, {
+              message: '과목명을 입력해주세요.',
+            })
             .refine((item) => !FORBIDDEN_SUBJECTS.includes(item), {
               message: '기본 과목이 작성되어 있습니다.',
             }),
