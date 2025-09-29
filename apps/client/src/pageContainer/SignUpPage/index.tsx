@@ -84,8 +84,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       const elapsedTime = Math.floor((Date.now() - parseInt(savedTime, 10)) / 1000);
       const remainingTime = initialTime - elapsedTime;
       setTimeLeft(remainingTime > 0 ? remainingTime : 0);
-    } else if (btnClick === true) {
-      sessionStorage.setItem('timerStart', Date.now().toString());
     }
 
     const interval = setInterval(() => {
@@ -93,7 +91,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [btnClick]);
+  }, []);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -144,6 +142,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       setBtnClick(true);
       setIsVerifyClicked(true);
       formMethods.setValue('isSentCertificationNumber', true);
+      setTimeLeft(180);
+      sessionStorage.setItem('timerStart', Date.now().toString());
     },
     onError: () => setVerificationCodeSendErrorModal(true),
   });
@@ -380,7 +380,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     }
                     onClick={() => {
                       sendCodeNumber(phoneNumber);
-                      setTimeLeft(180);
                     }}
                   >
                     {isVerifyClicked ? '재전송' : '번호 인증'}
