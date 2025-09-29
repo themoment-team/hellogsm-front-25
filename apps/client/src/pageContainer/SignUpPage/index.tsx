@@ -119,7 +119,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const birthMonth = formMethods.watch('birth.month');
   const birthDay = formMethods.watch('birth.day');
 
-  const isCertificationButtonDisabled = !/^\d{10,11}$/.test(phoneNumber);
+  const isCertificationButtonDisabled =
+    !signupFormSchema.shape.phoneNumber.safeParse(phoneNumber).success;
   const isCertificationValid = isSuccess === true;
   const isSubmitButtonDisabled = !isCertificationValid || !isAgreed;
 
@@ -375,7 +376,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     variant="disabled"
                     className={cn('w-[5.25rem]')}
                     disabled={
-                      (isCertificationButtonDisabled || btnClick === true) && timeLeft !== 0
+                      isCertificationButtonDisabled || (btnClick === true && timeLeft !== 0)
                     }
                     onClick={() => {
                       sendCodeNumber(phoneNumber);
