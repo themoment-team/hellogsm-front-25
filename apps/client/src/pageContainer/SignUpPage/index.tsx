@@ -83,11 +83,27 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     if (savedTime) {
       const elapsedTime = Math.floor((Date.now() - parseInt(savedTime, 10)) / 1000);
       const remainingTime = initialTime - elapsedTime;
-      setTimeLeft(remainingTime > 0 ? remainingTime : 0);
+      if (remainingTime > 0) {
+        setTimeLeft(remainingTime);
+        setBtnClick(true);
+        setIsVerifyClicked(true);
+        formMethods.setValue('isSentCertificationNumber', true);
+      } else {
+        // 시간이 만료된 경우에만 sessionStorage 삭제
+        sessionStorage.removeItem('timerStart');
+        setTimeLeft(0);
+      }
     }
 
     const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          // 타이머가 0이 되면 sessionStorage 삭제
+          sessionStorage.removeItem('timerStart');
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -98,9 +114,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       setBtnClick(true);
     } else if (timeLeft === 0) {
       setBtnClick(false);
-      sessionStorage.removeItem('timerStart');
     }
-  }, [btnClick, timeLeft]);
+  }, [timeLeft]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
