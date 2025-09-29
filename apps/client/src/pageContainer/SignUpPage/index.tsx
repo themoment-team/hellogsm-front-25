@@ -28,6 +28,10 @@ import {
   SelectContent,
   SelectValue,
   SelectItem,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  LoginDialogContent,
 } from 'shared/components';
 import { CURRENT_YEAR } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
@@ -466,6 +470,18 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
             >
               회원가입 완료
             </Button>
+            <p className={cn('text-sm', 'font-normal', 'text-gray-600', 'text-end')}>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button type="button" className={cn('underline', 'cursor-pointer')}>
+                    다른 계정으로 로그인하기
+                  </button>
+                </DialogTrigger>
+                <DialogContent className={cn('w-fit', 'p-0', '!rounded-[20px]')}>
+                  <LoginDialogContent />
+                </DialogContent>
+              </Dialog>
+            </p>
           </form>
         </FormProvider>
       </main>
