@@ -55,7 +55,8 @@ export const step4Schema = z
 
           valueToIndexesMap.forEach((indexes) => {
             if (indexes.length <= 1) return;
-            indexes.forEach((dupIndex) => {
+            const duplicateIndexesExcludingFirst = indexes.slice(1);
+            duplicateIndexesExcludingFirst.forEach((dupIndex) => {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 path: [dupIndex],
