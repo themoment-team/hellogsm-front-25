@@ -6,14 +6,12 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
-import { checkIsPassedDate } from 'shared';
 import { EditabilityType, OneseoListType, OneseoType, ScreeningEnum } from 'types';
 
 import { TextField } from 'admin/components';
 
 import { CheckIcon } from 'shared/assets';
 import { Table, TableBody, TableCell, Toggle, TableRow, Badge, Button } from 'shared/components';
-import { 심층면접일자, 역량검사일자 } from 'shared/constants';
 import { useDebounce } from 'shared/hooks';
 import { cn } from 'shared/lib/utils';
 import { useModalStore } from 'shared/stores';
@@ -34,6 +32,8 @@ interface ApplicationTRProps extends OneseoType {
   editableRefetch: (
     options?: RefetchOptions | undefined,
   ) => Promise<QueryObserverResult<EditabilityType, Error>>;
+  is역량검사처리기간: boolean;
+  is심층면접처리기간: boolean;
 }
 
 const ApplicantTR = ({
@@ -53,6 +53,8 @@ const ApplicantTR = ({
   entranceIntentionYn,
   editableData,
   editableRefetch,
+  is역량검사처리기간,
+  is심층면접처리기간,
 }: ApplicationTRProps) => {
   const {
     setDocumentSubmissionChangeModal,
@@ -61,9 +63,6 @@ const ApplicantTR = ({
   } = useModalStore();
 
   const { push } = useRouter();
-
-  const 역량검사처리시작일자 = new Date(역량검사일자);
-  const 심층면접처리시작일자 = new Date(심층면접일자);
 
   const [isRealOneseoArrived, setIsRealOneseoArrived] = useState<boolean>(
     realOneseoArrivedYn === 'YES',
@@ -107,9 +106,6 @@ const ApplicantTR = ({
     firstTestPassYn === 'YES' ? '합격' : firstTestPassYn === 'NO' ? '불합격' : '미정';
   const secondTestResult =
     secondTestPassYn === 'YES' ? '합격' : secondTestPassYn === 'NO' ? '불합격' : '미정';
-
-  const is역량검사처리기간 = checkIsPassedDate(역량검사처리시작일자);
-  const is심층면접처리기간 = checkIsPassedDate(심층면접처리시작일자);
 
   const formatted역량검사점수 = formatScore(String(competencyEvaluationScore ?? ''));
   const formatted심층면접점수 = formatScore(String(interviewScore ?? ''));

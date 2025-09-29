@@ -23,6 +23,8 @@ interface MainPageProps {
   initialData: OneseoListType | undefined;
   isAfterFirstResults: boolean;
   isAfterSecondResults: boolean;
+  is역량검사처리기간: boolean;
+  is심층면접처리기간: boolean;
 }
 
 const flexColStyle = ['flex', 'flex-col'] as const;
@@ -37,7 +39,13 @@ const testResultTypeConvertor: { [key: string]: string } = {
   FALL: '불합격자 관리',
 };
 
-const MainPage = ({ initialData, isAfterFirstResults, isAfterSecondResults }: MainPageProps) => {
+const MainPage = ({
+  initialData,
+  isAfterFirstResults,
+  isAfterSecondResults,
+  is역량검사처리기간,
+  is심층면접처리기간,
+}: MainPageProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const [keyword, setKeyword] = useState<string>('');
@@ -137,6 +145,8 @@ const MainPage = ({ initialData, isAfterFirstResults, isAfterSecondResults }: Ma
                   editableData={editableData}
                   oneseoRefetch={oneseoRefetch}
                   editableRefetch={editableRefetch}
+                  is역량검사처리기간={is역량검사처리기간}
+                  is심층면접처리기간={is심층면접처리기간}
                 />
               ))}
           </div>

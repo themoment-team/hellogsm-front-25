@@ -22,6 +22,8 @@ interface ApplicationTRProps extends OneseoType {
   editableRefetch: (
     options?: RefetchOptions | undefined,
   ) => Promise<QueryObserverResult<EditabilityType, Error>>;
+  is역량검사처리기간: boolean;
+  is심층면접처리기간: boolean;
 }
 
 const oneseoFakeRefetch: (options?: any) => any = async (options) => {
@@ -63,6 +65,8 @@ const MockData: ApplicationTRProps = {
   entranceIntentionYn: 'YES',
   editableData: { oneseoEditability: true },
   editableRefetch: editableFakeRefetch,
+  is역량검사처리기간: true,
+  is심층면접처리기간: true,
 };
 
 export const Primary: Story = {
