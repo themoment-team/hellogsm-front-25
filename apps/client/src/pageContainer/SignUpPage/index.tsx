@@ -35,6 +35,7 @@ import { cn } from 'shared/lib/utils';
 import { useModalStore } from 'shared/stores';
 
 const PERMIT_YEAR = 50;
+const VERIFICATION_CODE_TIMEOUT = 180;
 
 interface SignUpProps {
   isPastAnnouncement: boolean;
@@ -77,32 +78,46 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   });
 
   useEffect(() => {
-    const initialTime = 180;
+    const initialTime = VERIFICATION_CODE_TIMEOUT;
     const savedTime = sessionStorage.getItem('timerStart');
 
     if (savedTime) {
       const elapsedTime = Math.floor((Date.now() - parseInt(savedTime, 10)) / 1000);
       const remainingTime = initialTime - elapsedTime;
-      setTimeLeft(remainingTime > 0 ? remainingTime : 0);
-    } else if (btnClick === true) {
-      sessionStorage.setItem('timerStart', Date.now().toString());
+      if (remainingTime > 0) {
+        setTimeLeft(remainingTime);
+        setBtnClick(true);
+        setIsVerifyClicked(true);
+        formMethods.setValue('isSentCertificationNumber', true);
+      } else {
+        // 저장된 시작 시간보다 현재 시간이 더 많이 지난 경우 (3분 초과)
+        // 타이머를 초기화하고 sessionStorage를 정리
+        sessionStorage.removeItem('timerStart');
+        setTimeLeft(0);
+      }
     }
 
     const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          // 타이머 카운트다운이 완료되면 sessionStorage를 정리하고 타이머 종료
+          sessionStorage.removeItem('timerStart');
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [btnClick]);
+  }, []);
 
   useEffect(() => {
     if (timeLeft > 0) {
       setBtnClick(true);
     } else if (timeLeft === 0) {
       setBtnClick(false);
-      sessionStorage.removeItem('timerStart');
     }
-  }, [btnClick, timeLeft]);
+  }, [timeLeft]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -144,6 +159,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       setBtnClick(true);
       setIsVerifyClicked(true);
       formMethods.setValue('isSentCertificationNumber', true);
+      setTimeLeft(VERIFICATION_CODE_TIMEOUT);
+      sessionStorage.setItem('timerStart', Date.now().toString());
     },
     onError: () => setVerificationCodeSendErrorModal(true),
   });
@@ -380,7 +397,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     }
                     onClick={() => {
                       sendCodeNumber(phoneNumber);
-                      setTimeLeft(180);
                     }}
                   >
                     {isVerifyClicked ? '재전송' : '번호 인증'}
