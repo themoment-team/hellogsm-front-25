@@ -417,7 +417,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
       >
         <Logo isRegisterPath={isRegisterPath} />
 
-        <PCNavigation links={pcNavLinks} isRegisterPath={isRegisterPath} />
+        {!isLogin && <PCNavigation links={pcNavLinks} isRegisterPath={isRegisterPath} />}
 
         {/* PC width 일떄 */}
         {isServerHealthy && (
@@ -462,7 +462,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         </div>
       </header>
 
-      {isMenu && (
+      {isMenu && !isLogin && (
         <div
           className={cn(
             'flex',
