@@ -35,6 +35,7 @@ import { cn } from 'shared/lib/utils';
 import { useModalStore } from 'shared/stores';
 
 const PERMIT_YEAR = 50;
+const VERIFICATION_CODE_TIMEOUT = 180;
 
 interface SignUpProps {
   isPastAnnouncement: boolean;
@@ -77,7 +78,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   });
 
   useEffect(() => {
-    const initialTime = 180;
+    const initialTime = VERIFICATION_CODE_TIMEOUT;
     const savedTime = sessionStorage.getItem('timerStart');
 
     if (savedTime) {
@@ -157,7 +158,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
       setBtnClick(true);
       setIsVerifyClicked(true);
       formMethods.setValue('isSentCertificationNumber', true);
-      setTimeLeft(180);
+      setTimeLeft(VERIFICATION_CODE_TIMEOUT);
       sessionStorage.setItem('timerStart', Date.now().toString());
     },
     onError: () => setVerificationCodeSendErrorModal(true),
