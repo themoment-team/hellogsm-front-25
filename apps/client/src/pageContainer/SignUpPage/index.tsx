@@ -90,7 +90,8 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
         setIsVerifyClicked(true);
         formMethods.setValue('isSentCertificationNumber', true);
       } else {
-        // 시간이 만료된 경우에만 sessionStorage 삭제
+        // 저장된 시작 시간보다 현재 시간이 더 많이 지난 경우 (3분 초과)
+        // 타이머를 초기화하고 sessionStorage를 정리
         sessionStorage.removeItem('timerStart');
         setTimeLeft(0);
       }
@@ -99,7 +100,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // 타이머가 0이 되면 sessionStorage 삭제
+          // 타이머 카운트다운이 완료되면 sessionStorage를 정리하고 타이머 종료
           sessionStorage.removeItem('timerStart');
           return 0;
         }
