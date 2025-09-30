@@ -214,7 +214,7 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                     'font-normal',
                   )}
                 >
-                  공문 시행, 직접 방문
+                  공문 시행, 방문 제출
                 </td>
               </tr>
               <tr>
