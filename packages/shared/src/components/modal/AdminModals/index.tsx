@@ -1,5 +1,9 @@
 'use client';
 
+import type { AxiosError } from 'axios';
+
+import { toast } from 'react-toastify';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,15 +38,25 @@ const AdminModals = () => {
   const { mutate: postFirstResult } = usePostFirstResult({
     onSuccess: () => {
       operationRefetch();
+      toast.success('1차 결과가 성공적으로 발표되었습니다!');
     },
-    onError: () => {},
+    onError: (error) => {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const serverMessage = axiosError.response?.data?.message;
+      toast.error(serverMessage ?? '1차 결과 발표 중 오류가 발생했습니다.');
+    },
   });
 
   const { mutate: postSecondResult } = usePostSecondResult({
     onSuccess: () => {
       operationRefetch();
+      toast.success('2차 결과가 성공적으로 발표되었습니다!');
     },
-    onError: () => {},
+    onError: (error) => {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const serverMessage = axiosError.response?.data?.message;
+      toast.error(serverMessage ?? '2차 결과 발표 중 오류가 발생했습니다.');
+    },
   });
 
   return (
