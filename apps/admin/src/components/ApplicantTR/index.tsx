@@ -182,8 +182,7 @@ const ApplicantTR = ({
             </Toggle>
           </TableCell>
           <TableCell className={cn('w-[7.5rem]', 'font-semibold', 'text-zinc-900')}>
-            {name} <br />
-            <span className={cn('font-normal', 'text-zinc-600')}>{phoneNumber}</span>
+            {name}
           </TableCell>
           <TableCell className={cn('w-[8rem]', 'text-zinc-900')}>
             {examinationNumber === null ? <Badge variant={'미정'}>미정</Badge> : examinationNumber}
