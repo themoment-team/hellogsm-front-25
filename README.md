@@ -6,7 +6,7 @@
 
 ```
 - git clone
-$ git clone https://github.com/themoment-team/hellogsm-front-24.git
+$ git clone https://github.com/themoment-team/hellogsm-front-25.git
 - setting project
 $ pnpm install
 - start project
