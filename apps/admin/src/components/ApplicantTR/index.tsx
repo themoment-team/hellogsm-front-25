@@ -43,7 +43,6 @@ const ApplicantTR = ({
   interviewScore,
   memberId,
   name,
-  phoneNumber,
   realOneseoArrivedYn,
   schoolName,
   screening,
