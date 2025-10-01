@@ -6,19 +6,19 @@ export const RECRUITMENT_PERIOD = {
 } as const;
 
 // TODO 정확한 날짜 확인 후 수정
-export const 역량검사일자 = '2024-07-25';
-export const 심층면접일자 = '2024-07-26';
-export const 역량검사시험기간 = '2024. 10. 25.(금) 13:00 ~ 16:10';
-export const 심층면접시험기간 = '2024. 10. 26.(토) 09:00 ~ 12:00';
+export const 역량검사일자 = '2025-10-31';
+export const 심층면접일자 = '2025-11-01';
+export const 역량검사시험기간 = '2025. 10. 31.(금) 14:00 ~ 16:30';
+export const 심층면접시험기간 = '2025. 11. 01.(토) 09:00 ~ 16:30';
 
 // TODO 정확한 날짜 확인 후 수정
 export const visionCampDate = {
-  startDate: '2025. 01. 15.(수)',
-  endDate: '2025. 01. 17.(금)',
+  startDate: '2026. 01. 14.(수)',
+  endDate: '2026. 01. 16.(금)',
 };
 
 // TODO 정확한 날짜 확인 후 수정
-export const passedMemberAnnounceDate = '2024. 10. 30.(수) 10:00';
+export const passedMemberAnnounceDate = '2025. 11. 05.(수) 10:00';
 export const passedMemberSubmitDate = {
   startDate: '2025. 11. 1.(수)',
   endDate: '2025. 11. 6.(월)',

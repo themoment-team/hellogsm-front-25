@@ -2,7 +2,14 @@
 
 import { useEffect } from 'react';
 
-import { UseFormRegister, UseFormReset, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  FormState,
+  UseFormRegister,
+  UseFormReset,
+  UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
+} from 'react-hook-form';
 import {
   DesireMajorValueEnum,
   GraduationTypeValueEnum,
@@ -30,6 +37,9 @@ interface Step2RegisterProps {
   setValue: UseFormSetValue<Step2FormType>;
   watch: UseFormWatch<Step2FormType>;
   reset: UseFormReset<Step2FormType>;
+  trigger: UseFormTrigger<Step2FormType>;
+  formState: FormState<Step2FormType>;
+  showError: boolean;
 }
 
 type MajorFieldType = 'firstDesiredMajor' | 'secondDesiredMajor' | 'thirdDesiredMajor';
@@ -68,7 +78,15 @@ const majorIntroductions = [
   },
 ] as const;
 
-const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps) => {
+const Step2Register = ({
+  register,
+  setValue,
+  watch,
+  reset,
+  trigger,
+  formState: { errors },
+  showError,
+}: Step2RegisterProps) => {
   const majorFieldList: MajorFieldType[] = [
     'firstDesiredMajor',
     'secondDesiredMajor',
@@ -77,6 +95,8 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
 
   const year = watch('graduationDate').split('-')[0];
   const month = watch('graduationDate').split('-')[1];
+  const classroom = watch('classroom');
+  const number = watch('number');
 
   const isCandidate = watch('graduationType') === GraduationTypeValueEnum.CANDIDATE;
   const isGED = watch('graduationType') === GraduationTypeValueEnum.GED;
@@ -84,17 +104,35 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
   const START_YEAR = isCandidate ? NEXT_YEAR : CURRENT_YEAR;
   const PERMIT_YEAR = isCandidate ? 1 : 5;
 
+  const FIXED_GRADE = 3;
+
+  useEffect(() => {
+    if (!isGED && classroom && number) {
+      const classroomNum = parseInt(classroom);
+      const numberNum = parseInt(number);
+
+      if (classroomNum >= 1 && classroomNum <= 12 && numberNum >= 1 && numberNum <= 30) {
+        const newStudentNumber = `${FIXED_GRADE}${classroomNum.toString().padStart(2, '0')}${numberNum.toString().padStart(2, '0')}`;
+        setValue('studentNumber', newStudentNumber);
+      }
+    }
+  }, [classroom, number, isGED, setValue]);
+
   const handleGraduationTypeOptionClick = (value: GraduationTypeValueEnum) => {
     setValue('graduationType', value);
 
     if (value === GraduationTypeValueEnum.GED) {
       setValue('schoolName', null);
       setValue('schoolAddress', null);
-    }
-
-    if (value !== GraduationTypeValueEnum.GED && watch('schoolName') === null) {
+      setValue('studentNumber', null);
+      setValue('classroom', '');
+      setValue('number', '');
+    } else if (!watch('schoolName')) {
       setValue('schoolName', '');
       setValue('schoolAddress', '');
+      setValue('studentNumber', '');
+      setValue('classroom', '');
+      setValue('number', '');
     }
 
     setValue('graduationDate', '0000-00');
@@ -114,13 +152,19 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
     switch (fieldName) {
       case 'firstDesiredMajor':
         setValue('firstDesiredMajor', value);
-        reset({ ...watch(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined });
+        reset(
+          { ...watch(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined },
+          { keepErrors: true, keepIsSubmitted: true },
+        );
 
         return;
 
       case 'secondDesiredMajor':
         setValue('secondDesiredMajor', value);
-        reset({ ...watch(), thirdDesiredMajor: undefined });
+        reset(
+          { ...watch(), thirdDesiredMajor: undefined },
+          { keepErrors: true, keepIsSubmitted: true },
+        );
 
         return;
 
@@ -131,12 +175,42 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
     }
   };
 
+  // 연/월 에러 상태 체크
+  const hasYearError = showError && (!year || year === '0000');
+  const hasMonthError = showError && (!month || month === '00');
+
+  const hasClassroomError = showError && classroom === '';
+  const hasNumberError = showError && number === '';
+
+  const hasFirstMajorError =
+    showError &&
+    errors.firstDesiredMajor &&
+    (watch('firstDesiredMajor') === undefined || watch('firstDesiredMajor') === null);
+  const hasSecondMajorError =
+    showError &&
+    errors.secondDesiredMajor &&
+    (watch('secondDesiredMajor') === undefined || watch('secondDesiredMajor') === null);
+  const hasThirdMajorError =
+    showError &&
+    errors.thirdDesiredMajor &&
+    (watch('thirdDesiredMajor') === undefined || watch('thirdDesiredMajor') === null);
+
   useEffect(() => {
     if (!isGED && watch('schoolName') === null) {
       setValue('schoolName', '');
       setValue('schoolAddress', '');
     }
   }, []);
+
+  useEffect(() => {
+    if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
+    validateForm();
+  }, [showError]);
 
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'items-start', 'gap-10')}>
@@ -156,66 +230,130 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
             list={[...graduationTypeList]}
             selectedValue={watch('graduationType')}
             handleOptionClick={handleGraduationTypeOptionClick}
+            error={showError}
             required
           />
 
-          <CustomFormItem
-            text={isGED ? '검정고시 합격일' : '출신 중학교 & 졸업일'}
-            className={cn('gap-1')}
-            required
-            fullWidth
-          >
-            <div className={cn('flex', 'gap-2')}>
+          <div className={cn('flex', 'flex-col', 'gap-3', 'w-full', 'justify-between')}>
+            <CustomFormItem
+              text={isGED ? '검정고시 합격일' : '출신 중학교 & 졸업일'}
+              className={cn('gap-1')}
+              required
+              fullWidth
+            >
               {!isGED && (
-                <>
+                <div className={cn('flex', 'gap-2')}>
                   <Input
                     placeholder="내 중학교 찾기"
                     width="full"
                     disabled={true}
                     {...register('schoolName')}
+                    variant={showError && errors.schoolName ? 'error' : null}
                   />
                   <SearchDialog setValue={setValue} />
-                </>
+                </div>
               )}
-            </div>
-            <div className={cn('flex', 'w-full', 'justify-between')}>
-              <Select value={year === '0000' ? '' : year} onValueChange={handleYearSelectChange}>
-                <SelectTrigger className={cn('w-[14.6785rem]')}>
-                  <SelectValue placeholder="연도 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>연도 선택</SelectLabel>
-                    {Array.from({ length: PERMIT_YEAR + 1 }, (_, index) => START_YEAR - index).map(
-                      (year) => (
+              <div className={cn('flex', 'w-full', 'justify-between')}>
+                <Select value={year === '0000' ? '' : year} onValueChange={handleYearSelectChange}>
+                  <SelectTrigger
+                    className={cn('w-[14.6785rem]', {
+                      '!border-red-600': hasYearError,
+                    })}
+                  >
+                    <SelectValue placeholder="연도 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>연도 선택</SelectLabel>
+                      {Array.from(
+                        { length: PERMIT_YEAR + 1 },
+                        (_, index) => START_YEAR - index,
+                      ).map((year) => (
                         <SelectItem key={year} value={year.toString()}>
                           {year}년
                         </SelectItem>
-                      ),
-                    )}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Select
-                value={month === '00' ? '' : Number(month).toString()}
-                onValueChange={handleMonthSelectChange}
-              >
-                <SelectTrigger className={cn('w-[14.6785rem]')}>
-                  <SelectValue placeholder="월 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>월 선택</SelectLabel>
-                    {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
-                      <SelectItem key={month} value={month.toString()}>
-                        {month}월
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </CustomFormItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={month === '00' ? '' : Number(month).toString()}
+                  onValueChange={handleMonthSelectChange}
+                >
+                  <SelectTrigger
+                    className={cn('w-[14.6785rem]', {
+                      '!border-red-600': hasMonthError,
+                    })}
+                  >
+                    <SelectValue placeholder="월 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>월 선택</SelectLabel>
+                      {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
+                        <SelectItem key={month} value={month.toString()}>
+                          {month}월
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CustomFormItem>
+            {!isGED && (
+              <CustomFormItem text="학년/반/번호" className={cn('gap-1')} required fullWidth>
+                <div className={cn('flex', 'w-full', 'justify-between')}>
+                  <Select>
+                    <SelectTrigger className={cn('w-[9.3785rem]')} disabled={true}>
+                      <SelectValue placeholder={`${FIXED_GRADE}학년`} />
+                    </SelectTrigger>
+                  </Select>
+                  <Select
+                    value={classroom || ''}
+                    onValueChange={(value) => setValue('classroom', value)}
+                  >
+                    <SelectTrigger
+                      className={cn('w-[9.3785rem]', {
+                        '!border-red-600': hasClassroomError,
+                      })}
+                    >
+                      <SelectValue placeholder="반 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>반 선택</SelectLabel>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((c) => (
+                          <SelectItem key={c} value={c.toString()}>
+                            {c}반
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={number || ''} onValueChange={(value) => setValue('number', value)}>
+                    <SelectTrigger
+                      className={cn('w-[9.3785rem]', {
+                        '!border-red-600': hasNumberError,
+                      })}
+                    >
+                      <SelectValue placeholder="번호 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>번호 선택</SelectLabel>
+                        {Array.from({ length: 30 }, (_, i) => i + 1).map((n) => (
+                          <SelectItem key={n} value={n.toString()}>
+                            {n}번
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CustomFormItem>
+            )}
+          </div>
         </div>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-10')}>
           <RadioButton<ScreeningValueEnum>
@@ -224,8 +362,9 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
             required
             selectedValue={watch('screening')}
             handleOptionClick={(value) => setValue('screening', value)}
+            error={showError}
           />
-          <div className={cn('flex', 'flex-col', 'gap-3', 'w-full')}>
+          <div className={cn('flex', 'flex-col', 'gap-7', 'w-full')}>
             <div className={cn('flex', 'flex-col', 'items-start', 'gap-1.5', 'w-full')}>
               <CustomFormItem
                 text={'지원학과'}
@@ -256,7 +395,16 @@ const Step2Register = ({ register, setValue, watch, reset }: Step2RegisterProps)
                           handleDesiredMajorChange(fieldName, value)
                         }
                       >
-                        <SelectTrigger className={cn('w-[9.3785rem]')}>
+                        <SelectTrigger
+                          className={cn('w-[9.3785rem]', {
+                            '!border-red-600':
+                              desiredSequence === 1
+                                ? hasFirstMajorError
+                                : desiredSequence === 2
+                                  ? hasSecondMajorError
+                                  : hasThirdMajorError,
+                          })}
+                        >
                           <SelectValue placeholder={`${desiredSequence}지망`} />
                         </SelectTrigger>
                         <SelectContent>

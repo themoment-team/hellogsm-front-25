@@ -22,24 +22,17 @@ const ApplicationForm = ({ oneseo }: OneseoStatusType) => {
         'bg-white',
         'p-2',
         'text-[1vh]',
+
+        'print:w-[210mm]',
+        'print:h-[297mm]',
+        'print:flex',
+        'print:items-center',
+        'print:justify-center',
+        'print:p-0',
+        'print:m-0',
       )}
     >
-      <div
-        className={cn(
-          'relative',
-          'z-[2]',
-          'w-[63vh]',
-          'py-20',
-
-          'print:w-[210mm]',
-          'print:h-[297mm]',
-          'print:flex',
-          'print:items-center',
-          'print:justify-center',
-          'print:p-0',
-          'print:m-0',
-        )}
-      >
+      <div className={cn('relative', 'z-[2]', 'w-[63vh]', 'py-20')}>
         <div className={cn('relative', 'z-[2]', 'w-[63vh]')}>
           <div
             id="sample"

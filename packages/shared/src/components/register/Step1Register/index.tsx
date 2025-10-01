@@ -1,7 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormTrigger,
+  UseFormWatch,
+  FormState,
+} from 'react-hook-form';
 import { SexType, SexValueEnum, Step1FormType } from 'types';
 
 import {
@@ -24,6 +32,9 @@ interface Step1RegisterProps {
   register: UseFormRegister<Step1FormType>;
   setValue: UseFormSetValue<Step1FormType>;
   watch: UseFormWatch<Step1FormType>;
+  trigger: UseFormTrigger<Step1FormType>;
+  formState: FormState<Step1FormType>;
+  showError: boolean;
 }
 
 const Step1Register = ({
@@ -34,6 +45,9 @@ const Step1Register = ({
   register,
   setValue,
   watch,
+  trigger,
+  formState: { errors },
+  showError,
 }: Step1RegisterProps) => {
   const daumPostCode = useDaumPostcodePopup();
 
@@ -47,8 +61,32 @@ const Step1Register = ({
     { name: '여자', value: SexValueEnum.FEMALE },
   ];
 
+  const regionMap: Record<string, string> = {
+    서울: '서울특별시',
+    부산: '부산광역시',
+    대구: '대구광역시',
+    인천: '인천광역시',
+    광주: '광주광역시',
+    대전: '대전광역시',
+    울산: '울산광역시',
+    세종: '세종특별자치시',
+    경기: '경기도',
+    강원: '강원특별자치도',
+    충북: '충청북도',
+    충남: '충청남도',
+    전북: '전북특별자치도',
+    전남: '전라남도',
+    경북: '경상북도',
+    경남: '경상남도',
+    제주: '제주특별자치도',
+  };
+
   const handleDaumPostCodePopupComplete = ({ address }: Address) => {
-    setValue('address', address);
+    const [region, ...rest] = address.split(' ');
+    const formattedRegion = regionMap[region] ?? region;
+    const formattedAddress = [formattedRegion, ...rest].join(' ');
+
+    setValue('address', formattedAddress, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleZipCodeButtonClick = () =>
@@ -56,6 +94,16 @@ const Step1Register = ({
       popupTitle: 'Hello, GSM 2024',
       onComplete: handleDaumPostCodePopupComplete,
     });
+
+  useEffect(() => {
+    if (!showError) return;
+
+    const validateForm = async () => {
+      await trigger();
+    };
+
+    validateForm();
+  }, [showError]);
 
   return (
     <div
@@ -72,7 +120,7 @@ const Step1Register = ({
 
       <div className={cn('flex', 'items-end', 'gap-[3rem]')}>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-[2rem]')}>
-          <UploadPhoto setValue={setValue} watch={watch} />
+          <UploadPhoto setValue={setValue} watch={watch} errors={errors} showError={showError} />
           <CustomFormItem text={'이름'} className={cn('gap-1')} required={true} fullWidth={true}>
             <Input placeholder={name} disabled={true} />
           </CustomFormItem>
@@ -124,12 +172,18 @@ const Step1Register = ({
                   width="full"
                   disabled
                   {...register('address')}
+                  variant={showError && errors.address ? 'error' : null}
                 />
 
                 <Button onClick={handleZipCodeButtonClick}>주소 찾기</Button>
               </div>
             </CustomFormItem>
-            <Input placeholder="상세주소" width="full" {...register('detailAddress')} />
+            <Input
+              placeholder="상세주소"
+              width="full"
+              {...register('detailAddress')}
+              variant={showError && errors.detailAddress ? 'error' : null}
+            />
           </div>
 
           <CustomFormItem

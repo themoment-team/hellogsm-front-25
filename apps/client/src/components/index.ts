@@ -6,7 +6,6 @@ export { default as ActiveLink } from './ActiveLink';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { default as SexToggle } from './SexToggle';
-export { default as LoginDialog } from './LoginDialog';
 export { default as ChannelTalk } from './ChannelTalk';
 export { default as OneseoStatus } from './PrintPage/OneseoStatus';
 export { default as FaqElement } from './FaqElement';

@@ -105,7 +105,7 @@ const ScoreConfirmationForm = ({ oneseo }: OneseoStatusType) => {
               <h2 className={cn('mt-[1.5vh]', 'text-[1.2vh]', 'leading-[2vh]')}>비교과</h2>
               <ExtracurricularTable oneseo={oneseo} />
 
-              <ConfirmationTable />
+              <ConfirmationTable oneseo={oneseo} />
 
               <div className={cn('mt-[2vh]', 'text-center', 'text-[1.2vh]')}>
                 <p>위와 같이 입력하고 확인하였음을 증명합니다.</p>

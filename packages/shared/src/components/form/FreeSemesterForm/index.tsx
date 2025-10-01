@@ -3,7 +3,14 @@
 import { useEffect } from 'react';
 
 import { XIcon } from 'lucide-react';
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  FieldErrors,
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+  get,
+} from 'react-hook-form';
 import { AchievementType, FreeSemesterValueEnum, SemesterIdType, type Step4FormType } from 'types';
 
 import { PinIcon } from 'shared/assets';
@@ -22,6 +29,10 @@ interface FreeSemesterFormProps {
   freeSemester: FreeSemesterValueEnum | null;
   achievementList: AchievementType[];
   isGraduate: boolean;
+  showError: boolean;
+  errors: FieldErrors<Step4FormType>;
+  getValues: UseFormGetValues<Step4FormType>;
+  validateForm: () => void;
 }
 
 const itemStyle = [
@@ -78,6 +89,10 @@ const FreeSemesterForm = ({
   freeSemester,
   achievementList,
   isGraduate,
+  errors,
+  showError,
+  getValues,
+  validateForm,
 }: FreeSemesterFormProps) => {
   useEffect(() => {
     setTimeout(
@@ -99,6 +114,11 @@ const FreeSemesterForm = ({
         : setValue(field, watch(field) || undefined!);
     });
   }, [freeSemester]);
+
+  useEffect(() => {
+    if (!showError) return;
+    validateForm();
+  }, [showError]);
 
   return (
     <div className={cn('flex', 'flex-col')}>
@@ -141,16 +161,25 @@ const FreeSemesterForm = ({
                     'text-emerald-500',
                   ])}
                   type="button"
-                  onClick={() => setValue('freeSemester', null)}
+                  onClick={() => {
+                    setValue('freeSemester', null);
+                    validateForm();
+                  }}
                 >
                   <PinIcon type="ON" />
                   on
                 </button>
               ) : (
                 <button
-                  className={cn([...freeSemesterButtonStyle])}
+                  className={cn([
+                    ...freeSemesterButtonStyle,
+                    showError && errors.freeSemester && !isGraduate && '!border-red-600',
+                  ])}
                   type="button"
-                  onClick={() => setValue('freeSemester', value!)}
+                  onClick={() => {
+                    setValue('freeSemester', value!);
+                    validateForm();
+                  }}
                 >
                   <PinIcon type="OFF" />
                   off
@@ -160,110 +189,132 @@ const FreeSemesterForm = ({
           ))}
         </div>
       </div>
-      {subjectArray.map((subject, idx) => (
-        <div
-          key={subject}
-          className={cn([
-            ...rowStyle,
-            'bg-white',
-            'h-[3.5rem]',
-            'relative',
-            idx === subjectArray.length - 1 && 'rounded-b-[0.375rem]',
-          ])}
-        >
-          <div className={cn('h-full', 'w-[6.75rem]', 'flex', 'items-center', 'justify-center')}>
-            {idx < defaultSubjectLength ? (
-              <h1 className={cn([...itemStyle, 'w-full', 'w-[6.75rem]'])}>{subject}</h1>
-            ) : (
-              <input
-                type="text"
-                className={cn(
-                  'w-[5.25rem]',
-                  'h-[2rem]',
-                  'text-center',
-                  'placeholder:text-slate-400',
-                  'text-slate-900',
-                  'border-[0.0625rem]',
-                  'border-slate-300',
-                  'rounded-md',
-                  'text-[0.875rem]',
-                  'font-normal',
-                  'leading-[1.25rem]',
-                )}
-                {...register(`newSubjects.${idx - defaultSubjectLength}`)}
-              />
+      {subjectArray.map((subject, idx) => {
+        const dynamicIndex = idx - defaultSubjectLength;
+
+        const newSubjectHasError = Boolean(get(errors, `newSubjects.${dynamicIndex}`));
+        const isNewSubjectError = newSubjectHasError && showError && '!border-red-600';
+        return (
+          <div
+            key={subject}
+            className={cn([
+              ...rowStyle,
+              'bg-white',
+              'h-[3.5rem]',
+              'relative',
+              idx === subjectArray.length - 1 && 'rounded-b-[0.375rem]',
+            ])}
+          >
+            <div className={cn('h-full', 'w-[6.75rem]', 'flex', 'items-center', 'justify-center')}>
+              {idx < defaultSubjectLength ? (
+                <h1 className={cn([...itemStyle, 'w-full', 'w-[6.75rem]'])}>{subject}</h1>
+              ) : (
+                <input
+                  type="text"
+                  className={cn(
+                    'w-[5.25rem]',
+                    'h-[2rem]',
+                    'text-center',
+                    'placeholder:text-slate-400',
+                    'text-slate-900',
+                    'border-[0.0625rem]',
+                    'border-slate-300',
+                    'rounded-md',
+                    'text-[0.875rem]',
+                    'font-normal',
+                    'leading-[1.25rem]',
+                    isNewSubjectError,
+                  )}
+                  {...register(`newSubjects.${idx - defaultSubjectLength}`)}
+                />
+              )}
+            </div>
+            <div className={cn('flex', 'items-center')}>
+              {achievementList.map(({ value, field }) => {
+                const score = watch(`${field}.${idx}`);
+
+                const subjectHasError = score === undefined || score === null;
+                const isSubjectError = subjectHasError && showError && '!border-red-600';
+
+                return (
+                  <div
+                    key={field}
+                    className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
+                  >
+                    {freeSemester === value ? (
+                      <div
+                        className={cn(
+                          'px-[0.25rem]',
+                          'py-[0.125rem]',
+                          'text-gray-500',
+                          'text-sm',
+                          'font-medium',
+                          'leading-5',
+                          'rounded-[0.25rem]',
+                          'bg-gray-100',
+                        )}
+                      >
+                        자유학기제
+                      </div>
+                    ) : (
+                      <div className={cn('w-[7.3375rem]', 'flex', 'justify-center')}>
+                        <Select
+                          onValueChange={(value) => {
+                            const prev = getValues(field) || [];
+                            const next = [...prev];
+
+                            while (next.length <= idx) {
+                              next.push(undefined!);
+                            }
+
+                            next[idx] = Number(value);
+
+                            setValue(field, next, { shouldDirty: true, shouldValidate: true });
+                          }}
+                          defaultValue={Number.isInteger(score) ? String(score) : ''}
+                        >
+                          <SelectTrigger
+                            className={cn(
+                              isGraduate ? 'w-[7.34375rem]' : 'w-[5.475rem]',
+                              'h-[2rem]',
+                              'text-sm',
+                              'font-normal',
+                              'leading-5',
+                              'bg-white',
+                              'data-[placeholder]:text-slate-500',
+                              'text-slate-900',
+                              'px-[0.5rem]',
+                              'border-slate-300',
+                              isSubjectError,
+                            )}
+                          >
+                            <SelectValue placeholder="성적 입력" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {GENERAL_SCORE_VALUES.map(({ name, value }, idx) => (
+                              <SelectItem value={String(value)} key={idx}>
+                                {name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {idx >= defaultSubjectLength && (
+              <button
+                className={cn('absolute', 'right-[-1.97rem]')}
+                onClick={() => handleDeleteSubjectClick(idx)}
+              >
+                <XIcon className={cn('stroke-slate-300', 'w-[1rem]', 'hover:stroke-slate-500')} />
+              </button>
             )}
           </div>
-          <div className={cn('flex', 'items-center')}>
-            {achievementList.map(({ value, field }) => {
-              const score = watch(`${field}.${idx}`);
-
-              return (
-                <div
-                  key={field}
-                  className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-                >
-                  {freeSemester === value ? (
-                    <div
-                      className={cn(
-                        'px-[0.25rem]',
-                        'py-[0.125rem]',
-                        'text-gray-500',
-                        'text-sm',
-                        'font-medium',
-                        'leading-5',
-                        'rounded-[0.25rem]',
-                        'bg-gray-100',
-                      )}
-                    >
-                      자유학기제
-                    </div>
-                  ) : (
-                    <div className={cn('w-[7.3375rem]', 'flex', 'justify-center')}>
-                      <Select
-                        onValueChange={(value) => setValue(`${field}.${idx}`, Number(value))}
-                        defaultValue={Number.isInteger(score) ? String(score) : ''}
-                      >
-                        <SelectTrigger
-                          className={cn(
-                            isGraduate ? 'w-[7.34375rem]' : 'w-[5.475rem]',
-                            'h-[2rem]',
-                            'text-sm',
-                            'font-normal',
-                            'leading-5',
-                            'bg-white',
-                            'data-[placeholder]:text-slate-500',
-                            'text-slate-900',
-                            'px-[0.5rem]',
-                            'border-slate-300',
-                          )}
-                        >
-                          <SelectValue placeholder="성적 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {GENERAL_SCORE_VALUES.map(({ name, value }, idx) => (
-                            <SelectItem value={String(value)} key={idx}>
-                              {name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          {idx >= defaultSubjectLength && (
-            <button
-              className={cn('absolute', 'right-[-1.97rem]')}
-              onClick={() => handleDeleteSubjectClick(idx)}
-            >
-              <XIcon className={cn('stroke-slate-300', 'w-[1rem]', 'hover:stroke-slate-500')} />
-            </button>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

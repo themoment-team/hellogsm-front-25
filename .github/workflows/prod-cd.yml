@@ -2,176 +2,52 @@ name: hello-gsm-prod-cd
 
 on:
   push:
-    branches: main
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }}
-      NEXT_PUBLIC_CHANNEL_IO_KEY: ${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }}
-      NEXT_PUBLIC_IMAGE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_URL }}
-      NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF: ${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }}
-      NEXT_PUBLIC_NEIS_API_KEY: ${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }}
-      NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID: ${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }}
-      NEXT_PUBLIC_NOTION_SECRET_API_KEY: ${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }}
-      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-      NEXT_PUBLIC_KAKAO_REST_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }}
-      NEXT_PUBLIC_CDN_URL: ${{ secrets.NEXT_PUBLIC_CDN_URL }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.4.0
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: All Package Build
-        run: |
-          pnpm build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Docker Client build
-        run: |
-          docker build \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF=${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }} \
-          --build-arg NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
-          --build-arg NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
-          -f ./client.Dockerfile \
-          -t ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest \
-          .
-
-      - name: Docker Admin build
-        run: |
-          docker build \
-          --build-arg NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-          --build-arg NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-          --build-arg NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-          --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-          -f ./admin.Dockerfile \
-          -t ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest \
-          .
-
-      - name: Push image to ECR
-        run: |
-          docker push ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
-          docker push ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      environment: prod
+      push_to_ecr: true
+    secrets:
+      CLIENT_ENV_FILE: ${{ secrets.PROD_CLIENT_ENV_FILE }}
+      ADMIN_ENV_FILE: ${{ secrets.PROD_ADMIN_ENV_FILE }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ECR_CLIENT_REPOSITORY: ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}
+      AWS_ECR_ADMIN_REPOSITORY: ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}
 
   deploy:
-    runs-on: ubuntu-latest
     needs: build
-    steps:
-      - name: Connect to Bastion EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.BASTION_EC2_IP }}
-          port: ${{ secrets.BASTION_EC2_PORT }}
-          username: ${{ secrets.BASTION_EC2_USERNAME }}
-          key: ${{ secrets.BASTION_EC2_SSH_KEY }}
-          script: |
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY_NAME }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_IP }} << 'EOF'
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}
-            docker pull ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
-            docker pull ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: prod
+      client_port: '3000'
+      admin_port: '3002'
+      use_blue_green: true
+    secrets:
+      CLIENT_ENV_FILE: ${{ secrets.PROD_CLIENT_ENV_FILE }}
+      ADMIN_ENV_FILE: ${{ secrets.PROD_ADMIN_ENV_FILE }}
+      BASTION_EC2_IP: ${{ secrets.BASTION_EC2_IP }}
+      BASTION_EC2_PORT: ${{ secrets.BASTION_EC2_PORT }}
+      BASTION_EC2_USERNAME: ${{ secrets.BASTION_EC2_USERNAME }}
+      BASTION_EC2_SSH_KEY: ${{ secrets.BASTION_EC2_SSH_KEY }}
+      EC2_SSH_KEY_NAME: ${{ secrets.EC2_SSH_KEY_NAME }}
+      EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+      EC2_IP: ${{ secrets.EC2_IP }}
+      AWS_ECR_URL: ${{ secrets.AWS_ECR_URL }}
+      AWS_ECR_CLIENT_REPOSITORY: ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}
+      AWS_ECR_ADMIN_REPOSITORY: ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}
 
-            if [ "$(docker ps -q -f name=hello-gsm-client-blue)" ]; then
-              NEW_COLOR=green
-              OLD_COLOR=blue
-              NEW_PORT=3001
-              OLD_PORT=3000
-            else
-              NEW_COLOR=blue
-              OLD_COLOR=green
-              NEW_PORT=3000
-              OLD_PORT=3001
-            fi
-
-            docker run -d --name hello-gsm-client-$NEW_COLOR \
-              -p $NEW_PORT:3000 \
-              -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-              -e NEXT_PUBLIC_CHANNEL_IO_KEY=${{ secrets.NEXT_PUBLIC_CHANNEL_IO_KEY }} \
-              -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-              -e NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF=${{ secrets.NEXT_PUBLIC_SHOW_LOGIN_MODAL_FF }} \
-              -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-              -e NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_FAQ_DATABASE_ID }} \
-              -e NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID=${{ secrets.NEXT_PUBLIC_NOTION_MEMBER_DATABASE_ID }} \
-              -e NEXT_PUBLIC_NOTION_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_NOTION_SECRET_API_KEY }} \
-              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-              -e NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_REST_API_KEY }} \
-              -e NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }} \
-              ${{ secrets.AWS_ECR_PROD_CLIENT_REPOSITORY }}:latest
-
-            docker stop hello-gsm-client-$OLD_COLOR || true
-            docker rm hello-gsm-client-$OLD_COLOR || true
-
-            if [ "$(docker ps -q -f name=hello-gsm-admin-blue)" ]; then
-              NEW_COLOR=green
-              OLD_COLOR=blue
-              NEW_PORT=3003
-              OLD_PORT=3002
-            else
-              NEW_COLOR=blue
-              OLD_COLOR=green
-              NEW_PORT=3002
-              OLD_PORT=3003
-            fi
-
-            docker run -d --name hello-gsm-admin-$NEW_COLOR \
-              -p $NEW_PORT:3000 \
-              -e NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_PROD_API_BASE_URL }} \
-              -e NEXT_PUBLIC_IMAGE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_URL }} \
-              -e NEXT_PUBLIC_NEIS_API_KEY=${{ secrets.NEXT_PUBLIC_NEIS_API_KEY }} \
-              -e NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }} \
-              ${{ secrets.AWS_ECR_PROD_ADMIN_REPOSITORY }}:latest
-
-            docker stop hello-gsm-admin-$OLD_COLOR || true
-            docker rm hello-gsm-admin-$OLD_COLOR || true
-
-            docker image prune -a -f
-            EOF
-
-      - name: Success Discord Notification
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: success()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '✅ hello-gsm prod CD'
-          status: ${{ job.status }}
-          content: '배포가 성공적으로 완료되었습니다.'
-          username: hello-gsm bot
-          color: 4CAF50
-
-      - name: Failure notification to discord
-        uses: sarisia/actions-status-discord@v1.11.0
-        if: failure()
-        with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          title: '❌ hello-gsm prod CD'
-          content: '배포 중 에러가 발생했습니다.'
-          status: ${{ job.status }}
-          username: hello-gsm bot
-          color: e74c3c
+  notify:
+    needs: [build, deploy]
+    uses: ./.github/workflows/reusable-notifications.yml
+    with:
+      workflow_name: hello-gsm prod
+      workflow_type: CD
+    secrets:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}

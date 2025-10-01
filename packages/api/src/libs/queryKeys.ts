@@ -41,22 +41,3 @@ export const operationQueryKeys = {
   postFirstResult: () => ['operation', 'first', 'result'],
   postSecondResult: () => ['operation', 'second', 'result'],
 };
-
-export const testResultQueryKeys = {
-  getFirstTestResult: (name: string, birth: string, phoneNumber: string) => [
-    'test',
-    'result',
-    'first',
-    name,
-    birth,
-    phoneNumber,
-  ],
-  getFinalTestResult: (name: string, birth: string, phoneNumber: string) => [
-    'test',
-    'result',
-    'final',
-    name,
-    birth,
-    phoneNumber,
-  ],
-};

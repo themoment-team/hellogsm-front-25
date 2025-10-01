@@ -1,3 +1,5 @@
+import { ModalContainer } from 'shared';
+
 import { pretendardFont } from 'shared/fonts';
 
 import Provider from './provider';
@@ -19,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={pretendardFont.className}>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <ModalContainer />
+        </Provider>
       </body>
     </html>
   );
