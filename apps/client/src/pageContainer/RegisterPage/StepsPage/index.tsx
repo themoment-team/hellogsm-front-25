@@ -2,10 +2,8 @@
 
 import { useEffect } from 'react';
 
-import { StepWrapper } from 'shared';
+import { ComputerRecommendedPage, StepWrapper } from 'shared';
 import { GetMyOneseoType, MyMemberInfoType, StepEnum } from 'types';
-
-import { ComputerRecommendedPage } from 'client/pageContainer';
 
 interface RegisterStepsPageProps {
   data: GetMyOneseoType | undefined;
