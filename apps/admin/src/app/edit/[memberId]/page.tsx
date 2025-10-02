@@ -19,7 +19,7 @@ export default async function Edit({ params: { memberId }, searchParams }: EditP
 
   return (
     <>
-      <ComputerRecommendedPage />
+      <ComputerRecommendedPage type="admin" />
       <StepWrapper data={data} type="admin" step={step as StepEnum} memberId={id} />
     </>
   );
