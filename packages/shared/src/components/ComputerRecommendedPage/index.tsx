@@ -1,5 +1,4 @@
-import { Character } from 'client/assets';
-
+import { Character } from 'shared/assets';
 import { cn } from 'shared/lib/utils';
 
 const ComputerRecommendedPage = () => (
