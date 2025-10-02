@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { StepWrapper } from 'shared';
+import { ComputerRecommendedPage, StepWrapper } from 'shared';
 import { StepEnum } from 'types';
 
 import { getOneseoByMemberId } from 'admin/app/apis/oneseo/getOneseoById';
@@ -17,5 +17,10 @@ export default async function Edit({ params: { memberId }, searchParams }: EditP
 
   const data = await getOneseoByMemberId(id);
 
-  return <StepWrapper data={data} type="admin" step={step as StepEnum} memberId={id} />;
+  return (
+    <>
+      <ComputerRecommendedPage />
+      <StepWrapper data={data} type="admin" step={step as StepEnum} memberId={id} />
+    </>
+  );
 }
