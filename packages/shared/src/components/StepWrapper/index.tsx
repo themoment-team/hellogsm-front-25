@@ -472,6 +472,7 @@ const StepWrapper = ({ data, step, info, memberId, type }: StepWrapperProps) => 
           isStep4={isStep4}
           isStep4Success={isStepSuccess[4]}
           handleOneseoEditButtonClick={handleOneseoEditButtonClick}
+          handleStepError={handleStepError}
         />
       )}
     </>
