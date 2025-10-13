@@ -35,7 +35,7 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
     router.replace('/');
     const errorMessage = (error.response?.data as ErrorResponse)?.message;
     if (errorMessage === '학교 이메일로 가입해주세요.') {
-      toast.error('테스트 기간에는 학교 이메일로만 로그인할 수 있습니다.');
+      toast.error('테스트 기간에는 로그인할 수 없습니다.');
     } else {
       toast.error('로그인에 실패했습니다.');
     }
