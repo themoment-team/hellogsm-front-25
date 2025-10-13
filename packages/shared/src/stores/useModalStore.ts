@@ -14,6 +14,7 @@ const createInitialClientModals = (): ClientModals => ({
   mockScoreCalculationPeriodModal: { isOpen: false },
   resultAnnouncementPeriodModal: { isOpen: false, isFirstTest: true },
   devServerNoticeModal: { isOpen: false },
+  testPeriodNoticeModal: { isOpen: false },
   verificationCodeSendErrorModal: { isOpen: false },
   signupSuccessModal: { isOpen: false },
   signupErrorModal: { isOpen: false },
@@ -63,6 +64,9 @@ export const useModalStore = create<ModalStore>((set) => ({
   },
   setDevServerNoticeModal: (isOpen) => {
     set({ devServerNoticeModal: { isOpen } });
+  },
+  setTestPeriodNoticeModal: (isOpen) => {
+    set({ testPeriodNoticeModal: { isOpen } });
   },
   setVerificationCodeSendErrorModal: (isOpen) => {
     set({ verificationCodeSendErrorModal: { isOpen } });

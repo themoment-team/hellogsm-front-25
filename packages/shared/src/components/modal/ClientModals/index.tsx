@@ -26,6 +26,8 @@ const ClientModals = () => {
     setResultAnnouncementPeriodModal,
     devServerNoticeModal,
     setDevServerNoticeModal,
+    testPeriodNoticeModal,
+    setTestPeriodNoticeModal,
     verificationCodeSendErrorModal,
     setVerificationCodeSendErrorModal,
     signupSuccessModal,
@@ -141,6 +143,23 @@ const ClientModals = () => {
             </a>
           </AlertDialogTitle>
           <AlertDialogAction>확인</AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={testPeriodNoticeModal.isOpen}
+        onOpenChange={() => setTestPeriodNoticeModal(false)}
+      >
+        <AlertDialogContent className={cn('w-[25rem]')}>
+          <AlertDialogTitle
+            className={cn('flex', 'flex-col', 'text-center', 'gap-4', 'items-center')}
+          >
+            <p>현재 테스트 기간입니다.</p>
+            <p>일부 기능이 제한될 수 있습니다.</p>
+          </AlertDialogTitle>
+          <AlertDialogAction onClick={() => setTestPeriodNoticeModal(false)}>
+            확인
+          </AlertDialogAction>
         </AlertDialogContent>
       </AlertDialog>
 
