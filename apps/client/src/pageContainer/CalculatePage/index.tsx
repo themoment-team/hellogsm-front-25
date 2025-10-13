@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostMockScore } from 'api';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import { Button, Step4Register, step4Schema } from 'shared';
+import { Button, ComputerRecommendedPage, Step4Register, step4Schema } from 'shared';
 import {
   GEDAchievementType,
   GraduationTypeValueEnum,
@@ -16,8 +16,6 @@ import {
   Step4FormType,
   StepEnum,
 } from 'types';
-
-import { ComputerRecommendedPage } from 'client/pageContainer';
 
 import { ARTS_PHYSICAL_SUBJECTS, GENERAL_SUBJECTS } from 'shared/constants';
 import { cn } from 'shared/lib/utils';

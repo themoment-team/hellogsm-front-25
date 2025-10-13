@@ -375,7 +375,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
                     <Input
                       {...formMethods.register('phoneNumber')}
                       placeholder="번호 입력 (하이픈 '-' 제외)"
-                      disabled={isSentCertificationNumber}
+                      disabled={isSentCertificationNumber && timeLeft > 0}
                     />
                   </div>
                   {btnClick === true && (

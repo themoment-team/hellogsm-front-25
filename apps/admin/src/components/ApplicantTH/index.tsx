@@ -48,7 +48,7 @@ const ApplicantTH = () => {
                 </div>
               </div>
             </TableCell>
-            <TableCell className={cn([defaultStyle, 'w-[7rem]'])}>지원자 정보</TableCell>
+            <TableCell className={cn([defaultStyle, 'w-[7rem]'])}>성명</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[7.5rem]'])}>수험 번호</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[8.5rem]'])}>출신 중학교</TableCell>
             <TableCell className={cn([defaultStyle, 'w-[6.75rem]'])}>전형</TableCell>

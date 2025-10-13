@@ -20,4 +20,5 @@ export { default as Step4Register } from './register/Step4Register';
 export { default as LoginDialog } from './LoginDialog';
 export { default as LoginDialogContent } from './LoginDialogContent';
 export { default as ModalContainer } from './ModalContainer';
+export { default as ComputerRecommendedPage } from './ComputerRecommendedPage';
 export * from './modal';
