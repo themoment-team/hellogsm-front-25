@@ -30,7 +30,7 @@ const RegisterStepsPage = ({ data, step, info }: RegisterStepsPageProps) => {
 
   return (
     <>
-      <ComputerRecommendedPage />
+      <ComputerRecommendedPage type="register" />
       <StepWrapper data={data} info={info} step={step} type="client" />
     </>
   );

@@ -122,7 +122,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
 
   return (
     <>
-      <ComputerRecommendedPage />
+      <ComputerRecommendedPage type="calculate" />
       {graduationType ? (
         <div className={cn('mdx:flex', 'justify-center', 'rounded-[1.25rem]', 'hidden')}>
           <div className={cn('mb-[3.56rem]', 'bg-white', 'mt-[3.56rem]', 'rounded-[1.25rem]')}>
@@ -167,7 +167,7 @@ const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
           </div>
         </div>
       ) : (
-        <div className={cn('sm:flex', 'w-full', 'justify-center', 'mt-48', 'hidden')}>
+        <div className={cn('mdx:flex', 'w-full', 'justify-center', 'mt-48', 'hidden')}>
           <div className={cn('flex', 'flex-col', 'items-center', 'gap-10')}>
             <h1 className={cn('text-[1.5rem]/[2rem]', 'text-gray-900', 'font-semibold')}>
               모의 성적 계산을 위한 지원자 유형을 선택해 주세요.
