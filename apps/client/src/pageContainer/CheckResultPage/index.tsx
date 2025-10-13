@@ -55,7 +55,7 @@ const CheckResultPage = ({
     if (isChecked) {
       setIsDialog(true);
     } else {
-      setResultAnnouncementPeriodModal(true, isFirstTest);
+      setResultAnnouncementPeriodModal(true, resultStatus);
     }
   };
 
