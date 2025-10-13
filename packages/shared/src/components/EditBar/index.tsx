@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { StepEnum } from 'types';
 
 import { EditCheckIcon } from 'shared/assets';
 import { Button } from 'shared/index';
@@ -10,10 +11,20 @@ interface EditBarProps {
   isStep4: boolean;
   isStep4Success: boolean;
   handleOneseoEditButtonClick: () => void;
+  handleStepError: (step: StepEnum) => void;
 }
 
-const EditBar = ({ isStep4, isStep4Success, handleOneseoEditButtonClick }: EditBarProps) => {
+const EditBar = ({
+  isStep4,
+  isStep4Success,
+  handleOneseoEditButtonClick,
+  handleStepError,
+}: EditBarProps) => {
   const { push } = useRouter();
+
+  const handleCheckErrorStepFour = () => {
+    handleStepError(StepEnum.FOUR);
+  };
 
   return (
     <div
@@ -36,9 +47,9 @@ const EditBar = ({ isStep4, isStep4Success, handleOneseoEditButtonClick }: EditB
         홈으로
       </Button>
       {isStep4 && (
-        <button
-          disabled={!isStep4Success}
-          onClick={handleOneseoEditButtonClick}
+        <Button
+          variant={!isStep4Success ? 'submit' : 'fill'}
+          onClick={!isStep4Success ? handleCheckErrorStepFour : handleOneseoEditButtonClick}
           className={cn(
             'px-4',
             'py-2',
@@ -48,8 +59,6 @@ const EditBar = ({ isStep4, isStep4Success, handleOneseoEditButtonClick }: EditB
             'font-normal',
             'font-semibold',
             'leading-3',
-            'bg-blue-600',
-            'text-white',
             'rounded-md',
             'items-center',
             'h-10',
@@ -57,7 +66,7 @@ const EditBar = ({ isStep4, isStep4Success, handleOneseoEditButtonClick }: EditB
         >
           <EditCheckIcon />
           원서 수정 완료
-        </button>
+        </Button>
       )}
     </div>
   );
