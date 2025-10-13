@@ -38,6 +38,7 @@ export interface ClientModals {
   mockScoreCalculationPeriodModal: SimpleModal;
   resultAnnouncementPeriodModal: ResultModal;
   devServerNoticeModal: SimpleModal;
+  testPeriodNoticeModal: SimpleModal;
   verificationCodeSendErrorModal: SimpleModal;
   signupSuccessModal: SimpleModal;
   signupErrorModal: SimpleModal;
@@ -64,6 +65,7 @@ export interface ModalActions {
   setMockScoreCalculationPeriodModal: (isOpen: boolean) => void;
   setResultAnnouncementPeriodModal: (isOpen: boolean, isFirstTest?: boolean) => void;
   setDevServerNoticeModal: (isOpen: boolean) => void;
+  setTestPeriodNoticeModal: (isOpen: boolean) => void;
   setVerificationCodeSendErrorModal: (isOpen: boolean) => void;
   setSignupSuccessModal: (isOpen: boolean) => void;
   setSignupErrorModal: (isOpen: boolean) => void;
