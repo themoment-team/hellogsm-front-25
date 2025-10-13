@@ -4,11 +4,17 @@ import { useEffect } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
+import type { AxiosError } from 'axios';
+
 import { memberQueryKeys, useOAuthLogin } from 'api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 import { cn } from 'shared/lib/utils';
+
+interface ErrorResponse {
+  message?: string;
+}
 
 const CallbackPage = ({ code, provider }: { code: string; provider: string }) => {
   const router = useRouter();
@@ -25,9 +31,14 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
     router.replace(nextUrl);
   };
 
-  const handleLoginError = () => {
+  const handleLoginError = (error: AxiosError) => {
     router.replace('/');
-    toast.error('로그인에 실패했습니다.');
+    const errorMessage = (error.response?.data as ErrorResponse)?.message;
+    if (errorMessage === '학교 이메일로 가입해주세요.') {
+      toast.error('테스트 기간에는 학교 이메일로만 로그인할 수 있습니다.');
+    } else {
+      toast.error('로그인에 실패했습니다.');
+    }
   };
 
   const { mutate: googleLogin } = useOAuthLogin('google', {
