@@ -101,7 +101,12 @@ const ClientModals = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction asChild>
-              <Link href={'/check-result'} onClick={() => setResultAnnouncementPeriodModal(false)}>
+              <Link
+                href={'/check-result'}
+                onClick={() =>
+                  setResultAnnouncementPeriodModal(false, resultAnnouncementPeriodModal.isFirstTest)
+                }
+              >
                 확인
               </Link>
             </AlertDialogAction>
