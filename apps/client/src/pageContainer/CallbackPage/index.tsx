@@ -58,12 +58,6 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
       return;
     }
 
-    if (process.env.NEXT_PUBLIC_IS_TEST_PERIOD === 'true') {
-      router.replace('/');
-      toast.error('테스트 기간에는 로그인할 수 없습니다.');
-      return;
-    }
-
     if (provider === 'google' || provider === 'admin') {
       googleLogin(code);
     } else if (provider === 'kakao') {
