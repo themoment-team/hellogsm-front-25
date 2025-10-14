@@ -69,7 +69,7 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
   }, [code, provider, googleLogin, kakaoLogin, router]);
 
   return (
-    <div className={cn('flex', 'h-screen', 'items-center', 'justify-center')}>
+    <div className={cn('flex', 'h-[calc(100vh-4.625rem)]', 'items-center', 'justify-center')}>
       <div className={cn('text-lg', 'font-medium')}>로그인 처리 중...</div>
     </div>
   );

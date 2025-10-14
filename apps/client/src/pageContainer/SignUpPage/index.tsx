@@ -129,7 +129,6 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
 
-  const name = formMethods.watch('name');
   const phoneNumber = formMethods.watch('phoneNumber');
   const certificationNumber = formMethods.watch('certificationNumber');
   const isAgreed = formMethods.watch('isAgreed');
@@ -142,9 +141,7 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
   const isCertificationButtonDisabled =
     !signupFormSchema.shape.phoneNumber.safeParse(phoneNumber).success;
   const isCertificationValid = isSuccess === true;
-  const isAllFieldsFilled =
-    name && sex && birthYear && birthMonth && birthDay && isCertificationValid && isAgreed;
-  const isSubmitButtonDisabled = !isAllFieldsFilled;
+  const isSubmitButtonDisabled = !isCertificationValid || !isAgreed;
 
   const queryClient = useQueryClient();
 

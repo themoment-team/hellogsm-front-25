@@ -314,10 +314,6 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
   const pathname = usePathname();
   const isRegisterPath = pathname?.startsWith('/register');
 
-  if (pathname?.startsWith('/callback')) {
-    return null;
-  }
-
   const router = useRouter();
 
   const MenuToggleButton = () => (
