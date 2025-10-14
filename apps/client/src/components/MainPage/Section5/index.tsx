@@ -18,7 +18,7 @@ const Elements = [
   },
   {
     Img: '/images/IOTImg.png',
-    department: '스마트 IOT(Internet Of Things)과',
+    department: '스마트IoT(Internet of Things)과',
     textColor: 'text-lime-700',
     tagColor: 'bg-lime-50',
     learn: ['리눅스', '라즈베리파이', '아두이노', '하드웨어'],
