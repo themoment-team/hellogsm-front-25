@@ -39,8 +39,8 @@ export enum GraduationEnum {
 
 export enum MajorEnum {
   SW = '소프트웨어개발과',
-  IOT = '스마트 IoT과',
-  AI = '인공지능과',
+  IOT = '스마트IoT과',
+  AI = '인공지능(AI)과',
 }
 
 export enum SexEnum {

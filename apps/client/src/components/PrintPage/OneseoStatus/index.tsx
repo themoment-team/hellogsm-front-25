@@ -231,7 +231,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
         </tr>
         <tr>
           <td className={cn(tdStyle)} colSpan={11} style={{ textAlign: 'start' }}>
-            1.(인공지능과/ 스마트IoT과/ 소프트웨어개발과) 중 지망 학과를 순서대로 기록. <br />
+            1.(인공지능(AI)과/ 스마트IoT과/ 소프트웨어개발과) 중 지망 학과를 순서대로 기록. <br />
             2. 지원학과는 희망 순에 따라 3개 학과를 모두 기록해야 함.
           </td>
         </tr>

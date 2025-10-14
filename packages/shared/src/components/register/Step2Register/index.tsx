@@ -52,8 +52,8 @@ const graduationTypeList = [
 
 const majorList = [
   { name: '소프트웨어개발과', value: DesireMajorValueEnum.SW },
-  { name: '스마트IOT과', value: DesireMajorValueEnum.IOT },
-  { name: '인공지능과', value: DesireMajorValueEnum.AI },
+  { name: '스마트IoT과', value: DesireMajorValueEnum.IOT },
+  { name: '인공지능(AI)과', value: DesireMajorValueEnum.AI },
 ] as const;
 
 const screeningList = [
@@ -69,7 +69,7 @@ const majorIntroductions = [
     description: 'C, C++, JAVA, 모바일 등',
   },
   {
-    name: '스마트 IOT(Internet Of Things)과',
+    name: '스마트IoT(Internet of Things)과',
     description: '리눅스, 라즈베리파이, 아두이노, 하드웨어 등',
   },
   {
