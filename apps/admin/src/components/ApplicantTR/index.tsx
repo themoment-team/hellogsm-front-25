@@ -19,7 +19,7 @@ import { formatScore } from 'shared/utils';
 
 import {
   usePatchArrivedStatus,
-  usePatchAptitudeScore,
+  usePatchCompetencyScore,
   usePatchInterviewScore,
   usePatchAgreeDocStatus,
 } from 'api/hooks';
@@ -88,7 +88,7 @@ const ApplicantTR = ({
     },
   });
 
-  const { mutate: patchAptitudeScore } = usePatchAptitudeScore(memberId, {
+  const { mutate: patchCompetencyScore } = usePatchCompetencyScore(memberId, {
     onSuccess: () => {
       oneseoRefetch();
       editableRefetch();
@@ -147,7 +147,7 @@ const ApplicantTR = ({
 
     if (역량검사점수 < 0 || 역량검사점수 > 100 || isNaN(역량검사점수)) return;
 
-    patchAptitudeScore({ competencyEvaluationScore: 역량검사점수 });
+    patchCompetencyScore({ competencyEvaluationScore: 역량검사점수 });
   };
 
   const handleInterviewScore = () => {
