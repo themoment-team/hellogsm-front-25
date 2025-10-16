@@ -65,7 +65,7 @@ export default async function RootLayout({
         <Provider>
           <Header isServerHealthy={isServerHealthy} />
           {children}
-          <ModalContainer />
+          <ModalContainer modal="client" />
         </Provider>
       </body>
     </html>

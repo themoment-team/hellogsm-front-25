@@ -50,7 +50,7 @@ const ClientModals = () => {
         open={loginRequiredModal.isOpen}
         onOpenChange={(isOpen) => setLoginRequiredModal(isOpen)}
       >
-        <AlertDialogContent className={cn('w-[400px]')}>
+        <AlertDialogContent className={cn('w-[400px]')} onEscapeKeyDown={(e) => e.preventDefault()}>
           <AlertDialogHeader>
             <AlertDialogTitle>
               <strong>

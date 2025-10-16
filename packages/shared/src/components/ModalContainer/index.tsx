@@ -2,11 +2,15 @@
 
 import { AdminModals, ClientModals, SharedModals } from 'shared/components';
 
-const ModalContainer = () => {
+interface ModalContainerProps {
+  modal: 'admin' | 'client';
+}
+
+const ModalContainer = ({ modal }: ModalContainerProps) => {
   return (
     <>
-      <AdminModals />
-      <ClientModals />
+      {modal === 'admin' && <AdminModals />}
+      {modal === 'client' && <ClientModals />}
       <SharedModals />
     </>
   );

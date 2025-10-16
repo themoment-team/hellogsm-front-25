@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={pretendardFont.className}>
         <Provider>
           {children}
-          <ModalContainer />
+          <ModalContainer modal="admin" />
         </Provider>
       </body>
     </html>
