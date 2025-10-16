@@ -330,7 +330,7 @@ const TicketPage = ({ initialData }: TicketPageProps) => {
                     'font-normal',
                   )}
                 >
-                  * 공지 사항: 홈페이지(gsm.gen.hs.kr)-입학 안내 <br />* 문의:062-949-6800
+                  * 공지 사항: 홈페이지(gsm.gen.hs.kr)-입학 안내 <br />* 문의:062-949-6842
                 </td>
                 <td className={cn('border', 'border-black', 'font-normal')}>(인)</td>
               </tr>
