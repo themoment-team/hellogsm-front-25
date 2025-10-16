@@ -452,7 +452,7 @@ const Step4Register = ({
                       )}
                     >
                       <p>*</p>
-                      <p>미인정 결석, 지각, 조퇴, 결과 횟수만 입력</p>
+                      <p>9월 30일까지의 미인정 결석·지각·조퇴·결과 및 봉사시간 입력</p>
                     </div>
                   </div>
                   <NonSubjectForm
