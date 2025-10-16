@@ -1,7 +1,12 @@
 import { getDate } from 'api';
 import { getKoreanDate, isTimeAfter } from 'shared';
 
-import { getMyFirstTestResult, getMyMemberInfo, getMySecondTestResult } from 'client/app/apis';
+import {
+  getMyFirstTestResult,
+  getMyMemberInfo,
+  getMyOneseo,
+  getMySecondTestResult,
+} from 'client/app/apis';
 import { LoginNoticeDialog } from 'client/components';
 import { CheckResultPage } from 'client/pageContainer';
 
@@ -36,6 +41,8 @@ export default async function CheckResult() {
       compareTime: currentTime,
     });
 
+  const isOneseoWrite = await getMyOneseo();
+
   return (
     <>
       <CheckResultPage
@@ -43,6 +50,7 @@ export default async function CheckResult() {
         resultInfo={resultInfo}
         isCheckFirstResult={isCheckFirstResult}
         isCheckFinalResult={isCheckFinalResult}
+        isOneseoWrite={isOneseoWrite === undefined}
       />
       <LoginNoticeDialog userName={memberInfo?.name} usedPath={'check-result'} />
     </>
