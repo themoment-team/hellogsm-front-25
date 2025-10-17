@@ -35,6 +35,7 @@ interface CheckResultPageProps {
   resultInfo: MyTotalTestResultType | undefined;
   isCheckFirstResult: boolean;
   isCheckFinalResult: boolean;
+  isOneseoWrite: boolean;
 }
 
 const CheckResultPage = ({
@@ -42,14 +43,25 @@ const CheckResultPage = ({
   resultInfo,
   isCheckFirstResult,
   isCheckFinalResult,
+  isOneseoWrite,
 }: CheckResultPageProps) => {
-  const { setResultAnnouncementPeriodModal, setOneseoNotSubmittedModal } = useModalStore();
+  const {
+    setResultAnnouncementPeriodModal,
+    setOneseoNotSubmittedModal,
+    setResultNotAnnouncedModal,
+  } = useModalStore();
   const [isFirstTest, setIsFirstTest] = useState<boolean>(true);
   const [isDialog, setIsDialog] = useState(false);
 
   const handleDialog = (resultStatus: boolean) => {
-    if (resultInfo && resultInfo.firstTestPassYn === null && isCheckFinalResult)
-      return setOneseoNotSubmittedModal(true);
+    if (
+      (resultInfo && resultInfo.firstTestPassYn === null && isCheckFirstResult && resultStatus) ||
+      (resultInfo && resultInfo.secondTestPassYn === null && isCheckFinalResult && !resultStatus)
+    ) {
+      return setResultNotAnnouncedModal(true);
+    }
+
+    if (isOneseoWrite) return setOneseoNotSubmittedModal(true);
 
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {

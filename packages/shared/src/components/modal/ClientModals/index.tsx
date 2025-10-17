@@ -40,6 +40,8 @@ const ClientModals = () => {
     setApplicationPeriodModal,
     oneseoNotSubmittedModal,
     setOneseoNotSubmittedModal,
+    resultNotAnnouncedModal,
+    setResultNotAnnouncedModal,
   } = useModalStore();
 
   const { back } = useRouter();
@@ -241,6 +243,21 @@ const ClientModals = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setApplicationPeriodModal(false)}>
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={resultNotAnnouncedModal.isOpen}>
+        <AlertDialogContent className={cn('w-[400px]')}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              현재 합격자 발표가 아직 진행되지 않았습니다. <br /> 잠시 후 다시 확인해주세요.
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setResultNotAnnouncedModal(false)}>
               확인
             </AlertDialogAction>
           </AlertDialogFooter>

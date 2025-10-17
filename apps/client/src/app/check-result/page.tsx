@@ -1,15 +1,21 @@
 import { getDate } from 'api';
 import { getKoreanDate, isTimeAfter } from 'shared';
 
-import { getMyFirstTestResult, getMyMemberInfo, getMySecondTestResult } from 'client/app/apis';
+import {
+  getMyFirstTestResult,
+  getMyMemberInfo,
+  getMyOneseo,
+  getMySecondTestResult,
+} from 'client/app/apis';
 import { LoginNoticeDialog } from 'client/components';
 import { CheckResultPage } from 'client/pageContainer';
 
 export default async function CheckResult() {
-  const [memberInfo, firstResultInfo, secondResultInfo] = await Promise.all([
+  const [memberInfo, firstResultInfo, secondResultInfo, isOneseoWrite] = await Promise.all([
     getMyMemberInfo('/check-result'),
     getMyFirstTestResult(),
     getMySecondTestResult(),
+    getMyOneseo(),
   ]);
 
   const resultInfo = {
@@ -43,6 +49,7 @@ export default async function CheckResult() {
         resultInfo={resultInfo}
         isCheckFirstResult={isCheckFirstResult}
         isCheckFinalResult={isCheckFinalResult}
+        isOneseoWrite={isOneseoWrite === undefined}
       />
       <LoginNoticeDialog userName={memberInfo?.name} usedPath={'check-result'} />
     </>

@@ -45,6 +45,7 @@ export interface ClientModals {
   phoneNumberDuplicateModal: ConfirmModal;
   applicationPeriodModal: SimpleModal;
   oneseoNotSubmittedModal: SimpleModal;
+  resultNotAnnouncedModal: SimpleModal;
 }
 
 export interface SharedModals {
@@ -72,6 +73,7 @@ export interface ModalActions {
   setPhoneNumberDuplicateModal: (isOpen: boolean, onConfirm?: () => void) => void;
   setApplicationPeriodModal: (isOpen: boolean) => void;
   setOneseoNotSubmittedModal: (isOpen: boolean) => void;
+  setResultNotAnnouncedModal: (isOpen: boolean) => void;
 
   setSystemInspectionModal: (isOpen: boolean) => void;
   setScoreCalculationCompleteModal: (
