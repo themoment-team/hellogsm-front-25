@@ -11,10 +11,11 @@ import { LoginNoticeDialog } from 'client/components';
 import { CheckResultPage } from 'client/pageContainer';
 
 export default async function CheckResult() {
-  const [memberInfo, firstResultInfo, secondResultInfo] = await Promise.all([
+  const [memberInfo, firstResultInfo, secondResultInfo, isOneseoWrite] = await Promise.all([
     getMyMemberInfo('/check-result'),
     getMyFirstTestResult(),
     getMySecondTestResult(),
+    getMyOneseo(),
   ]);
 
   const resultInfo = {
@@ -40,8 +41,6 @@ export default async function CheckResult() {
       baseTime: new Date(dateList.finalResultsAnnouncement),
       compareTime: currentTime,
     });
-
-  const isOneseoWrite = await getMyOneseo();
 
   return (
     <>
