@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -202,35 +202,39 @@ const SignUpPage = ({ isPastAnnouncement }: SignUpProps) => {
     mutateMemberRegister(body);
   };
 
-  const handleDuplicateConfirm = () => {
+  const handleDuplicateConfirm = useCallback(() => {
     setPhoneNumberDuplicateModal(false);
     if (isPastAnnouncement) {
       setApplicationPeriodModal(true);
     } else {
       setIsContinue(true);
     }
-  };
+  }, [isPastAnnouncement, setPhoneNumberDuplicateModal, setApplicationPeriodModal]);
 
-  const sendCodeNumber = async (number: string) => {
-    const duplicateResponse = await checkDuplicateMember();
-    const isDuplicate = duplicateResponse?.data?.duplicateMemberYn === 'NO';
+  const sendCodeNumber = useCallback(
+    async (number: string) => {
+      const duplicateResponse = await checkDuplicateMember();
+      const isDuplicate = duplicateResponse?.data?.duplicateMemberYn === 'NO';
 
-    if (isDuplicate) {
-      const body: SendCodeType = {
-        phoneNumber: number,
-      };
-      mutateSendCode(body);
-      return;
-    } else if (isContinue === true) {
-      const body: SendCodeType = {
-        phoneNumber: number,
-      };
-      mutateSendCode(body);
-      return;
-    } else {
-      setPhoneNumberDuplicateModal(true, handleDuplicateConfirm);
-    }
-  };
+      if (isDuplicate || isContinue === true) {
+        const body: SendCodeType = {
+          phoneNumber: number,
+        };
+        mutateSendCode(body);
+        setIsContinue(false);
+        return;
+      } else {
+        setPhoneNumberDuplicateModal(true, handleDuplicateConfirm);
+      }
+    },
+    [
+      checkDuplicateMember,
+      isContinue,
+      mutateSendCode,
+      setPhoneNumberDuplicateModal,
+      handleDuplicateConfirm,
+    ],
+  );
 
   useEffect(() => {
     if (isContinue === true) {
