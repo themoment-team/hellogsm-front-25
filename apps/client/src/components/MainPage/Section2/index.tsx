@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import {
   Section2Icon1,
   Section2Icon2,
@@ -79,6 +81,7 @@ const stepsData = [
 ];
 
 const Section2 = () => {
+  const { push } = useRouter();
   return (
     <div
       id="section2"
@@ -125,17 +128,35 @@ const Section2 = () => {
             <br />
             2026 신입생 모집절차
           </h1>
-          <p
-            className={cn(
-              'text-gray-600',
-              'font-normal',
-              'text-[1.25rem]/[1.75rem]',
-              'text-center',
-              'smx:text-left',
-            )}
-          >
-            우리 학교에 입학하기 위해 필요한 절차를 소개해드릴게요!
-          </p>
+          <div className={cn('flex', 'flex-col', 'gap-2')}>
+            <p
+              className={cn(
+                'text-gray-600',
+                'font-normal',
+                'text-[1.25rem]/[1.75rem]',
+                'text-center',
+                'smx:text-left',
+                'underline',
+                'cursor-pointer',
+              )}
+              onClick={() => {
+                push(`${process.env.NEXT_PUBLIC_CDN_URL}/2026_입학요강.hwp`);
+              }}
+            >
+              입학요강 다운로드
+            </p>
+            <p
+              className={cn(
+                'text-gray-600',
+                'font-normal',
+                'text-[1.25rem]/[1.75rem]',
+                'text-center',
+                'smx:text-left',
+              )}
+            >
+              우리 학교에 입학하기 위해 필요한 절차를 소개해드릴게요!
+            </p>
+          </div>
           <div
             className={cn(
               'justify-around',
