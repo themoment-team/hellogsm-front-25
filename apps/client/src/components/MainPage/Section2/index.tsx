@@ -140,7 +140,7 @@ const Section2 = () => {
                 'cursor-pointer',
               )}
               onClick={() => {
-                push(`${process.env.NEXT_PUBLIC_CDN_URL}/2026_입학요강.hwp`);
+                push(`${process.env.NEXT_PUBLIC_CDN_URL}/2026_입학_요강.hwp`);
               }}
             >
               입학요강 다운로드

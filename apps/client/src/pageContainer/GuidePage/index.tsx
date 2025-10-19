@@ -59,7 +59,7 @@ const Elements: ElementType[] = [
         절차를 읽고 원서와 성적을 작성해 주시면 입학 신청이 완료됩니다.
         <a
           className={cn('flex', 'items-center', 'gap-3', 'mt-5', 'cursor-pointer', 'w-fit')}
-          href={`${process.env.NEXT_PUBLIC_CDN_URL}/입학원서작성요령.hwp`}
+          href={`${process.env.NEXT_PUBLIC_CDN_URL}/입학_원서_작성_요령.hwp`}
         >
           <CopyIcon color="#94A3B8" />
           <span
