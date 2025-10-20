@@ -326,7 +326,7 @@ const Step4Register = ({
                 placeholder="평균 점수 입력"
                 onInput={(e: React.FormEvent<HTMLInputElement>) => {
                   const input = e.currentTarget;
-                  input.value = input.value.replace(/[^0-9]/g, '');
+                  input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
                 }}
                 variant={
                   (Boolean(get(formState.errors, 'gedAvgScore')) ||
