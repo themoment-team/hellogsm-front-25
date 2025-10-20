@@ -94,7 +94,7 @@ const MyPage = ({ initialData, isOneseoWrite }: MyInfoProps) => {
     {
       icon: <PrintIcon />,
       text: '제출서류',
-      path: `${process.env.NEXT_PUBLIC_CDN_URL}/입학_제출_서류.hwp`,
+      path: `${process.env.NEXT_PUBLIC_CDN_URL}/입학_제출_서류.hwp`,
     },
   ];
 
