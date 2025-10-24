@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -19,11 +19,11 @@ interface ErrorResponse {
 const CallbackPage = ({ code, provider }: { code: string; provider: string }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const isCalled = useRef(false);
 
   const handleLoginSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: memberQueryKeys.getMyMemberInfo() });
 
-    // 콜백에서는 항상 클라이언트 메인으로 이동하고, 어드민 로그인 시도 여부를 쿼리로 전달
     const currentOrigin = window.location.origin;
     const isStage = currentOrigin.includes('stage');
     const clientBaseUrl = isStage ? 'https://www.stage.hellogsm.kr' : 'https://www.hellogsm.kr';
@@ -52,6 +52,9 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
   });
 
   useEffect(() => {
+    if (isCalled.current) return;
+    isCalled.current = true;
+
     if (!code || !provider) {
       router.replace('/');
       toast.error('로그인에 실패했습니다.');
@@ -66,7 +69,7 @@ const CallbackPage = ({ code, provider }: { code: string; provider: string }) =>
       router.replace('/');
       toast.error('로그인에 실패했습니다.');
     }
-  }, [code, provider, googleLogin, kakaoLogin, router]);
+  }, [code, provider]);
 
   return (
     <div className={cn('flex', 'h-[calc(100vh-4.625rem)]', 'items-center', 'justify-center')}>
