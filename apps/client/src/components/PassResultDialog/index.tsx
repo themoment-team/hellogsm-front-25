@@ -196,7 +196,11 @@ const PassResultDialog = ({
                 <Button
                   variant="fill"
                   className={cn('w-[10.625rem]', 'h-[3.25rem]', 'font-semibold', 'text-base')}
-                  onClick={() => push('/1차 전형 합격자 안내사항.hwp')}
+                  onClick={() =>
+                    push(
+                      `${process.env.NEXT_PUBLIC_CDN_URL}/2026학년_신입생_선발_1차_전형_합격자_안내사항.hwp`,
+                    )
+                  }
                 >
                   합격자 유의사항
                 </Button>
