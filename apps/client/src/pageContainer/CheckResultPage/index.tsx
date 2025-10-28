@@ -54,6 +54,8 @@ const CheckResultPage = ({
   const [isDialog, setIsDialog] = useState(false);
 
   const handleDialog = (resultStatus: boolean) => {
+    if (isOneseoWrite) return setOneseoNotSubmittedModal(true);
+
     if (
       (resultInfo && resultInfo.firstTestPassYn === null && isCheckFirstResult && resultStatus) ||
       (resultInfo && resultInfo.secondTestPassYn === null && isCheckFinalResult && !resultStatus)
@@ -61,13 +63,11 @@ const CheckResultPage = ({
       return setResultNotAnnouncedModal(true);
     }
 
-    if (isOneseoWrite) return setOneseoNotSubmittedModal(true);
-
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {
-      setIsDialog(true);
-    } else {
-      setResultAnnouncementPeriodModal(true, resultStatus);
+      return setIsDialog(true);
+    } else if (!isChecked) {
+      return setResultAnnouncementPeriodModal(true, resultStatus);
     }
   };
 
