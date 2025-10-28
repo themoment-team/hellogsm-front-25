@@ -67,7 +67,7 @@ const CheckResultPage = ({
 
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {
-      // 불합모달
+      // 합격여부모달
       return setIsDialog(true);
     } else if (!isChecked) {
       // 조회 기간이 아닐경우
