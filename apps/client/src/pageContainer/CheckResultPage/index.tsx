@@ -54,6 +54,10 @@ const CheckResultPage = ({
   const [isDialog, setIsDialog] = useState(false);
 
   const handleDialog = (resultStatus: boolean) => {
+    // 원서를 작성하지 않았을 경우
+    if (isOneseoWrite) return setOneseoNotSubmittedModal(true);
+
+    // 원서를 작성했지만 결과가 null로 오는 경우
     if (
       (resultInfo && resultInfo.firstTestPassYn === null && isCheckFirstResult && resultStatus) ||
       (resultInfo && resultInfo.secondTestPassYn === null && isCheckFinalResult && !resultStatus)
@@ -61,13 +65,13 @@ const CheckResultPage = ({
       return setResultNotAnnouncedModal(true);
     }
 
-    if (isOneseoWrite) return setOneseoNotSubmittedModal(true);
-
     const isChecked = resultStatus ? isCheckFirstResult : isCheckFinalResult;
     if (isChecked) {
-      setIsDialog(true);
-    } else {
-      setResultAnnouncementPeriodModal(true, resultStatus);
+      // 합격여부모달
+      return setIsDialog(true);
+    } else if (!isChecked) {
+      // 조회 기간이 아닐경우
+      return setResultAnnouncementPeriodModal(true, resultStatus);
     }
   };
 
