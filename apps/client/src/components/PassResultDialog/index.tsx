@@ -185,7 +185,7 @@ const PassResultDialog = ({
                 variant="reverseFill"
                 className={cn('w-[10.625rem]', 'h-[3.25rem]', 'font-semibold', 'text-base')}
                 onClick={() =>
-                  push(`${process.env.NEXT_PUBLIC_CDN_URL}/최종_합격자_제출_서류.hwpx`)
+                  push(`${process.env.NEXT_PUBLIC_CDN_URL}/최종_합격자_제출_목록.hwpx`)
                 }
               >
                 합격자 제출서류 다운
