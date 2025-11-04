@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MyMemberInfoType, MyTotalTestResultType } from 'types';
+import { MyMemberInfoType, MyTotalTestResultType, Majors } from 'types';
 
 import { BlurIcon, CopyIcon, HelloGSMIcon } from 'client/assets';
 
@@ -30,6 +30,12 @@ const PassResultDialog = ({
   const firstTestPass = isFinishFirstTest && resultInfo?.firstTestPassYn === 'YES';
   const secondTestPass = !isFinishFirstTest && resultInfo?.secondTestPassYn === 'YES';
   const major = resultInfo?.decidedMajor;
+  const MAJOR_LABELS: Record<Majors, string> = {
+    SW: '소프트웨어개발과',
+    IOT: '스마트IoT과',
+    AI: '인공지능(AI)과',
+  };
+  const majorLabel = major ? MAJOR_LABELS[major] : null;
   const userName = memberInfo?.name;
   const resultMessages = {
     firstTestPassYes: {
@@ -81,7 +87,8 @@ const PassResultDialog = ({
       ),
       message: (
         <>
-          {userName} 님은 {major} 학과에 배정되셨습니다. 더 자세한 정보는
+          {userName} 님은 <span className={cn('text-sky-600', 'font-semibold')}>{majorLabel}</span>
+          에 배정되셨습니다. 더 자세한 정보는
           <br /> 본 사이트에서 확인해 주시기 바랍니다.
         </>
       ),
