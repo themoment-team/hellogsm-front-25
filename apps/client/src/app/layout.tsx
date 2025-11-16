@@ -13,8 +13,8 @@ import type { Metadata } from 'next';
 import 'shared/styles/globals.css';
 
 export const metadata: Metadata = {
-  title: '광주소프트웨어마이스터고등학교 입학 지원 서비스',
-  description: '광주소프트웨어마이스터고등학교 입학 지원 서비스 홈페이지입니다.',
+  title: '광주소프트웨어마이스터고등학교 입학지원 서비스',
+  description: '광주소프트웨어마이스터고등학교 입학지원 서비스 홈페이지입니다.',
   applicationName: 'Hello, GSM',
   keywords: [
     '광주소프트웨어마이스터고등학교',
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     siteName: 'Hello, GSM',
-    title: '광주소프트웨어마이스터고등학교 입학 지원 서비스',
-    description: '광주소프트웨어마이스터고등학교 입학 지원 서비스 홈페이지입니다.',
+    title: '광주소프트웨어마이스터고등학교 입학지원 서비스',
+    description: '광주소프트웨어마이스터고등학교 입학지원 서비스 홈페이지입니다.',
     images: 'https://www.hellogsm.kr/images/opengraph-image.png',
   },
 };

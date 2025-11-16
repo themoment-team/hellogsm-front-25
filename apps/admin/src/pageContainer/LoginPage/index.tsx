@@ -18,7 +18,7 @@ const LoginPage = () => (
         </h1>
 
         <p className={cn('text-base', 'text-gray-800')}>
-          광주소프트웨어 마이스터고등학교 입학 지원 서비스
+          광주소프트웨어마이스터고등학교 입학지원 서비스
         </p>
       </div>
 
