@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostMockScore } from 'api';
@@ -27,18 +27,8 @@ const graduationArray = [
   { text: '검정고시', value: GraduationTypeValueEnum.GED, img: '/images/ged.png' },
 ];
 
-interface CalculateProps {
-  isServerHealthy: boolean;
-}
-
-const CalculatePage = ({ isServerHealthy }: CalculateProps) => {
-  const { setScoreCalculationCompleteModal, setMockScoreCalculationPeriodModal } = useModalStore();
-
-  useEffect(() => {
-    if (!isServerHealthy) {
-      setMockScoreCalculationPeriodModal(true);
-    }
-  }, [isServerHealthy, setMockScoreCalculationPeriodModal]);
+const CalculatePage = () => {
+  const { setScoreCalculationCompleteModal } = useModalStore();
 
   const step4UseForm = useForm<Step4FormType>({
     resolver: zodResolver(step4Schema),

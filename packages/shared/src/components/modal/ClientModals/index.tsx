@@ -20,8 +20,6 @@ const ClientModals = () => {
   const {
     loginRequiredModal,
     setLoginRequiredModal,
-    mockScoreCalculationPeriodModal,
-    setMockScoreCalculationPeriodModal,
     resultAnnouncementPeriodModal,
     setResultAnnouncementPeriodModal,
     devServerNoticeModal,
@@ -73,21 +71,6 @@ const ClientModals = () => {
             <LoginDialog />
             <AlertDialogAction onClick={!loginRequiredModal.isMain ? () => back() : undefined}>
               다음에
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={mockScoreCalculationPeriodModal.isOpen}>
-        <AlertDialogContent className={cn('w-[400px]')}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>모의 성적 계산은 10월 13일부터 가능합니다.</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction asChild>
-              <Link href={'/'} onClick={() => setMockScoreCalculationPeriodModal(false)}>
-                확인
-              </Link>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
