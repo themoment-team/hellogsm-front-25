@@ -35,7 +35,6 @@ export interface AdminModals {
 
 export interface ClientModals {
   loginRequiredModal: LoginModal;
-  mockScoreCalculationPeriodModal: SimpleModal;
   resultAnnouncementPeriodModal: ResultModal;
   devServerNoticeModal: SimpleModal;
   testPeriodNoticeModal: SimpleModal;
@@ -63,7 +62,6 @@ export interface ModalActions {
   setSecondResultAnnouncementModal: (isOpen: boolean) => void;
 
   setLoginRequiredModal: (isOpen: boolean, isMain?: boolean) => void;
-  setMockScoreCalculationPeriodModal: (isOpen: boolean) => void;
   setResultAnnouncementPeriodModal: (isOpen: boolean, isFirstTest?: boolean) => void;
   setDevServerNoticeModal: (isOpen: boolean) => void;
   setTestPeriodNoticeModal: (isOpen: boolean) => void;

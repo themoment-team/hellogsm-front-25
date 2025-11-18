@@ -11,7 +11,6 @@ const createInitialAdminModals = (): AdminModals => ({
 
 const createInitialClientModals = (): ClientModals => ({
   loginRequiredModal: { isOpen: false, isMain: false },
-  mockScoreCalculationPeriodModal: { isOpen: false },
   resultAnnouncementPeriodModal: { isOpen: false, isFirstTest: true },
   devServerNoticeModal: { isOpen: false },
   testPeriodNoticeModal: { isOpen: false },
@@ -56,9 +55,6 @@ export const useModalStore = create<ModalStore>((set) => ({
   // client modal action
   setLoginRequiredModal: (isOpen, isMain = false) => {
     set({ loginRequiredModal: { isOpen, isMain } });
-  },
-  setMockScoreCalculationPeriodModal: (isOpen) => {
-    set({ mockScoreCalculationPeriodModal: { isOpen } });
   },
   setResultAnnouncementPeriodModal: (isOpen, isFirstTest = true) => {
     set({ resultAnnouncementPeriodModal: { isOpen, isFirstTest } });
