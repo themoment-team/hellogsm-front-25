@@ -242,7 +242,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
                 >
                   인성과 감성으로 감동을 만드는 광주소프트웨어마이스터고등학교!
                   <br />
-                  입학 지원 서비스 Hello, GSM을 통해 지금 바로 지원해보세요!
+                  입학지원 서비스 Hello, GSM을 통해 지금 바로 지원해보세요!
                 </p>
               </div>
             </div>

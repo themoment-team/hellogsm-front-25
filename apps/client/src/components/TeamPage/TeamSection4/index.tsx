@@ -94,7 +94,7 @@ const TeamSection4 = ({ data }: TeamSection4Props) => {
           'text-center',
         )}
       >
-        &quot;입학지원시스템, <br className={cn('block', 'sm:hidden')} />
+        &quot;입학지원 서비스, <br className={cn('block', 'sm:hidden')} />
         누가 만들었을까요?&quot;
       </h3>
       <div className={cn('flex', 'flex-col', 'relative', 'w-full', 'overflow-hidden', 'gap-6')}>
