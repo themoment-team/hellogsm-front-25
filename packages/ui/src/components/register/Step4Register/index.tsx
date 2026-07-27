@@ -7,11 +7,11 @@ import {
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
-  UseFormWatch,
   UseFormStateReturn,
   UseFormTrigger,
   UseFormGetValues,
   get,
+  useWatch,
 } from 'react-hook-form';
 
 import { GENERAL_SUBJECTS } from '@repo/constants';
@@ -116,7 +116,6 @@ interface Step4RegisterProps {
   register: UseFormRegister<Step4FormType>;
   unregister: UseFormUnregister<Step4FormType>;
   setValue: UseFormSetValue<Step4FormType>;
-  watch: UseFormWatch<Step4FormType>;
   trigger: UseFormTrigger<Step4FormType>;
   getValues: UseFormGetValues<Step4FormType>;
   control: Control<Step4FormType>;
@@ -132,7 +131,6 @@ const Step4Register = ({
   register,
   setValue,
   control,
-  watch,
   trigger,
   formState,
   unregister,
@@ -148,9 +146,14 @@ const Step4Register = ({
   const [subjectArray, setSubjectArray] = useState<string[]>([...GENERAL_SUBJECTS]);
   const defaultSubjectLength = GENERAL_SUBJECTS.length;
 
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  const liberalSystem = useWatch({ control, name: 'liberalSystem' });
+  const freeSemester = useWatch({ control, name: 'freeSemester' });
+  const gedAvgScore = useWatch({ control, name: 'gedAvgScore' });
+
   const isCalculate = type === 'calculate';
-  const isFreeSemester = watch('liberalSystem') === LiberalSystemValueEnum.FREE_SEMESTER;
-  const isFreeGrade = watch('liberalSystem') === LiberalSystemValueEnum.FREE_GRADE;
+  const isFreeSemester = liberalSystem === LiberalSystemValueEnum.FREE_SEMESTER;
+  const isFreeGrade = liberalSystem === LiberalSystemValueEnum.FREE_GRADE;
 
   const achievementList: AchievementType[] = isFreeSemester
     ? isCandidate
@@ -171,13 +174,14 @@ const Step4Register = ({
     unregister(`achievement3_2.${idx}`, undefined);
     setSubjectArray(filteredSubjects);
 
-    const newSubjects = watch('newSubjects');
-    const score1_1 = watch('achievement1_1');
-    const score1_2 = watch('achievement1_2');
-    const score2_1 = watch('achievement2_1');
-    const score2_2 = watch('achievement2_2');
-    const score3_1 = watch('achievement3_1');
-    const score3_2 = watch('achievement3_2');
+    // 이벤트 핸들러에서는 구독이 불필요 — getValues() 사용 (React Compiler 호환)
+    const newSubjects = getValues('newSubjects');
+    const score1_1 = getValues('achievement1_1');
+    const score1_2 = getValues('achievement1_2');
+    const score2_1 = getValues('achievement2_1');
+    const score2_2 = getValues('achievement2_2');
+    const score3_1 = getValues('achievement3_1');
+    const score3_2 = getValues('achievement3_2');
 
     setValue(
       'newSubjects',
@@ -197,15 +201,15 @@ const Step4Register = ({
       : `추가과목 ${subjectArray.length - defaultSubjectLength}`;
     setSubjectArray((prev) => [...prev, newSubject]);
 
-    if (watch('liberalSystem') === LiberalSystemValueEnum.FREE_GRADE) {
+    if (getValues('liberalSystem') === LiberalSystemValueEnum.FREE_GRADE) {
       achievementList.forEach(({ field }) =>
-        setValue(`${field}.${subjectArray.length}`, watch(`${field}.${subjectArray.length}`)),
+        setValue(`${field}.${subjectArray.length}`, getValues(`${field}.${subjectArray.length}`)),
       );
     } else {
       achievementList.forEach(
         ({ field, value }) =>
-          value !== watch('freeSemester') &&
-          setValue(`${field}.${subjectArray.length}`, watch(`${field}.${subjectArray.length}`)),
+          value !== getValues('freeSemester') &&
+          setValue(`${field}.${subjectArray.length}`, getValues(`${field}.${subjectArray.length}`)),
       );
     }
   };
@@ -226,10 +230,10 @@ const Step4Register = ({
       setValue('freeSemester', null);
     } else {
       setValue('gedAvgScore', null);
-      setValue('liberalSystem', watch('liberalSystem') || LiberalSystemValueEnum.FREE_GRADE);
+      setValue('liberalSystem', getValues('liberalSystem') || LiberalSystemValueEnum.FREE_GRADE);
     }
 
-    const newSubject = watch('newSubjects');
+    const newSubject = getValues('newSubjects');
 
     if (newSubject && newSubject.length) {
       newSubject.forEach((subjectName) => handleAddSubjectClick(subjectName));
@@ -315,8 +319,7 @@ const Step4Register = ({
                   input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
                 }}
                 variant={
-                  (Boolean(get(formState.errors, 'gedAvgScore')) ||
-                    watch('gedAvgScore') === undefined) &&
+                  (Boolean(get(formState.errors, 'gedAvgScore')) || gedAvgScore === undefined) &&
                   showError
                     ? 'error'
                     : null
@@ -353,7 +356,7 @@ const Step4Register = ({
                   'flex-col',
                   'gap-[2.5rem]',
                   'items-center',
-                  widthConvertor[`${watch('liberalSystem')}_${graduationType}`],
+                  widthConvertor[`${liberalSystem}_${graduationType}`],
                 )}
               >
                 <div className={cn([...formWrapper])}>
@@ -364,7 +367,6 @@ const Step4Register = ({
                       register={register}
                       setValue={setValue}
                       subjectArray={subjectArray}
-                      watch={watch}
                       control={control}
                       errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
@@ -380,10 +382,10 @@ const Step4Register = ({
                       register={register}
                       setValue={setValue}
                       subjectArray={subjectArray}
-                      watch={watch}
+                      control={control}
                       errors={formState.errors}
                       handleDeleteSubjectClick={handleDeleteSubjectClick}
-                      freeSemester={watch('freeSemester')}
+                      freeSemester={freeSemester}
                       isGraduate={isGraduate}
                       showError={showError}
                       getValues={getValues}
@@ -416,12 +418,12 @@ const Step4Register = ({
                   <ArtPhysicalForm
                     graduationType={graduationType}
                     setValue={setValue}
-                    watch={watch}
+                    control={control}
                     isFreeGrade={isFreeGrade}
                     isFreeSemester={isFreeSemester}
                     isGraduate={isGraduate}
                     showError={showError}
-                    freeSemester={watch('freeSemester')}
+                    freeSemester={freeSemester}
                   />
                 </div>
                 <div id="nonSubject" className={cn([...formWrapper])}>
