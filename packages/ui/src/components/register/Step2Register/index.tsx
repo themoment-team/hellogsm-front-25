@@ -2,12 +2,14 @@
 
 import { useEffect } from 'react';
 import {
+  Control,
   FormState,
+  UseFormGetValues,
   UseFormRegister,
   UseFormReset,
   UseFormSetValue,
   UseFormTrigger,
-  UseFormWatch,
+  useWatch,
 } from 'react-hook-form';
 
 import { CURRENT_YEAR, NEXT_YEAR } from '@repo/constants';
@@ -34,7 +36,8 @@ import {
 interface Step2RegisterProps {
   register: UseFormRegister<Step2FormType>;
   setValue: UseFormSetValue<Step2FormType>;
-  watch: UseFormWatch<Step2FormType>;
+  control: Control<Step2FormType>;
+  getValues: UseFormGetValues<Step2FormType>;
   reset: UseFormReset<Step2FormType>;
   trigger: UseFormTrigger<Step2FormType>;
   formState: FormState<Step2FormType>;
@@ -80,7 +83,8 @@ const majorIntroductions = [
 const Step2Register = ({
   register,
   setValue,
-  watch,
+  control,
+  getValues,
   reset,
   trigger,
   formState: { errors },
@@ -92,13 +96,27 @@ const Step2Register = ({
     'thirdDesiredMajor',
   ];
 
-  const year = watch('graduationDate').split('-')[0];
-  const month = watch('graduationDate').split('-')[1];
-  const classroom = watch('classroom');
-  const number = watch('number');
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  const graduationDate = useWatch({ control, name: 'graduationDate' });
+  const graduationType = useWatch({ control, name: 'graduationType' });
+  const screening = useWatch({ control, name: 'screening' });
+  const classroom = useWatch({ control, name: 'classroom' });
+  const number = useWatch({ control, name: 'number' });
+  const firstDesiredMajor = useWatch({ control, name: 'firstDesiredMajor' });
+  const secondDesiredMajor = useWatch({ control, name: 'secondDesiredMajor' });
+  const thirdDesiredMajor = useWatch({ control, name: 'thirdDesiredMajor' });
 
-  const isCandidate = watch('graduationType') === GraduationTypeValueEnum.CANDIDATE;
-  const isGED = watch('graduationType') === GraduationTypeValueEnum.GED;
+  const majorValueMap: Record<MajorFieldType, DesireMajorValueEnum | undefined | null> = {
+    firstDesiredMajor,
+    secondDesiredMajor,
+    thirdDesiredMajor,
+  };
+
+  const year = graduationDate.split('-')[0];
+  const month = graduationDate.split('-')[1];
+
+  const isCandidate = graduationType === GraduationTypeValueEnum.CANDIDATE;
+  const isGED = graduationType === GraduationTypeValueEnum.GED;
 
   const START_YEAR = isCandidate ? NEXT_YEAR : CURRENT_YEAR;
   const PERMIT_YEAR = isCandidate ? 1 : 5;
@@ -126,7 +144,7 @@ const Step2Register = ({
       setValue('studentNumber', null);
       setValue('classroom', '');
       setValue('number', '');
-    } else if (!watch('schoolName')) {
+    } else if (!getValues('schoolName')) {
       setValue('schoolName', '');
       setValue('schoolAddress', '');
       setValue('studentNumber', '');
@@ -152,7 +170,7 @@ const Step2Register = ({
       case 'firstDesiredMajor':
         setValue('firstDesiredMajor', value);
         reset(
-          { ...watch(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined },
+          { ...getValues(), secondDesiredMajor: undefined, thirdDesiredMajor: undefined },
           { keepErrors: true, keepIsSubmitted: true },
         );
 
@@ -161,7 +179,7 @@ const Step2Register = ({
       case 'secondDesiredMajor':
         setValue('secondDesiredMajor', value);
         reset(
-          { ...watch(), thirdDesiredMajor: undefined },
+          { ...getValues(), thirdDesiredMajor: undefined },
           { keepErrors: true, keepIsSubmitted: true },
         );
 
@@ -184,18 +202,18 @@ const Step2Register = ({
   const hasFirstMajorError =
     showError &&
     errors.firstDesiredMajor &&
-    (watch('firstDesiredMajor') === undefined || watch('firstDesiredMajor') === null);
+    (firstDesiredMajor === undefined || firstDesiredMajor === null);
   const hasSecondMajorError =
     showError &&
     errors.secondDesiredMajor &&
-    (watch('secondDesiredMajor') === undefined || watch('secondDesiredMajor') === null);
+    (secondDesiredMajor === undefined || secondDesiredMajor === null);
   const hasThirdMajorError =
     showError &&
     errors.thirdDesiredMajor &&
-    (watch('thirdDesiredMajor') === undefined || watch('thirdDesiredMajor') === null);
+    (thirdDesiredMajor === undefined || thirdDesiredMajor === null);
 
   useEffect(() => {
-    if (!isGED && watch('schoolName') === null) {
+    if (!isGED && getValues('schoolName') === null) {
       setValue('schoolName', '');
       setValue('schoolAddress', '');
     }
@@ -227,7 +245,7 @@ const Step2Register = ({
           <RadioButton<GraduationTypeValueEnum>
             title={'지원자 유형'}
             list={[...graduationTypeList]}
-            selectedValue={watch('graduationType')}
+            selectedValue={graduationType}
             handleOptionClick={handleGraduationTypeOptionClick}
             error={showError}
             required
@@ -359,7 +377,7 @@ const Step2Register = ({
             title={'전형'}
             list={[...screeningList]}
             required
-            selectedValue={watch('screening')}
+            selectedValue={screening}
             handleOptionClick={(value) => setValue('screening', value)}
             error={showError}
           />
@@ -375,8 +393,8 @@ const Step2Register = ({
                   {majorFieldList.map((fieldName, index) => {
                     const desiredSequence = index + 1;
                     const selectedValues = [
-                      desiredSequence > 1 && watch('firstDesiredMajor'),
-                      desiredSequence > 2 && watch('secondDesiredMajor'),
+                      desiredSequence > 1 && firstDesiredMajor,
+                      desiredSequence > 2 && secondDesiredMajor,
                     ].filter((value) => typeof value === 'string');
                     const filteredMajorList = majorList.filter(
                       ({ value }) => !selectedValues.includes(value),
@@ -385,7 +403,7 @@ const Step2Register = ({
                     return (
                       <Select
                         key={fieldName}
-                        value={watch(fieldName) || ''}
+                        value={majorValueMap[fieldName] || ''}
                         onValueChange={(value) =>
                           // TODO string 값으로 와서 결국 한번더 검사해주는 로직을 작성해야함
                           (value === DesireMajorValueEnum.SW ||

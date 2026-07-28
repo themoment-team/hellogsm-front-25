@@ -2,11 +2,13 @@
 
 import { useEffect } from 'react';
 import {
+  Control,
   FormState,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormTrigger,
-  UseFormWatch,
+  useWatch,
 } from 'react-hook-form';
 
 import { RelationshipWithGuardianValueEnum, Step3FormType } from '@repo/types';
@@ -18,7 +20,8 @@ import { Input } from '../../../shadcn';
 interface Step3RegisterProps {
   register: UseFormRegister<Step3FormType>;
   setValue: UseFormSetValue<Step3FormType>;
-  watch: UseFormWatch<Step3FormType>;
+  control: Control<Step3FormType>;
+  getValues: UseFormGetValues<Step3FormType>;
   trigger: UseFormTrigger<Step3FormType>;
   formState: FormState<Step3FormType>;
   isCandidate: boolean;
@@ -33,12 +36,20 @@ const relationshipWithGuardianList = [
 const Step3Register = ({
   register,
   setValue,
-  watch,
+  control,
+  getValues,
   trigger,
   formState: { errors },
   isCandidate,
   showError,
 }: Step3RegisterProps) => {
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  const relationshipWithGuardian = useWatch({ control, name: 'relationshipWithGuardian' });
+  const otherRelationshipWithGuardian = useWatch({
+    control,
+    name: 'otherRelationshipWithGuardian',
+  });
+
   const handleRelationshipWithGuardianOptionClick = (value: RelationshipWithGuardianValueEnum) => {
     if (value !== RelationshipWithGuardianValueEnum.OTHER) {
       setValue('otherRelationshipWithGuardian', null);
@@ -49,8 +60,8 @@ const Step3Register = ({
 
   useEffect(() => {
     if (isCandidate) {
-      setValue('schoolTeacherName', watch('schoolTeacherName') ?? '');
-      setValue('schoolTeacherPhoneNumber', watch('schoolTeacherPhoneNumber') ?? '');
+      setValue('schoolTeacherName', getValues('schoolTeacherName') ?? '');
+      setValue('schoolTeacherPhoneNumber', getValues('schoolTeacherPhoneNumber') ?? '');
     }
 
     if (!isCandidate) {
@@ -105,19 +116,18 @@ const Step3Register = ({
             <RadioButton<RelationshipWithGuardianValueEnum>
               title={'보호자 관계'}
               list={[...relationshipWithGuardianList]}
-              selectedValue={watch('relationshipWithGuardian')}
+              selectedValue={relationshipWithGuardian}
               handleOptionClick={handleRelationshipWithGuardianOptionClick}
               error={showError}
               required
             />
-            {watch('relationshipWithGuardian') === RelationshipWithGuardianValueEnum.OTHER && (
+            {relationshipWithGuardian === RelationshipWithGuardianValueEnum.OTHER && (
               <Input
                 placeholder="직접 입력"
                 {...register('otherRelationshipWithGuardian')}
                 variant={
                   showError &&
-                  (errors.otherRelationshipWithGuardian ||
-                    watch('otherRelationshipWithGuardian') === null)
+                  (errors.otherRelationshipWithGuardian || otherRelationshipWithGuardian === null)
                     ? 'error'
                     : null
                 }

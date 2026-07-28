@@ -24,3 +24,26 @@ export const reactHooksCompilerRules = {
   'react-hooks/config': 'error',
   'react-hooks/gating': 'error',
 };
+
+/**
+ * react-hooks/incompatible-library가 못 잡는 구멍을 메우는 보완 룰.
+ *
+ * 저 룰은 `useForm().watch` 형태를 어휘적으로만 탐지해서, watch를 props로 자식에
+ * 내려주면 탐지되지 않는다. 그 경로로 남아 있던 Step1~4·하위 폼 8개 컴포넌트에서
+ * 컴파일러가 watch() 호출 결과와 그것을 쓰는 JSX 스코프를 통째로 메모이즈해
+ * 라디오·셀렉트 선택이 화면에 반영되지 않는 버그가 났다(2026-07-27).
+ *
+ * watch는 렌더마다 다른 값을 반환하는 비순수 함수이므로 props 경계를 넘겨선 안 된다.
+ * control을 넘기고 자식에서 useWatch로 구독하는 것이 RHF 권장 방식이다.
+ */
+export const rhfWatchPropRules = {
+  'no-restricted-syntax': [
+    'error',
+    {
+      selector:
+        'TSPropertySignature TSTypeReference > Identifier[name="UseFormWatch"]',
+      message:
+        'watch를 props로 넘기지 마세요. React Compiler가 비순수 함수인 watch()의 호출 결과를 메모이즈해 값이 갱신되지 않습니다. control을 넘기고 자식에서 useWatch({ control, name })로 구독하거나, 구독이 불필요하면 getValues()를 쓰세요.',
+    },
+  ],
+};
