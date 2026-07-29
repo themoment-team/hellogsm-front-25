@@ -396,10 +396,23 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     }
   };
 
-  const handleTemporarySaveButtonClick = () => {
+  // 직전에 임시저장에 성공한 payload — 동일한 내용의 중복 저장 요청을 걸러내는 데 사용
+  const lastSavedTempBodyRef = useRef<string | null>(null);
+
+  const getTempStorage = () => {
     const body = getOneseo(true);
 
-    postTempStorage(body);
+    return { body, key: JSON.stringify(body) };
+  };
+
+  const handleTemporarySaveButtonClick = () => {
+    const { body, key } = getTempStorage();
+
+    postTempStorage(body, {
+      onSuccess: () => {
+        lastSavedTempBodyRef.current = key;
+      },
+    });
   };
 
   const handleOneseoEditButtonClick = async () => {
