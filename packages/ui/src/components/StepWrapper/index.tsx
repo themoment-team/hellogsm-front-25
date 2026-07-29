@@ -237,6 +237,11 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     onError: () => toast.error('임시 저장을 실패하였습니다.'),
   });
 
+  // 단계 이동 시 자동 저장 전용 — 성공 토스트 없이 조용히 저장한다
+  const { mutate: autoSaveTempStorage } = usePostTempStorage(Number(step), {
+    onError: () => toast.error('임시 저장을 실패하였습니다.'),
+  });
+
   const { mutate: postMockScore } = usePostMockScore(graduationType, {
     onSuccess: (data) => {
       setScoreCalculationCompleteModal(true, data, 'score');
@@ -415,6 +420,18 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     });
   };
 
+  const handleAutoTempSave = () => {
+    const { body, key } = getTempStorage();
+
+    if (lastSavedTempBodyRef.current === key) return;
+
+    autoSaveTempStorage(body, {
+      onSuccess: () => {
+        lastSavedTempBodyRef.current = key;
+      },
+    });
+  };
+
   const handleOneseoEditButtonClick = async () => {
     await patchPersonalInfoByMemberId(getPersonalInfo());
     putOneseoByMemberId(getOneseo());
@@ -540,6 +557,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
             handleCheckScoreButtonClick={handleCheckScoreButtonClick}
             handleStepError={handleStepError}
             handlePreviewPrint={isClient ? handlePreviewPrint : undefined}
+            handleAutoTempSave={isClient ? handleAutoTempSave : undefined}
           />
           <div
             className={cn(
