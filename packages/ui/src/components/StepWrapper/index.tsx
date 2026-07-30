@@ -392,13 +392,21 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   };
 
   const handleOneseoSubmitButtonClick = async () => {
-    await patchPersonalInfo(getPersonalInfo());
+    // 제출 요청 중에 자동저장이 나가면 서버의 제출 완료 상태가 다시 작성 중으로
+    // 되돌아간다. 요청을 보내기 전에 멈추고, 제출이 실패하면 되살린다.
+    stopIdleTimer();
+
+    await patchPersonalInfo(getPersonalInfo()).catch((error) => {
+      resumeIdleTimer();
+      throw error;
+    });
+
     const body = getOneseo();
 
     if (isModifyApproved) {
-      modifyMyOneseo(body);
+      modifyMyOneseo(body, { onError: resumeIdleTimer });
     } else {
-      postMyOneseo(body);
+      postMyOneseo(body, { onError: resumeIdleTimer });
     }
   };
 
@@ -418,12 +426,25 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   };
 
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 최종 제출 이후에는 임시저장이 서버의 제출 완료 상태를 다시 작성 중으로 되돌리므로
+  // 자동저장을 영구히 멈춘다. 제출 성공 모달이 떠도 이 화면은 그대로 남아 있다.
+  const isIdleTimerStoppedRef = useRef(false);
 
   const clearIdleTimer = () => {
     if (idleTimerRef.current === null) return;
 
     clearTimeout(idleTimerRef.current);
     idleTimerRef.current = null;
+  };
+
+  const stopIdleTimer = () => {
+    isIdleTimerStoppedRef.current = true;
+    clearIdleTimer();
+  };
+
+  // 제출이 끝내 실패했다면 아직 작성 중인 원서이므로 자동저장을 되살린다
+  const resumeIdleTimer = () => {
+    isIdleTimerStoppedRef.current = false;
   };
 
   const handleTemporarySaveButtonClick = () => {
@@ -453,7 +474,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   const observedStep4ValuesRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!isClient || !isStep4) return;
+    if (!isClient || !isStep4 || isIdleTimerStoppedRef.current) return;
 
     const step4ValuesKey = JSON.stringify(step4Values);
     const hasEdited =
