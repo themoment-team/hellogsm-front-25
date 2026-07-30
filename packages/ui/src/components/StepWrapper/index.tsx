@@ -417,7 +417,20 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     lastSavedTempBodyRef.current = null;
   };
 
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearIdleTimer = () => {
+    if (idleTimerRef.current === null) return;
+
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = null;
+  };
+
   const handleTemporarySaveButtonClick = () => {
+    // 버튼이 지금 저장하므로 대기 중인 자동저장 타이머는 불필요하다.
+    // 이후 추가 입력이 있으면 타이머는 다시 2분으로 걸린다.
+    clearIdleTimer();
+
     const { body, key } = getTempStorage();
 
     lastSavedTempBodyRef.current = key;
@@ -435,17 +448,9 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     autoSaveTempStorage(body, { onError: rollbackLastSavedTempBody });
   };
 
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 직전에 관찰한 step 4 입력값 — 실제로 값이 바뀐 경우에만 타이머를 걸기 위해 사용.
   // 이 값이 없으면 step 4에 처음 도착한 시점이라 아직 사용자 입력이 없다는 뜻이다.
   const observedStep4ValuesRef = useRef<string | null>(null);
-
-  const clearIdleTimer = () => {
-    if (idleTimerRef.current === null) return;
-
-    clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = null;
-  };
 
   useEffect(() => {
     if (!isClient || !isStep4) return;
