@@ -47,6 +47,9 @@ import EditBar from '../EditBar';
 import { Step1Register, Step2Register, Step3Register, Step4Register } from '../register';
 import StepBar from '../StepBar';
 
+/** step 4에서 마지막 입력 이후 이 시간만큼 입력이 없으면 자동으로 임시저장한다 */
+const IDLE_AUTO_SAVE_DELAY = 2 * 60 * 1000;
+
 interface StepWrapperProps {
   data: GetMyOneseoType | undefined;
   info?: MyMemberInfoType;
@@ -431,6 +434,41 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
 
     autoSaveTempStorage(body, { onError: rollbackLastSavedTempBody });
   };
+
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 직전에 관찰한 step 4 입력값 — 실제로 값이 바뀐 경우에만 타이머를 걸기 위해 사용.
+  // 이 값이 없으면 step 4에 처음 도착한 시점이라 아직 사용자 입력이 없다는 뜻이다.
+  const observedStep4ValuesRef = useRef<string | null>(null);
+
+  const clearIdleTimer = () => {
+    if (idleTimerRef.current === null) return;
+
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = null;
+  };
+
+  useEffect(() => {
+    if (!isClient || !isStep4) return;
+
+    const step4ValuesKey = JSON.stringify(step4Values);
+    const hasEdited =
+      observedStep4ValuesRef.current !== null && observedStep4ValuesRef.current !== step4ValuesKey;
+
+    observedStep4ValuesRef.current = step4ValuesKey;
+
+    // step 4 진입만으로는 타이머를 걸지 않는다 — 직전 '다음으로'가 이미 저장했다
+    if (!hasEdited) return;
+
+    idleTimerRef.current = setTimeout(() => {
+      idleTimerRef.current = null;
+      handleAutoTempSave();
+    }, IDLE_AUTO_SAVE_DELAY);
+
+    // 입력이 이어지면 이전 타이머를 버리고 다시 2분을 센다
+    return clearIdleTimer;
+    // handleAutoTempSave는 렌더마다 새로 만들어지므로 의존성에 넣으면 타이머가
+    // 매 렌더 초기화돼 만료되지 않는다. 입력 변화에만 반응해야 하므로 의도적으로 제외한다.
+  }, [step4Values, isStep4, isClient]);
 
   const handleOneseoEditButtonClick = async () => {
     await patchPersonalInfoByMemberId(getPersonalInfo());
