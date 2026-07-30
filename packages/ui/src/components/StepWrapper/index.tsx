@@ -1,5 +1,3 @@
- 
- 
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -401,7 +399,8 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     }
   };
 
-  // 직전에 임시저장에 성공한 payload — 동일한 내용의 중복 저장 요청을 걸러내는 데 사용
+  // 직전에 임시저장을 요청한 payload — 동일한 내용의 중복 저장 요청을 걸러내는 데 사용.
+  // 응답이 아니라 요청 시점에 갱신해야 아직 응답이 오지 않은 저장과의 중복까지 막을 수 있다.
   const lastSavedTempBodyRef = useRef<string | null>(null);
 
   const getTempStorage = () => {
@@ -410,14 +409,17 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     return { body, key: JSON.stringify(body) };
   };
 
+  // 저장에 실패하면 서버에 반영되지 않았으므로 키를 되돌려 다음 시도를 허용한다
+  const rollbackLastSavedTempBody = () => {
+    lastSavedTempBodyRef.current = null;
+  };
+
   const handleTemporarySaveButtonClick = () => {
     const { body, key } = getTempStorage();
 
-    postTempStorage(body, {
-      onSuccess: () => {
-        lastSavedTempBodyRef.current = key;
-      },
-    });
+    lastSavedTempBodyRef.current = key;
+
+    postTempStorage(body, { onError: rollbackLastSavedTempBody });
   };
 
   const handleAutoTempSave = () => {
@@ -425,11 +427,9 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
 
     if (lastSavedTempBodyRef.current === key) return;
 
-    autoSaveTempStorage(body, {
-      onSuccess: () => {
-        lastSavedTempBodyRef.current = key;
-      },
-    });
+    lastSavedTempBodyRef.current = key;
+
+    autoSaveTempStorage(body, { onError: rollbackLastSavedTempBody });
   };
 
   const handleOneseoEditButtonClick = async () => {
