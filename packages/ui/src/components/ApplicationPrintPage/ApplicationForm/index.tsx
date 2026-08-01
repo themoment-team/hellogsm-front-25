@@ -1,4 +1,4 @@
-/* eslint-disable-next-line no-restricted-imports */
+ 
 import { NEXT_YEAR } from '@repo/constants';
 import { OneseoStatusType } from '@repo/types';
 import { cn } from '@repo/utils';
@@ -6,7 +6,7 @@ import { cn } from '@repo/utils';
 import ApplicationPledge from '../ApplicationPledge';
 import OneseoStatus from '../OneseoStatus';
 import PersonalInfoTable from '../PersonalInfoTable';
-/* eslint-disable-next-line no-restricted-imports */
+ 
 
 interface ApplicationFormProps extends OneseoStatusType {
   isPreview?: boolean;
@@ -118,7 +118,7 @@ const ApplicationForm = ({ oneseo, isPreview }: ApplicationFormProps) => {
           </div>
 
           <div className={cn('my-4', 'text-center')}>
-            2차 전형 응시 준비물 : 신분증[학생증], 필기구 등
+            ** 2차 전형 응시 준비물: 신분증(학생증), 필기구
           </div>
         </div>
       </div>

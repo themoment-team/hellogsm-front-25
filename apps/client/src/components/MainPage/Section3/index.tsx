@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 
+import { ADMISSION_SCHEDULE } from '@repo/constants';
 import { cn } from '@repo/utils';
 
 import * as I from '@/assets';
-import { RECRUITMENT_PERIOD } from '@/constants';
 
 const buttonStyle = [
   'font-semibold',
@@ -55,7 +55,8 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
             2026 신입생 모집
           </h1>
           <p className={cn('mb-0', 'lg:mb-8', 'mt-[1rem]', 'hidden', 'smx:flex', 'text-gray-500')}>
-            접수 기간: {RECRUITMENT_PERIOD.startDate} ~ {RECRUITMENT_PERIOD.endDate}
+            접수 기간: {ADMISSION_SCHEDULE.submission.startLabel} ~{' '}
+            {ADMISSION_SCHEDULE.submission.endLabel}
           </p>
           <Link
             href="/guide"
@@ -125,7 +126,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
                 )}
               >
                 최종 합격하려면 중학교 내신 성적이
-                <br /> 최소 몇 %가 되어야 할까?&nbsp; 🤷🏻‍♀️
+                <br /> 최소 몇 %가 되어야 할까?{'\u00A0'} 🤷🏻‍♀️
               </p>
               <Link href="/faq" className={cn([...buttonStyle, 'self-end'])}>
                 FAQ 바로가기
@@ -175,7 +176,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
                 'p-6',
               )}
               style={{
-                // eslint-disable-next-line quotes
+                 
                 background: "url('/images/Pattern.png') center / 150% no-repeat",
               }}
             >

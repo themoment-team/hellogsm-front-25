@@ -8,8 +8,8 @@ import {
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormWatch,
   get,
+  useWatch,
 } from 'react-hook-form';
 
 import { ACHIEVEMENT_FIELD_LIST, GENERAL_SCORE_VALUES, GENERAL_SUBJECTS } from '@repo/constants';
@@ -25,7 +25,6 @@ interface FreeGradeFormProps {
   control: Control<Step4FormType>;
   setValue: UseFormSetValue<Step4FormType>;
   register: UseFormRegister<Step4FormType>;
-  watch: UseFormWatch<Step4FormType>;
   handleDeleteSubjectClick: (idx: number) => void;
   errors: FieldErrors<Step4FormType>;
   achievementList: AchievementType[];
@@ -60,7 +59,7 @@ const FreeGradeForm = ({
   subjectArray,
   setValue,
   register,
-  watch,
+  control,
   handleDeleteSubjectClick,
   errors,
   achievementList,
@@ -69,13 +68,17 @@ const FreeGradeForm = ({
   getValues,
   validateForm,
 }: FreeGradeFormProps) => {
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  // 훅은 map 안에서 호출할 수 없으므로 학기별 배열 전체를 한 번 구독하고 인덱싱한다
+  const achievements = useWatch({ control, name: ACHIEVEMENT_FIELD_LIST });
+
   useEffect(() => {
     setTimeout(
       () =>
         ACHIEVEMENT_FIELD_LIST.forEach((field) => {
           const hasField = achievementList.some((freeGrade) => freeGrade.field === field);
           if (hasField) {
-            setValue(field, watch(field) || []);
+            setValue(field, getValues(field) || []);
           } else {
             setValue(field, null);
           }
@@ -155,7 +158,7 @@ const FreeGradeForm = ({
             </div>
             <div className={cn('flex')}>
               {achievementList.map(({ field }) => {
-                const score = watch(`${field}.${idx}`);
+                const score = achievements[ACHIEVEMENT_FIELD_LIST.indexOf(field)]?.[idx];
 
                 const subjectHasError = score === undefined || score === null;
 

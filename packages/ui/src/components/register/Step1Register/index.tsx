@@ -3,11 +3,12 @@
 import { useEffect } from 'react';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import {
+  Control,
   UseFormRegister,
   UseFormSetValue,
   UseFormTrigger,
-  UseFormWatch,
   FormState,
+  useWatch,
 } from 'react-hook-form';
 
 import { SexValueEnum, Step1FormType } from '@repo/types';
@@ -30,7 +31,7 @@ interface Step1RegisterProps {
   phoneNumber: string;
   register: UseFormRegister<Step1FormType>;
   setValue: UseFormSetValue<Step1FormType>;
-  watch: UseFormWatch<Step1FormType>;
+  control: Control<Step1FormType>;
   trigger: UseFormTrigger<Step1FormType>;
   formState: FormState<Step1FormType>;
   showError: boolean;
@@ -44,14 +45,16 @@ const Step1Register = ({
   phoneNumber,
   register,
   setValue,
-  watch,
+  control,
   trigger,
   formState: { errors },
   showError,
 }: Step1RegisterProps) => {
   const daumPostCode = useDaumPostcodePopup();
 
-  const birth = watch('birth') || '';
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  const birth = useWatch({ control, name: 'birth' }) || '';
+  const sex = useWatch({ control, name: 'sex' });
   const [birthYear, birthMonth, birthDay] = birth.split('-');
 
   const sexList = [
@@ -142,7 +145,7 @@ const Step1Register = ({
 
       <div className={cn('flex', 'items-end', 'gap-[3rem]')}>
         <div className={cn('flex', 'w-[29.75rem]', 'flex-col', 'items-start', 'gap-[2rem]')}>
-          <UploadPhoto setValue={setValue} watch={watch} errors={errors} showError={showError} />
+          <UploadPhoto setValue={setValue} control={control} errors={errors} showError={showError} />
           <CustomFormItem text={'이름'} className={cn('gap-1')} required={true} fullWidth={true}>
             <Input
               {...register('name')}
@@ -224,7 +227,7 @@ const Step1Register = ({
             title={'성별'}
             list={sexList}
             required={true}
-            selectedValue={watch('sex') || ''}
+            selectedValue={sex || ''}
             handleOptionClick={(value) =>
               setValue('sex', value as 'MALE' | 'FEMALE', {
                 shouldValidate: true,

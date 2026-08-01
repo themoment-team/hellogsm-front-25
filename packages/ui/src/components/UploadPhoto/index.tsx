@@ -1,6 +1,6 @@
 'use client';
 
-import { FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { Control, FieldErrors, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import { usePostImage } from '@repo/api/hooks';
 import { useModalStore } from '@repo/store';
@@ -12,14 +12,15 @@ import { UploadIcon } from '../../icons';
 
 interface UploadPhotoProps {
   setValue: UseFormSetValue<Step1FormType>;
-  watch: UseFormWatch<Step1FormType>;
+  control: Control<Step1FormType>;
   errors: FieldErrors<Step1FormType>;
   showError: boolean;
 }
 
-const UploadPhoto = ({ setValue, watch, errors, showError }: UploadPhotoProps) => {
+const UploadPhoto = ({ setValue, control, errors, showError }: UploadPhotoProps) => {
   const { setImageUploadSizeLimitModal } = useModalStore();
-  const profileImg = watch('profileImg');
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  const profileImg = useWatch({ control, name: 'profileImg' });
 
   const { mutate: postImage, isSuccess } = usePostImage({
     onSuccess: ({ url }) => setValue('profileImg', url),
@@ -106,9 +107,9 @@ const UploadPhoto = ({ setValue, watch, errors, showError }: UploadPhotoProps) =
           </CustomFormItem>
         </div>
         <ul className={cn('text-slate-600', 'text-[0.75rem]/[1.125rem]', 'font-[400]')}>
-          <li>&middot; 5MB 이하</li>
-          <li>&middot; 3개월 이내의 3x4 cm 증명사진</li>
-          <li>&middot; jpg, jpeg, png 형식</li>
+          <li>· 5MB 이하</li>
+          <li>· 3개월 이내의 3x4 cm 증명사진</li>
+          <li>· jpg, jpeg, png 형식</li>
         </ul>
       </div>
     </>

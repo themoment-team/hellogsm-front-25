@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
-import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { useEffect } from 'react';
+import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import {
   ART_PHYSICAL_SCORE_VALUES,
@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 interface ArtPhysicalFormProps {
   freeSemester: FreeSemesterValueEnum | null;
   setValue: UseFormSetValue<Step4FormType>;
-  watch: UseFormWatch<Step4FormType>;
+  control: Control<Step4FormType>;
   isFreeGrade: boolean;
   isFreeSemester: boolean;
   isGraduate: boolean;
@@ -45,6 +45,21 @@ const rowStyle = [
   'items-center',
 ];
 
+const getFreeSemesterIndices = (semester: FreeSemesterValueEnum | null, isGraduate: boolean) => {
+  if (!semester) return [];
+  const semesterParts = semester.split('-');
+  const grade = Number(semesterParts[0]);
+  const sem = Number(semesterParts[1]);
+  if (!Number.isFinite(grade) || !Number.isFinite(sem)) return [];
+
+  // 재학생: 1학년부터 시작 (grade - 1), 졸업자: 2학년부터 시작 (grade - 2)
+  const gradeOffset = isGraduate ? 2 : 1;
+  const semesterNumber = (grade - gradeOffset) * 2 + (sem - 1);
+
+  if (semesterNumber < 0) return []; // 유효하지 않은 학기
+  return [semesterNumber * 3, semesterNumber * 3 + 1, semesterNumber * 3 + 2];
+};
+
 const ArtPhysicalForm = ({
   freeSemester,
   setValue,
@@ -52,9 +67,13 @@ const ArtPhysicalForm = ({
   isFreeSemester,
   isGraduate,
   graduationType,
-  watch,
+  control,
   showError,
 }: ArtPhysicalFormProps) => {
+  // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
+  // 훅은 map 안에서 호출할 수 없으므로 배열 전체를 한 번 구독하고 인덱싱한다
+  const artsPhysicalAchievement = useWatch({ control, name: 'artsPhysicalAchievement' });
+
   const artPhysicalArray = getArtPhysicalArray({
     graduationType,
     isFreeSemester,
@@ -67,33 +86,15 @@ const ArtPhysicalForm = ({
     isFreeGrade,
   });
 
-  const getFreeSemesterIndices = useCallback(
-    (semester: FreeSemesterValueEnum | null) => {
-      if (!semester) return [];
-      const semesterParts = semester.split('-');
-      const grade = Number(semesterParts[0]);
-      const sem = Number(semesterParts[1]);
-      if (!Number.isFinite(grade) || !Number.isFinite(sem)) return [];
-
-      // 재학생: 1학년부터 시작 (grade - 1), 졸업자: 2학년부터 시작 (grade - 2)
-      const gradeOffset = isGraduate ? 2 : 1;
-      const semesterNumber = (grade - gradeOffset) * 2 + (sem - 1);
-
-      if (semesterNumber < 0) return []; // 유효하지 않은 학기
-      return [semesterNumber * 3, semesterNumber * 3 + 1, semesterNumber * 3 + 2];
-    },
-    [isGraduate],
-  );
-
-  const disabledIndices = isFreeSemester ? getFreeSemesterIndices(freeSemester) : [];
+  const disabledIndices = isFreeSemester ? getFreeSemesterIndices(freeSemester, isGraduate) : [];
 
   useEffect(() => {
     if (!isFreeSemester) return;
-    const indices = getFreeSemesterIndices(freeSemester);
+    const indices = getFreeSemesterIndices(freeSemester, isGraduate);
     indices.forEach((index) => {
       setValue(`artsPhysicalAchievement.${index}`, 0);
     });
-  }, [freeSemester, isFreeSemester, setValue, getFreeSemesterIndices]);
+  }, [freeSemester, isFreeSemester, isGraduate, setValue]);
 
   return (
     <div className={cn('flex', 'flex-col', 'w-full')}>
@@ -136,7 +137,7 @@ const ArtPhysicalForm = ({
           </div>
           <div className={cn('flex')}>
             {registerIndexList.map((registerIndex) => {
-              const score = watch(`artsPhysicalAchievement.${registerIndex}`);
+              const score = artsPhysicalAchievement?.[registerIndex];
               const isDisabled = disabledIndices.includes(registerIndex);
 
               return (
@@ -181,9 +182,7 @@ const ArtPhysicalForm = ({
                           'px-[0.5rem]',
                           'border-slate-300',
                           isGraduate ? 'w-[7.34rem]' : isFreeGrade ? 'w-[10.46rem]' : 'w-[5.47rem]',
-                          watch(`artsPhysicalAchievement.${registerIndex}`) === undefined &&
-                            showError &&
-                            '!border-red-600',
+                          score === undefined && showError && '!border-red-600',
                         ])}
                       >
                         <SelectValue placeholder="성적 선택" />
