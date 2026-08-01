@@ -41,7 +41,7 @@ import {
   step4Schema,
   StepEnum,
 } from '@repo/types';
-import { cn, extractClassroomAndNumber } from '@repo/utils';
+import { cn, extractClassroomAndNumber, sendGAEvent } from '@repo/utils';
 
 import { CloseIcon, InfoIcon } from '../../icons';
 import ConfirmBar from '../ConfirmBar';
@@ -202,6 +202,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
 
   const { mutate: postMyOneseo } = usePostMyOneseo({
     onSuccess: () => {
+      if (isClient) sendGAEvent('oneseo_submit', { is_modify: false });
       setApplicationSubmitModal(true, type);
       queryClient.invalidateQueries({ queryKey: oneseoQueryKeys.getMyOneseo() });
       queryClient.invalidateQueries({ queryKey: oneseoQueryKeys.getEditability() });
@@ -210,6 +211,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
 
   const { mutate: modifyMyOneseo } = usePutMyOneseo({
     onSuccess: () => {
+      if (isClient) sendGAEvent('oneseo_submit', { is_modify: true });
       setApplicationSubmitModal(true, type, isModifyApproved);
       queryClient.invalidateQueries({ queryKey: oneseoQueryKeys.getMyOneseo() });
       queryClient.invalidateQueries({ queryKey: oneseoQueryKeys.getEditability() });
@@ -225,7 +227,8 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   });
 
   const { mutate: postTempStorage } = usePostTempStorage(Number(step), {
-    onSuccess: () =>
+    onSuccess: () => {
+      if (isClient) sendGAEvent('oneseo_temp_save', { step: Number(step) });
       toast.success('임시 저장 되었습니다.', {
         icon: InfoIcon,
         closeButton: (
@@ -233,7 +236,8 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
             <CloseIcon />
           </button>
         ),
-      }),
+      });
+    },
     onError: () => toast.error('임시 저장을 실패하였습니다.'),
   });
 
@@ -408,6 +412,8 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   };
 
   const handleCheckScoreButtonClick = () => {
+    if (isClient) sendGAEvent('score_calculate_click', { step: Number(step) });
+
     const {
       liberalSystem,
       achievement1_1,
@@ -450,6 +456,10 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     postMockScore(body);
   };
 
+  useEffect(() => {
+    if (isClient) sendGAEvent('register_step_view', { step: Number(step) });
+  }, [step, isClient]);
+
   const prevStepRef = useRef<StepEnum>(step);
 
   useEffect(() => {
@@ -476,6 +486,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
       handleStepError(StepEnum.FOUR);
       return;
     }
+    if (isClient) sendGAEvent('oneseo_preview_click');
     await patchPersonalInfo(getPersonalInfo());
     postTempStorage(getOneseo(true), {
       onSuccess: () => push('/print?preview=true'),
