@@ -55,6 +55,7 @@ interface StepBarType {
   };
   handleStepError: (step: StepEnum) => void;
   handlePreviewPrint?: () => void;
+  handleAutoTempSave?: () => void;
 }
 
 const StepBar = ({
@@ -64,6 +65,7 @@ const StepBar = ({
   handleCheckScoreButtonClick,
   handleStepError,
   handlePreviewPrint,
+  handleAutoTempSave,
 }: StepBarType) => {
   const { push } = useRouter();
 
@@ -71,6 +73,9 @@ const StepBar = ({
 
   const handleCheckNextStep = (step: StepEnum) => {
     if (!isStepSuccess[step]) return handleStepError(step);
+
+    // 저장 완료를 기다리지 않고 바로 이동한다 (soft navigation이라 요청은 그대로 진행됨)
+    handleAutoTempSave?.();
 
     push(`${baseUrl}?step=${Number(step) + 1}`);
   };

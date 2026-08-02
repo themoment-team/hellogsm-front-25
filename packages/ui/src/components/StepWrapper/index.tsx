@@ -1,5 +1,3 @@
- 
- 
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,6 +46,9 @@ import ConfirmBar from '../ConfirmBar';
 import EditBar from '../EditBar';
 import { Step1Register, Step2Register, Step3Register, Step4Register } from '../register';
 import StepBar from '../StepBar';
+
+/** step 4에서 마지막 입력 이후 이 시간만큼 입력이 없으면 자동으로 임시저장한다 */
+const IDLE_AUTO_SAVE_DELAY = 2 * 60 * 1000;
 
 interface StepWrapperProps {
   data: GetMyOneseoType | undefined;
@@ -237,6 +238,11 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
     onError: () => toast.error('임시 저장을 실패하였습니다.'),
   });
 
+  // 단계 이동 시 자동 저장 전용 — 성공 토스트 없이 조용히 저장한다
+  const { mutate: autoSaveTempStorage } = usePostTempStorage(Number(step), {
+    onError: () => toast.error('임시 저장을 실패하였습니다.'),
+  });
+
   const { mutate: postMockScore } = usePostMockScore(graduationType, {
     onSuccess: (data) => {
       setScoreCalculationCompleteModal(true, data, 'score');
@@ -386,21 +392,128 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
   };
 
   const handleOneseoSubmitButtonClick = async () => {
-    await patchPersonalInfo(getPersonalInfo());
+    // 제출 요청 중에 자동저장이 나가면 서버의 제출 완료 상태가 다시 작성 중으로
+    // 되돌아간다. 요청을 보내기 전에 멈추고, 제출이 실패하면 되살린다.
+    stopIdleTimer();
+
+    await patchPersonalInfo(getPersonalInfo()).catch((error) => {
+      resumeIdleTimer();
+      throw error;
+    });
+
     const body = getOneseo();
 
     if (isModifyApproved) {
-      modifyMyOneseo(body);
+      modifyMyOneseo(body, { onError: resumeIdleTimer });
     } else {
-      postMyOneseo(body);
+      postMyOneseo(body, { onError: resumeIdleTimer });
     }
   };
 
-  const handleTemporarySaveButtonClick = () => {
+  // 직전에 임시저장을 요청한 payload — 동일한 내용의 중복 저장 요청을 걸러내는 데 사용.
+  // 응답이 아니라 요청 시점에 갱신해야 아직 응답이 오지 않은 저장과의 중복까지 막을 수 있다.
+  const lastSavedTempBodyRef = useRef<string | null>(null);
+
+  const getTempStorage = () => {
     const body = getOneseo(true);
 
-    postTempStorage(body);
+    return { body, key: JSON.stringify(body) };
   };
+
+  // 저장에 실패하면 서버에 반영되지 않았으므로 키를 되돌려 다음 시도를 허용한다
+  const rollbackLastSavedTempBody = () => {
+    lastSavedTempBodyRef.current = null;
+  };
+
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 최종 제출 이후에는 임시저장이 서버의 제출 완료 상태를 다시 작성 중으로 되돌리므로
+  // 자동저장을 영구히 멈춘다. 제출 성공 모달이 떠도 이 화면은 그대로 남아 있다.
+  const isIdleTimerStoppedRef = useRef(false);
+
+  const clearIdleTimer = () => {
+    if (idleTimerRef.current === null) return;
+
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = null;
+  };
+
+  // 지금 입력값을 기준으로 2분 타이머를 새로 건다. 대기 중이던 타이머는 여기서 버린다.
+  const armIdleTimer = () => {
+    if (!isClient || !isStep4 || isIdleTimerStoppedRef.current) return;
+
+    clearIdleTimer();
+
+    idleTimerRef.current = setTimeout(() => {
+      idleTimerRef.current = null;
+      handleAutoTempSave();
+    }, IDLE_AUTO_SAVE_DELAY);
+  };
+
+  const stopIdleTimer = () => {
+    isIdleTimerStoppedRef.current = true;
+    clearIdleTimer();
+  };
+
+  // 제출이 끝내 실패했다면 아직 작성 중인 원서이므로 자동저장을 되살린다.
+  // 플래그만 열어두면 타이머는 없는 채로 남는다 — 재장전은 입력이 바뀔 때만 일어나는데
+  // 제출 실패 후 사용자가 폼을 더 건드리지 않으면 그 시점이 오지 않기 때문이다.
+  const resumeIdleTimer = () => {
+    isIdleTimerStoppedRef.current = false;
+    armIdleTimer();
+  };
+
+  const handleTemporarySaveButtonClick = () => {
+    // 버튼이 지금 저장하므로 대기 중인 자동저장 타이머는 불필요하다.
+    // 이후 추가 입력이 있으면 타이머는 다시 2분으로 걸린다.
+    clearIdleTimer();
+
+    const { body, key } = getTempStorage();
+
+    lastSavedTempBodyRef.current = key;
+
+    postTempStorage(body, { onError: rollbackLastSavedTempBody });
+  };
+
+  const handleAutoTempSave = () => {
+    const { body, key } = getTempStorage();
+
+    if (lastSavedTempBodyRef.current === key) return;
+
+    lastSavedTempBodyRef.current = key;
+
+    autoSaveTempStorage(body, { onError: rollbackLastSavedTempBody });
+  };
+
+  // 직전에 관찰한 step 4 입력값 — 실제로 값이 바뀐 경우에만 타이머를 걸기 위해 사용.
+  // 이 값이 없으면 step 4에 처음 도착한 시점이라 아직 사용자 입력이 없다는 뜻이다.
+  const observedStep4ValuesRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    // step 4를 벗어났거나 자동저장이 멈춘 상태면 대기 중인 타이머만 정리한다
+    if (!isClient || !isStep4 || isIdleTimerStoppedRef.current) {
+      clearIdleTimer();
+      return;
+    }
+
+    const step4ValuesKey = JSON.stringify(step4Values);
+    const hasEdited =
+      observedStep4ValuesRef.current !== null && observedStep4ValuesRef.current !== step4ValuesKey;
+
+    observedStep4ValuesRef.current = step4ValuesKey;
+
+    // step 4 진입만으로는 타이머를 걸지 않는다 — 직전 '다음으로'가 이미 저장했다.
+    // 값이 그대로인 알림(이미 선택된 값 재선택 등)이라면 대기 중인 타이머를 건드리지 않는다.
+    if (!hasEdited) return;
+
+    // 입력이 이어지면 armIdleTimer가 이전 타이머를 버리고 다시 2분을 센다
+    armIdleTimer();
+    // handleAutoTempSave는 렌더마다 새로 만들어지므로 의존성에 넣으면 타이머가
+    // 매 렌더 초기화돼 만료되지 않는다. 입력 변화에만 반응해야 하므로 의도적으로 제외한다.
+  }, [step4Values, isStep4, isClient]);
+
+  // 타이머 정리는 언마운트 시에만 한다. 위 effect의 cleanup으로 두면 값이 바뀌지 않은
+  // 재실행에서도 대기 중인 타이머가 취소되고, hasEdited가 false라 재장전되지 않는다.
+  useEffect(() => clearIdleTimer, []);
 
   const handleOneseoEditButtonClick = async () => {
     await patchPersonalInfoByMemberId(getPersonalInfo());
@@ -527,6 +640,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
             handleCheckScoreButtonClick={handleCheckScoreButtonClick}
             handleStepError={handleStepError}
             handlePreviewPrint={isClient ? handlePreviewPrint : undefined}
+            handleAutoTempSave={isClient ? handleAutoTempSave : undefined}
           />
           <div
             className={cn(
