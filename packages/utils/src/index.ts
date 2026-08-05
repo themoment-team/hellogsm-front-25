@@ -5,6 +5,7 @@ export * from './extractClassroomAndNumber';
 export * from './formatBirth';
 export * from './formatScore';
 export * from './getKoreanDate';
+export * from './gtag';
 export * from './isTimeAfter';
 export * from './isTimeBefore';
 export * from './minutesToMs';
