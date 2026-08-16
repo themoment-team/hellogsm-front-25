@@ -42,7 +42,9 @@ const Elements = [
 
 const Section5 = () => {
   return (
-    <div className={cn('flex', 'flex-col', 'bg-white', 'py-[11.25rem]', 'w-full')}>
+    <section
+      className={cn('flex', 'flex-col', 'bg-white', 'pt-[11.25rem]', 'pb-[7.5rem]', 'w-full')}
+    >
       <div className={cn('flex', 'justify-center', 'gap-[4.25rem]', 'flex-col')}>
         <div
           className={cn(
@@ -176,7 +178,7 @@ const Section5 = () => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

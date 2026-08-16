@@ -76,7 +76,7 @@ const stepsData = [
 
 const Section2 = () => {
   return (
-    <div
+    <section
       id="section2"
       className={cn('w-full', 'bg-white', 'relative', 'py-[11.25rem]', 'overflow-hidden')}
     >
@@ -224,7 +224,14 @@ const Section2 = () => {
           </div>
 
           <div
-            className={cn('flex', 'justify-around', 'mt-[3.25rem]', 'relative', 'hidden', 'lg:flex')}
+            className={cn(
+              'flex',
+              'justify-around',
+              'mt-[3.25rem]',
+              'relative',
+              'hidden',
+              'lg:flex',
+            )}
           >
             {stepsData.slice(4).map((step, index) => (
               <div
@@ -362,7 +369,7 @@ const Section2 = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

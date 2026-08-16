@@ -22,7 +22,7 @@ interface Section3Props {
 
 const Section3 = ({ isServerHealthy }: Section3Props) => {
   return (
-    <div className={cn('w-full', 'bg-white', 'relative', 'py-[11.25rem]')}>
+    <section className={cn('w-full', 'bg-white', 'relative', 'py-[11.25rem]')}>
       <div
         className={cn(
           'flex',
@@ -84,22 +84,9 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
           )}
         >
           <div
-            className={cn(
-              'grid',
-              'grid-cols-6',
-              'grid-rows-3',
-              'gap-[0.75rem]',
-              'min-h-[39rem]',
-            )}
+            className={cn('grid', 'grid-cols-6', 'grid-rows-3', 'gap-[0.75rem]', 'min-h-[39rem]')}
           >
-            <div
-              className={cn(
-                'col-span-2',
-                'row-span-1',
-                'rounded-[0.75rem]',
-                'bg-lime-400 p-6',
-              )}
-            >
+            <div className={cn('col-span-2', 'row-span-1', 'rounded-[0.75rem]', 'bg-lime-400 p-6')}>
               <div className={cn('flex', 'h-full', 'w-full', 'items-center', 'justify-center')}>
                 <I.StarIcon />
               </div>
@@ -176,7 +163,6 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
                 'p-6',
               )}
               style={{
-                 
                 background: "url('/images/Pattern.png') center / 150% no-repeat",
               }}
             >
@@ -239,13 +225,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
               </div>
             </div>
             <div
-              className={cn(
-                'col-span-2',
-                'row-span-1',
-                'rounded-[0.75rem]',
-                'bg-lime-400',
-                'p-6',
-              )}
+              className={cn('col-span-2', 'row-span-1', 'rounded-[0.75rem]', 'bg-lime-400', 'p-6')}
             >
               <div className={cn('flex', 'h-full', 'w-full', 'items-center', 'justify-center')}>
                 <I.Star2Icon />
@@ -254,7 +234,7 @@ const Section3 = ({ isServerHealthy }: Section3Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
