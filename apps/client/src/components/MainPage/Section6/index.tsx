@@ -30,6 +30,8 @@ const Section6 = () => {
       </h2>
       <a
         href="https://www.ready.hellogsm.kr/"
+        target="_blank"
+        rel="noopener noreferrer"
         className={cn(
           'px-5',
           'py-3',
