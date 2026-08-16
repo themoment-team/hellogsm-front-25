@@ -13,6 +13,7 @@ import {
   Section3,
   Section4,
   Section5,
+  Section6,
   TestResultDialog,
 } from '@/components';
 
@@ -48,8 +49,9 @@ const MainPage = ({ memberInfo, resultInfo, isServerHealthy }: MainPageProps) =>
       <Section2 />
       <Section3 isServerHealthy={isServerHealthy} />
       <Section4 />
-      
       <Section5 />
+      <Section6 />
+
       <Footer />
       <TestResultDialog
         isOpen={isOpen}
