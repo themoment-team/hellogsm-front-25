@@ -22,7 +22,7 @@ export const ADMISSION_SCHEDULE = {
   /** 1차 전형 합격자 발표 */
   firstAnnouncement: {
     /** 모집절차 스텝 표기 (client Section2) */
-    step: '2025. 10. 27.(화) 10:00',
+    step: '2026. 10. 27.(화) 10:00',
   },
 
   /** 2차 전형 — 역량검사 */
