@@ -17,6 +17,8 @@ export const ADMISSION_SCHEDULE = {
     /** 모집절차 스텝 표기 (client Section2) — 시작/종료 라벨 분리 노출 */
     stepStart: '2026. 10. 19.(월)~',
     stepEnd: '22.(목) 09:00 ~ 17:00',
+    /** 서류 제출 안내 표기 (client GuidePage) — 연도 없이 월·일만 노출 */
+    guideLabel: '10월 19일 ~ 10월 22일 (17:00)까지',
   },
 
   /** 1차 전형 합격자 발표 */
@@ -35,6 +37,8 @@ export const ADMISSION_SCHEDULE = {
     step: '2026. 10. 30.(금) 14:00-16:30',
     /** 확인서 발급일 표기 (admin TicketPage) */
     issueDateLabel: '2026년 10월 30일',
+    /** 1차 합격 안내 다이얼로그 표기 (client PassResultDialog) — 연도 없이 월·일만 노출 */
+    dialogLabel: '10월 30일 14:00 ~ 16:30',
   },
 
   /** 2차 전형 — 심층면접 */

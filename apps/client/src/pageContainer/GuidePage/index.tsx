@@ -11,6 +11,7 @@ import {
   useGetMyOneseo,
 } from '@repo/api/hooks';
 import { oneseoQueryKeys } from '@repo/api/lib';
+import { ADMISSION_SCHEDULE } from '@repo/constants';
 import { useModalStore } from '@repo/store';
 import { EditabilityType, GetMyOneseoType } from '@repo/types';
 import { Button } from '@repo/ui/shadcn';
@@ -92,7 +93,7 @@ const Elements: ElementType[] = [
       <>
         서류를 출력 후 확인 부분에 서명 후{' '}
         <strong className={cn('text-blue-500', 'font-semibold')}>
-          10월 20일 ~ 10월 23일 (16:30)까지
+          {ADMISSION_SCHEDULE.submission.guideLabel}
         </strong>{' '}
         해당 서류를 원서 접수처에 제출합니다.
       </>
