@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
+import { ADMISSION_SCHEDULE } from '@repo/constants';
 import { Majors, MyMemberInfoType, MyTotalTestResultType } from '@repo/types';
 import { Button, Dialog, DialogContent, DialogTitle } from '@repo/ui/shadcn';
 import { cn } from '@repo/utils';
@@ -47,7 +48,7 @@ const PassResultDialog = ({
       ),
       message: (
         <>
-          2차 역량검사는 10월 31일 13:00 ~ 16:30에 진행될 예정입니다.
+          2차 역량검사는 {ADMISSION_SCHEDULE.competencyEvaluation.dialogLabel}에 진행될 예정입니다.
           <br />
           <div className={cn('flex', 'items-center', 'gap-1')}>
             <CopyIcon color="#2563EB" />

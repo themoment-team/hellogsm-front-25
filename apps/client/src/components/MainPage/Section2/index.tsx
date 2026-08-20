@@ -119,7 +119,7 @@ const Section2 = () => {
             >
               광주소프트웨어마이스터고등학교
               <br />
-              2026 신입생 모집절차
+              2027 신입생 모집절차
             </h1>
             <div className={cn('flex', 'flex-col', 'gap-2')}>
               <p
