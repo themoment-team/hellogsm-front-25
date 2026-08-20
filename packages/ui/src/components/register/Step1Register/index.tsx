@@ -92,7 +92,7 @@ const Step1Register = ({
 
   const handleZipCodeButtonClick = () =>
     daumPostCode({
-      popupTitle: 'Hello, GSM 2024',
+      popupTitle: 'Hello, GSM 2026',
       onComplete: handleDaumPostCodePopupComplete,
     });
 

@@ -1,4 +1,8 @@
+'use client';
+
 import Script from 'next/script';
+
+import { flushGAEventQueue } from '@repo/utils';
 
 export default function GoogleAnalytics({ gaId }: { gaId: string }) {
   return (
@@ -10,6 +14,7 @@ export default function GoogleAnalytics({ gaId }: { gaId: string }) {
       />
       <Script
         id="google-analytics"
+        onReady={flushGAEventQueue}
         dangerouslySetInnerHTML={{
           __html: `
 		window.dataLayer = window.dataLayer || [];

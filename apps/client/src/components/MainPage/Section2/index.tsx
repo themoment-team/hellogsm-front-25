@@ -76,7 +76,7 @@ const stepsData = [
 
 const Section2 = () => {
   return (
-    <div
+    <section
       id="section2"
       className={cn('w-full', 'bg-white', 'relative', 'py-[11.25rem]', 'overflow-hidden')}
     >
@@ -119,7 +119,7 @@ const Section2 = () => {
             >
               광주소프트웨어마이스터고등학교
               <br />
-              2026 신입생 모집절차
+              2027 신입생 모집절차
             </h1>
             <div className={cn('flex', 'flex-col', 'gap-2')}>
               <p
@@ -224,7 +224,14 @@ const Section2 = () => {
           </div>
 
           <div
-            className={cn('flex', 'justify-around', 'mt-[3.25rem]', 'relative', 'hidden', 'lg:flex')}
+            className={cn(
+              'flex',
+              'justify-around',
+              'mt-[3.25rem]',
+              'relative',
+              'hidden',
+              'lg:flex',
+            )}
           >
             {stepsData.slice(4).map((step, index) => (
               <div
@@ -362,7 +369,7 @@ const Section2 = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
