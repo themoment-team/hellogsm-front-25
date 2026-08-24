@@ -99,6 +99,10 @@ const FreeSemesterForm = ({
   // 훅은 map 안에서 호출할 수 없으므로 학기별 배열 전체를 한 번 구독하고 인덱싱한다
   const achievements = useWatch({ control, name: ACHIEVEMENT_FIELD_LIST });
 
+  // 학기 수가 달라도 표 전체 폭이 유지되도록 열 너비를 조정한다
+  // 졸업자 6학기: 6.75 + 6 × 6.25 = 44.25rem, 재학생 5학기: 6.75 + 5 × 7.475 = 44.125rem
+  const columnWidth = isGraduate ? 'w-[6.25rem]' : 'w-[7.475rem]';
+
   useEffect(() => {
     setTimeout(
       () =>
@@ -146,10 +150,7 @@ const FreeSemesterForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>과목명</h1>
         <div className={cn('flex')}>
           {achievementList.map(({ title }) => (
-            <h1
-              key={title}
-              className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-            >
+            <h1 key={title} className={cn([...itemStyle, columnWidth])}>
               {title}
             </h1>
           ))}
@@ -160,10 +161,7 @@ const FreeSemesterForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>자유학기제</h1>
         <div className={cn('flex')}>
           {achievementList.map(({ value, field }) => (
-            <div
-              key={field}
-              className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-            >
+            <div key={field} className={cn([...itemStyle, columnWidth])}>
               {freeSemester === value ? (
                 <button
                   className={cn([
@@ -248,10 +246,7 @@ const FreeSemesterForm = ({
                 const isSubjectError = subjectHasError && showError && '!border-red-600';
 
                 return (
-                  <div
-                    key={field}
-                    className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-                  >
+                  <div key={field} className={cn([...itemStyle, columnWidth])}>
                     {freeSemester === value ? (
                       <div
                         className={cn(
@@ -268,7 +263,7 @@ const FreeSemesterForm = ({
                         자유학기제
                       </div>
                     ) : (
-                      <div className={cn('w-[7.3375rem]', 'flex', 'justify-center')}>
+                      <div className={cn(columnWidth, 'flex', 'justify-center')}>
                         <Select
                           onValueChange={(value) => {
                             const prev = getValues(field) || [];
@@ -286,7 +281,7 @@ const FreeSemesterForm = ({
                         >
                           <SelectTrigger
                             className={cn(
-                              isGraduate ? 'w-[7.34375rem]' : 'w-[5.475rem]',
+                              'w-[5.475rem]',
                               'h-[2rem]',
                               'text-sm',
                               'font-normal',

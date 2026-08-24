@@ -85,6 +85,24 @@ const ArtPhysicalForm = ({
     isFreeGrade,
   });
 
+  // 학기 수가 달라도 표 전체 폭이 유지되도록 열 너비를 조정한다
+  // 졸업자 자유학기제만 6학기라 6.75 + 6 × 6.25 = 44.25rem 기준으로 열을 좁힌다
+  const columnWidth = isGraduate
+    ? isFreeSemester
+      ? 'w-[6.25rem]'
+      : 'w-[9.34rem]'
+    : isFreeGrade
+      ? 'w-[12.46rem]'
+      : 'w-[7.47rem]';
+
+  const selectWidth = isGraduate
+    ? isFreeSemester
+      ? 'w-[5.47rem]'
+      : 'w-[7.34rem]'
+    : isFreeGrade
+      ? 'w-[10.46rem]'
+      : 'w-[5.47rem]';
+
   const disabledIndices = isFreeSemester ? getFreeSemesterIndices(freeSemester) : [];
 
   useEffect(() => {
@@ -109,13 +127,7 @@ const ArtPhysicalForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>과목명</h1>
         <div className={cn('flex')}>
           {artPhysicalArray.map((title) => (
-            <h1
-              key={title}
-              className={cn([
-                ...itemStyle,
-                isGraduate ? 'w-[9.34rem]' : isFreeGrade ? 'w-[12.46rem]' : 'w-[7.47rem]',
-              ])}
-            >
+            <h1 key={title} className={cn([...itemStyle, columnWidth])}>
               {title}
             </h1>
           ))}
@@ -140,13 +152,7 @@ const ArtPhysicalForm = ({
               const isDisabled = disabledIndices.includes(registerIndex);
 
               return (
-                <div
-                  key={registerIndex}
-                  className={cn([
-                    ...itemStyle,
-                    isGraduate ? 'w-[9.34rem]' : isFreeGrade ? 'w-[12.46rem]' : 'w-[7.47rem]',
-                  ])}
-                >
+                <div key={registerIndex} className={cn([...itemStyle, columnWidth])}>
                   {isDisabled ? (
                     <div
                       className={cn(
@@ -180,7 +186,7 @@ const ArtPhysicalForm = ({
                           'text-slate-900',
                           'px-[0.5rem]',
                           'border-slate-300',
-                          isGraduate ? 'w-[7.34rem]' : isFreeGrade ? 'w-[10.46rem]' : 'w-[5.47rem]',
+                          selectWidth,
                           score === undefined && showError && '!border-red-600',
                         ])}
                       >
