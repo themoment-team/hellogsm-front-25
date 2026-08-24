@@ -89,6 +89,16 @@ const freeSemesterCandidateArray = [
 
 const freeSemesterGraduateArray = [
   {
+    title: '1학년 1학기',
+    field: 'achievement1_1',
+    value: FreeSemesterValueEnum['1-1'],
+  },
+  {
+    title: '1학년 2학기',
+    field: 'achievement1_2',
+    value: FreeSemesterValueEnum['1-2'],
+  },
+  {
     title: '2학년 1학기',
     field: 'achievement2_1',
     value: FreeSemesterValueEnum['2-1'],
