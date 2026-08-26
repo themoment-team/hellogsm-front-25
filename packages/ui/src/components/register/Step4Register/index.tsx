@@ -216,7 +216,9 @@ const Step4Register = ({
     // 겹쳐서 두 번째 클릭이 첫 번째 클릭의 자리를 덮어써 버린다. setSubjectArray의
     // 함수형 업데이트 안에서 prev.length를 써야 매번 실제 최신 길이를 본다.
     setSubjectArray((prev) => {
-      const newSubject = subjectName ? subjectName : `추가과목 ${prev.length - defaultSubjectLength}`;
+      const newSubject = subjectName
+        ? subjectName
+        : `추가과목 ${prev.length - defaultSubjectLength}`;
       const newIndex = prev.length;
 
       if (getValues('liberalSystem') === LiberalSystemValueEnum.FREE_GRADE) {
@@ -262,6 +264,16 @@ const Step4Register = ({
   const handleApplyOcrAchievement = (achievement: SchoolRecordExtractionAchievementType) => {
     if (achievement.liberalSystem) {
       setValue('liberalSystem', achievement.liberalSystem);
+      // 아래 "전형(자유학기제/자유학년제) 변경 시 예체능 성적 초기화" effect는 사용자가
+      // LiberalSystemSwitch를 직접 눌러 모드를 바꿨을 때 이전 모드의 값을 지우기 위한
+      // 것이다. 그런데 OCR이 liberalSystem을 바꾸는 경우엔 artsPhysicalAchievement도
+      // 이미 새 모드에 맞게 같이 내려오는데, 다음 렌더에서 그 effect가 "모드가 바뀌었다"고
+      // 보고 이 값을 다시 null로 덮어써 자동 입력값이 사라지는 문제가 있었다. ref를
+      // 새 모드 기준으로 미리 맞춰 두면 그 effect가 "모드가 안 바뀌었다"고 보고 초기화를
+      // 건너뛴다 — 실제 사용자 조작으로 인한 모드 변경만 초기화 대상이 된다.
+      prevIsFreeSemesterRef.current =
+        achievement.liberalSystem === LiberalSystemValueEnum.FREE_SEMESTER;
+      prevIsFreeGradeRef.current = achievement.liberalSystem === LiberalSystemValueEnum.FREE_GRADE;
     }
     if (achievement.freeSemester) {
       setValue('freeSemester', achievement.freeSemester);
