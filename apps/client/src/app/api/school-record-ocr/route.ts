@@ -1,5 +1,8 @@
 import { parse } from 'kordoc';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { memberUrl } from '@repo/api/lib';
 
 import { convertKordocBlocks } from '@/lib/kordoc/achievementTextConverter';
 
@@ -14,7 +17,39 @@ const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ code: status, message, status: `${status}` }, { status });
 
+/**
+ * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 20MB짜리 OCR을 돌릴 수 있어
+ * 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에 로그인 페이지들이 쓰는 것과 같은
+ * SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해 비로그인 요청을 걷어낸다. 요청 빈도
+ * 제한(rate limit)은 이 라우트 코드가 아니라 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
+ */
+const isAuthenticated = async (): Promise<boolean> => {
+  const session = (await cookies()).get('SESSION')?.value;
+  if (!session) return false;
+
+  try {
+    const response = await fetch(
+      new URL(memberUrl.getMyAuthInfo(), process.env.NEXT_PUBLIC_API_BASE_URL),
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `SESSION=${session}`,
+        },
+      },
+    );
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+
 export async function POST(request: NextRequest) {
+  if (!(await isAuthenticated())) {
+    return errorResponse('로그인이 필요합니다.', 401);
+  }
+
   const formData = await request.formData();
   const file = formData.get('file');
 
