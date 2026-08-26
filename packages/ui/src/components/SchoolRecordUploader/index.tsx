@@ -1,5 +1,6 @@
 'use client';
 
+import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -133,10 +134,15 @@ const SchoolRecordUploader = ({
       }
     } catch (error) {
       setStatus('error');
+      // axios가 던지는 에러는 error.message가 "Request failed with status code 422" 같은
+      // 고정 문구라, 백엔드가 응답 본문에 실어 보낸 실제 한국어 안내(예: "생기부를 인식하지
+      // 못했어요...")를 먼저 확인한다. axios가 아닌 에러(예: 아래 rawText 길이 체크에서
+      // 직접 throw한 Error)는 그 message를 그대로 쓴다.
+      const axiosError = error as AxiosError<{ message?: string }>;
       const message =
-        error instanceof Error
-          ? error.message
-          : '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
+        axiosError.response?.data?.message ??
+        (error instanceof Error ? error.message : undefined) ??
+        '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
       setErrorMessage(message);
       toast.error(message);
     }
@@ -210,12 +216,10 @@ const SchoolRecordUploader = ({
             'p-3',
           )}
         >
-          <p className={cn('text-xs', 'font-semibold', 'text-red-700')}>
-            자동 인식에 실패했어요
-          </p>
+          <p className={cn('text-xs', 'font-semibold', 'text-red-700')}>자동 인식에 실패했어요</p>
           <p className={cn('text-xs', 'text-slate-600')}>
-            스캔 이미지 형태의 PDF라 글자를 알아보기 어려웠어요. 성적·출결·봉사 항목을 직접
-            입력해 주세요.
+            스캔 이미지 형태의 PDF라 글자를 알아보기 어려웠어요. 성적·출결·봉사 항목을 직접 입력해
+            주세요.
           </p>
         </div>
       )}
@@ -226,8 +230,8 @@ const SchoolRecordUploader = ({
             생기부 내용을 초안으로 채웠어요
           </p>
           <p className={cn('text-xs', 'text-amber-700')}>
-            자동으로 채운 값이 정확하지 않을 수 있으니, 제출 전에 반드시 실제 생활기록부와
-            한 번씩 대조해서 확인해 주세요.
+            자동으로 채운 값이 정확하지 않을 수 있으니, 제출 전에 반드시 실제 생활기록부와 한 번씩
+            대조해서 확인해 주세요.
           </p>
         </div>
       )}
