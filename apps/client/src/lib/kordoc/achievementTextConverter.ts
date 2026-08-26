@@ -273,10 +273,7 @@ const inferMissingSemesterDigit = (
  * 학년"을 우선 쓴다 — 헤딩이 아직 안 왔거나(lastGeneralSubjectsGrade가 없으면) 헤딩값을
  * 그대로 쓴다.
  */
-const resolveGradeForRow = (
-  state: ConversionState,
-  subjects: string[],
-): number | undefined => {
+const resolveGradeForRow = (state: ConversionState, subjects: string[]): number | undefined => {
   const isGeneralSubjectsRow = subjects.some((subject) => isGeneralSubject(subject));
   if (isGeneralSubjectsRow) return state.headingGrade;
   return state.lastGeneralSubjectsGrade ?? state.headingGrade;
@@ -301,7 +298,9 @@ const convertTable = (block: IRBlock, state: ConversionState): void => {
     if (inAttendanceTable) {
       const rawCells = cells.map(textOrEmpty);
       if (convertAttendanceRow(cells, state.lines)) {
-        kordocDebug(`[KORDOC-DEBUG] row ${rowIndex}: 출결 행 처리. cells=${JSON.stringify(rawCells)}`);
+        kordocDebug(
+          `[KORDOC-DEBUG] row ${rowIndex}: 출결 행 처리. cells=${JSON.stringify(rawCells)}`,
+        );
         return;
       }
       // 헤딩 행이거나 열 구조를 못 맞춘 행은 그대로 지나가는 줄로 남긴다.
@@ -365,6 +364,10 @@ const convertTable = (block: IRBlock, state: ConversionState): void => {
       `[KORDOC-DEBUG] row ${rowIndex}: 성공. grade=${gradeForRow ?? '(없음)'}(heading=${state.headingGrade ?? '-'},lastGeneral=${state.lastGeneralSubjectsGrade ?? '-'}) semester=${semesterDigit ?? '(없음)'}${usedCarry ? '(이월)' : ownSemesterDigit ? '' : semesterDigit ? '(추론)' : ''} subjects=${JSON.stringify(subjects)} cells=${JSON.stringify(rawCells)}`,
     );
     if (!semesterDigit) return;
+    // 학년을 하나도 확정 못 한 행(첫 [N학년] 헤딩보다 앞서 나온 행 등)을 그대로 출력하면,
+    // 이전에 이미 써넣은 "[N학년]" 줄이 아직 유효한 상태라 서버 파서가 이 학기·과목 줄을
+    // 직전 학년 것으로 잘못 붙여버릴 수 있다(리뷰 지적). 학년이 없으면 이 행 자체를 건너뛴다.
+    if (gradeForRow === undefined) return;
 
     subjects.forEach((subject) => {
       const seen = usedSemestersBySubject.get(subject) ?? new Set<string>();
@@ -372,11 +375,11 @@ const convertTable = (block: IRBlock, state: ConversionState): void => {
       usedSemestersBySubject.set(subject, seen);
     });
 
-    if (subjects.some((subject) => isGeneralSubject(subject)) && gradeForRow !== undefined) {
+    if (subjects.some((subject) => isGeneralSubject(subject))) {
       state.lastGeneralSubjectsGrade = gradeForRow;
     }
 
-    if (gradeForRow !== undefined && gradeForRow !== state.lastEmittedGrade) {
+    if (gradeForRow !== state.lastEmittedGrade) {
       state.lines.push(`[${gradeForRow}학년]`);
       state.lastEmittedGrade = gradeForRow;
     }
@@ -483,5 +486,8 @@ export const convertKordocBlocks = (rawBlocks: IRBlock[]): KordocConversionResul
     `[KORDOC-DEBUG] 최종 rawText (${state.lines.length}줄):\n${state.lines.join('\n')}\n[KORDOC-DEBUG] unrecognizedSubjectBlobs: ${JSON.stringify(state.unrecognizedSubjectBlobs)}`,
   );
 
-  return { rawText: state.lines.join('\n'), unrecognizedSubjectBlobs: state.unrecognizedSubjectBlobs };
+  return {
+    rawText: state.lines.join('\n'),
+    unrecognizedSubjectBlobs: state.unrecognizedSubjectBlobs,
+  };
 };
