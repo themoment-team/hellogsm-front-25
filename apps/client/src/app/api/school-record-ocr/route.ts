@@ -67,7 +67,17 @@ export async function POST(request: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const result = await parse(buffer, { ocr: true, tables: true });
+  // 손상되거나 암호화된 PDF는 kordoc이 ParseFailure로 감싸 돌려주지 않고 그냥 throw할 수
+  // 있다 — 감싸지 않으면 이 요청이 처리되지 않은 예외로 500이 되어, 사용자에게 "파일을
+  // 다시 시도해달라" 안내 대신 알 수 없는 서버 오류로 보인다.
+  let result;
+  try {
+    result = await parse(buffer, { ocr: true, tables: true });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[school-record-ocr] kordoc 파싱 중 예외 발생', error);
+    return errorResponse('생기부를 인식하지 못했어요. 다른 파일로 시도해주세요.', 422);
+  }
 
   if (!result.success) {
     // eslint-disable-next-line no-console
