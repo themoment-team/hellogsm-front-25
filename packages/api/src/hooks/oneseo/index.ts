@@ -14,6 +14,8 @@ export * from './usePostExcel';
 export * from './usePostImage';
 export * from './usePostMockScore';
 export * from './usePostMyOneseo';
+export * from './usePostSchoolRecordExtraction';
+export * from './usePostSchoolRecordOcr';
 export * from './usePutMyOneseo';
 export * from './usePostTempStorage';
 export * from './usePutOneseoById';
