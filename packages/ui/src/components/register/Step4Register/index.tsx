@@ -1,4 +1,3 @@
- 
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -458,8 +457,6 @@ const Step4Register = ({
                     register={register}
                     trigger={trigger}
                     errors={formState.errors}
-                    isFreeGrade={isFreeGrade}
-                    isGraduate={isGraduate}
                     showError={showError}
                     validateForm={validateForm}
                   />

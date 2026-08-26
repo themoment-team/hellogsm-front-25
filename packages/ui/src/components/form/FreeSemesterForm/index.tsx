@@ -99,9 +99,9 @@ const FreeSemesterForm = ({
   // 훅은 map 안에서 호출할 수 없으므로 학기별 배열 전체를 한 번 구독하고 인덱싱한다
   const achievements = useWatch({ control, name: ACHIEVEMENT_FIELD_LIST });
 
-  // 학기 수가 달라도 표 전체 폭이 유지되도록 열 너비를 조정한다
-  // 졸업자 6학기: 6.75 + 6 × 6.25 = 44.25rem, 재학생 5학기: 6.75 + 5 × 7.475 = 44.125rem
-  const columnWidth = isGraduate ? 'w-[6.25rem]' : 'w-[7.475rem]';
+  // 표 전체 폭은 44.25rem(708px) 고정 — 과목명 6.75rem + 학기 영역 37.5rem
+  // 학기 열은 37.5rem을 학기 수로 나눈 값이다 (졸업자 6학기, 재학생 5학기)
+  const columnWidth = isGraduate ? 'w-[6.25rem]' : 'w-[7.5rem]';
 
   useEffect(() => {
     setTimeout(

@@ -85,15 +85,15 @@ const ArtPhysicalForm = ({
     isFreeGrade,
   });
 
-  // 학기 수가 달라도 표 전체 폭이 유지되도록 열 너비를 조정한다
-  // 졸업자 자유학기제만 6학기라 6.75 + 6 × 6.25 = 44.25rem 기준으로 열을 좁힌다
+  // 표 전체 폭은 44.25rem(708px) 고정 — 과목명 6.75rem + 학기 영역 37.5rem
+  // 학기 열은 37.5rem을 학기 수로 나눈 값이다 (6학기 6.25 / 4학기 9.375 / 3학기 12.5 / 5학기 7.5)
   const columnWidth = isGraduate
     ? isFreeSemester
       ? 'w-[6.25rem]'
-      : 'w-[9.34rem]'
+      : 'w-[9.375rem]'
     : isFreeGrade
-      ? 'w-[12.46rem]'
-      : 'w-[7.47rem]';
+      ? 'w-[12.5rem]'
+      : 'w-[7.5rem]';
 
   const selectWidth = isGraduate
     ? isFreeSemester
