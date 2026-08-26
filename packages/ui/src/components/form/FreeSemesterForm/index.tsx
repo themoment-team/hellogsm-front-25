@@ -23,6 +23,7 @@ const defaultSubjectLength = GENERAL_SUBJECTS.length;
 
 interface FreeSemesterFormProps {
   subjectArray: string[];
+  subjectKeys: string[];
   setValue: UseFormSetValue<Step4FormType>;
   register: UseFormRegister<Step4FormType>;
   control: Control<Step4FormType>;
@@ -84,6 +85,7 @@ const freeSemesterToAchievementField: Record<FreeSemesterValueEnum, SemesterIdTy
 const FreeSemesterForm = ({
   register,
   subjectArray,
+  subjectKeys,
   setValue,
   control,
   handleDeleteSubjectClick,
@@ -207,7 +209,7 @@ const FreeSemesterForm = ({
         const isNewSubjectError = newSubjectHasError && showError && '!border-red-600';
         return (
           <div
-            key={subject}
+            key={subjectKeys[idx] ?? idx}
             className={cn([
               ...rowStyle,
               'bg-white',
@@ -282,7 +284,7 @@ const FreeSemesterForm = ({
 
                             setValue(field, next, { shouldDirty: true, shouldValidate: true });
                           }}
-                          defaultValue={Number.isInteger(score) ? String(score) : ''}
+                          value={Number.isInteger(score) ? String(score) : ''}
                         >
                           <SelectTrigger
                             className={cn(

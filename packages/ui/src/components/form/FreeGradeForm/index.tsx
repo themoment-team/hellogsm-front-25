@@ -22,6 +22,7 @@ const defaultSubjectLength = GENERAL_SUBJECTS.length;
 
 interface FreeGradeFormProps {
   subjectArray: string[];
+  subjectKeys: string[];
   control: Control<Step4FormType>;
   setValue: UseFormSetValue<Step4FormType>;
   register: UseFormRegister<Step4FormType>;
@@ -57,6 +58,7 @@ const rowStyle = [
 
 const FreeGradeForm = ({
   subjectArray,
+  subjectKeys,
   setValue,
   register,
   control,
@@ -123,7 +125,7 @@ const FreeGradeForm = ({
         const isNewSubjectError = newSubjectHasError && showError && '!border-red-600';
         return (
           <div
-            key={subject}
+            key={subjectKeys[idx] ?? idx}
             className={cn([
               ...rowStyle,
               'bg-white',
@@ -178,7 +180,7 @@ const FreeGradeForm = ({
 
                         setValue(field, next, { shouldDirty: true, shouldValidate: true });
                       }}
-                      defaultValue={Number.isInteger(score) ? String(score) : ''}
+                      value={Number.isInteger(score) ? String(score) : ''}
                     >
                       <SelectTrigger
                         className={cn(

@@ -182,7 +182,9 @@ const ArtPhysicalForm = ({
                           'px-[0.5rem]',
                           'border-slate-300',
                           isGraduate ? 'w-[7.34rem]' : isFreeGrade ? 'w-[10.46rem]' : 'w-[5.47rem]',
-                          score === undefined && showError && '!border-red-600',
+                          (score === undefined || score === null) &&
+                            showError &&
+                            '!border-red-600',
                         ])}
                       >
                         <SelectValue placeholder="성적 선택" />
