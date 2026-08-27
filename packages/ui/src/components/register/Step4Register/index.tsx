@@ -1,4 +1,3 @@
- 
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -88,6 +87,16 @@ const freeSemesterCandidateArray = [
 ] as const;
 
 const freeSemesterGraduateArray = [
+  {
+    title: '1학년 1학기',
+    field: 'achievement1_1',
+    value: FreeSemesterValueEnum['1-1'],
+  },
+  {
+    title: '1학년 2학기',
+    field: 'achievement1_2',
+    value: FreeSemesterValueEnum['1-2'],
+  },
   {
     title: '2학년 1학기',
     field: 'achievement2_1',
@@ -448,8 +457,6 @@ const Step4Register = ({
                     register={register}
                     trigger={trigger}
                     errors={formState.errors}
-                    isFreeGrade={isFreeGrade}
-                    isGraduate={isGraduate}
                     showError={showError}
                     validateForm={validateForm}
                   />
