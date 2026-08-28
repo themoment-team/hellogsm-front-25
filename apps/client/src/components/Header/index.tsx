@@ -14,6 +14,8 @@ import * as I from '@/assets';
 
 import ActiveLink from '../ActiveLink';
 
+const THE_MOMENT_LANDING_URL = 'https://themoment-landing.hellogsm.kr/';
+
 const activeStyle = [
   'text-gray-900',
   'after:w-6',
@@ -337,7 +339,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/check-result', label: '합격자 조회', icon: I.MedalIcon },
         { href: '/mypage', label: '내 정보 페이지', icon: I.HeaderProfileIcon },
         {
-          href: 'https://themoment-landing.hellogsm.kr/',
+          href: THE_MOMENT_LANDING_URL,
           label: '더모먼트',
           icon: I.SparkleIcon,
           isExternal: true,
@@ -348,7 +350,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/guide', label: '원서 접수', icon: I.OneseoIcon },
         { href: '/faq', label: '자주 묻는 질문', icon: I.FaqIcon },
         {
-          href: 'https://themoment-landing.hellogsm.kr/',
+          href: THE_MOMENT_LANDING_URL,
           label: '더모먼트',
           icon: I.SparkleIcon,
           isExternal: true,
@@ -363,7 +365,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/oneseo/calculate', label: '모의 성적 계산' },
         { href: '/check-result', label: '합격자 조회' },
         {
-          href: 'https://themoment-landing.hellogsm.kr/',
+          href: THE_MOMENT_LANDING_URL,
           label: '더모먼트',
           isExternal: true,
         },
@@ -374,7 +376,7 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/faq', label: '자주 묻는 질문' },
         { href: '/oneseo/calculate', label: '모의 성적 계산' },
         {
-          href: 'https://themoment-landing.hellogsm.kr/',
+          href: THE_MOMENT_LANDING_URL,
           label: '더모먼트',
           isExternal: true,
         },
