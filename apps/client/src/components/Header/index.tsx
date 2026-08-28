@@ -55,12 +55,17 @@ interface HeaderProps {
 }
 
 interface NavProps {
-  links: Array<{ href: string; label: string }>;
+  links: Array<{ href: string; label: string; isExternal?: boolean }>;
   isRegisterPath: boolean;
 }
 
 interface MobileNavProps {
-  links: Array<{ href: string; label: string; icon: React.ElementType }>;
+  links: Array<{
+    href: string;
+    label: string;
+    icon: React.ElementType;
+    isExternal?: boolean;
+  }>;
   isRegisterPath: boolean;
   hoveredLink: string | null;
   setHoveredLink: (link: string | null) => void;
@@ -83,8 +88,13 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
           'text-gray-500',
         )}
       >
-        {links.map(({ label, href }) => (
-          <a key={label} href={href} className={cn([...activeTextStyle])}>
+        {links.map(({ label, href, isExternal }) => (
+          <a
+            key={label}
+            href={href}
+            className={cn([...activeTextStyle])}
+            {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+          >
             {label}
           </a>
         ))}
@@ -104,12 +114,13 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
         'text-gray-500',
       )}
     >
-      {links.map(({ label, href }) => (
+      {links.map(({ label, href, isExternal }) => (
         <ActiveLink
           key={label}
           href={href}
           className={cn([...activeTextStyle])}
           activeClassName={cn(...activeStyle)}
+          {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
         >
           {label}
         </ActiveLink>
@@ -148,6 +159,7 @@ const MobileNavigation = ({
               )}
               onMouseEnter={() => setHoveredLink(link.href)}
               onMouseLeave={() => setHoveredLink(null)}
+              {...(link.isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
             >
               <IconComponent
                 size="1.75rem"
@@ -183,6 +195,7 @@ const MobileNavigation = ({
             )}
             onMouseEnter={() => setHoveredLink(link.href)}
             onMouseLeave={() => setHoveredLink(null)}
+            {...(link.isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
           >
             <IconComponent
               size="1.75rem"
@@ -324,9 +337,10 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/check-result', label: '합격자 조회', icon: I.MedalIcon },
         { href: '/mypage', label: '내 정보 페이지', icon: I.HeaderProfileIcon },
         {
-          href: '/introduce',
+          href: 'https://themoment-landing.hellogsm.kr/',
           label: '더모먼트',
           icon: I.SparkleIcon,
+          isExternal: true,
         },
       ]
     : [
@@ -334,9 +348,10 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/guide', label: '원서 접수', icon: I.OneseoIcon },
         { href: '/faq', label: '자주 묻는 질문', icon: I.FaqIcon },
         {
-          href: '/introduce',
+          href: 'https://themoment-landing.hellogsm.kr/',
           label: '더모먼트',
           icon: I.SparkleIcon,
+          isExternal: true,
         },
       ];
 
@@ -348,8 +363,9 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/oneseo/calculate', label: '모의 성적 계산' },
         { href: '/check-result', label: '합격자 조회' },
         {
-          href: '/introduce',
+          href: 'https://themoment-landing.hellogsm.kr/',
           label: '더모먼트',
+          isExternal: true,
         },
       ]
     : [
@@ -358,8 +374,9 @@ const Header = ({ isServerHealthy }: HeaderProps) => {
         { href: '/faq', label: '자주 묻는 질문' },
         { href: '/oneseo/calculate', label: '모의 성적 계산' },
         {
-          href: '/introduce',
+          href: 'https://themoment-landing.hellogsm.kr/',
           label: '더모먼트',
+          isExternal: true,
         },
       ];
 
