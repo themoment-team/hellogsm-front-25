@@ -111,7 +111,7 @@ const FreeGradeForm = ({
           {achievementList.map(({ title }) => (
             <h1
               key={title}
-              className={cn([...itemStyle, isGraduate ? 'w-[9.34rem]' : 'w-[12.46rem]'])}
+              className={cn([...itemStyle, isGraduate ? 'w-[9.375rem]' : 'w-[12.5rem]'])}
             >
               {title}
             </h1>

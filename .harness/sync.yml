@@ -7,8 +7,8 @@ overrides:
   claude/agents/contradiction-finder: true
   claude/agents/doc-polisher: true
   claude/agents/web-researcher: true
-  claude/hooks/dispatcher: true
   claude/settings: true
+  claude/hooks/dispatcher: true
   claude/hooks/eslint: true
   claude/hooks/prettier: true
   claude/hooks/ts-check: true
@@ -19,6 +19,7 @@ overrides:
   codex/agents/contradiction-finder: true
   codex/agents/doc-polisher: true
   codex/agents/web-researcher: true
+  codex/config: true
   codex/hooks/dispatcher: true
   codex/hooks-json: true
   codex/hooks/eslint: true
