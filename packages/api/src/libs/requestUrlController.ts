@@ -24,6 +24,9 @@ export const oneseoUrl = {
   postMyOneseo: () => '/oneseo/v3/oneseo/me',
   putMyOneseo: () => '/oneseo/v3/oneseo/me',
   postImage: () => '/oneseo/v3/image',
+  postSchoolRecordExtraction: () => '/oneseo/v3/extraction/middle-school-achievement',
+  /** Java 백엔드가 아니라 이 Next.js 앱 자신의 API Route(kordoc 직접 호출)로 간다 */
+  postSchoolRecordOcr: () => '/school-record-ocr',
   getOneseoByMemberId: (memberId: number) => `/oneseo/v3/oneseo/${memberId}`,
   putOneseoByMemberId: (memberId: number) => `/oneseo/v3/oneseo/${memberId}`,
   getSearchedOneseoList: (

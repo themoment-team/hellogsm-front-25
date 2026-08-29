@@ -11,6 +11,8 @@ export const oneseoQueryKeys = {
   postMockScore: (type: GraduationType) => ['mock', 'oneseo', 'score', type],
   putOneseoByMemberId: (memberId: number) => ['put', 'oneseo', memberId],
   postImage: () => ['post', 'certification', 'image'],
+  postSchoolRecordExtraction: () => ['post', 'school-record', 'extraction'],
+  postSchoolRecordOcr: () => ['post', 'school-record', 'ocr'],
   getSearchedOneseoList: (
     page: number,
     size: number,
