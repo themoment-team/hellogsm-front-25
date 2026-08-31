@@ -9,7 +9,7 @@ import { convertKordocBlocks } from '@/lib/kordoc/achievementTextConverter';
 // kordoc은 Node 전용 라이브러리(파일 시스템, sharp 네이티브 모듈 등)라 Edge 런타임에서 못 돈다.
 export const runtime = 'nodejs';
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
 // axiosInstance의 응답 인터셉터가 백엔드(Java) 응답 형식({code, data, message, status})을
 // 가정하고 response.data.data를 꺼내 쓴다. 이 라우트도 같은 형식으로 감싸야 클라이언트의
@@ -18,7 +18,7 @@ const errorResponse = (message: string, status: number) =>
   NextResponse.json({ code: status, message, status: `${status}` }, { status });
 
 /**
- * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 20MB짜리 OCR을 돌릴 수 있어
+ * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 30MB짜리 OCR을 돌릴 수 있어
  * 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에 로그인 페이지들이 쓰는 것과 같은
  * SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해 비로그인 요청을 걷어낸다. 요청 빈도
  * 제한(rate limit)은 이 라우트 코드가 아니라 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return errorResponse('파일 용량은 20MB 이하만 지원합니다.', 400);
+    return errorResponse('파일 용량은 30MB 이하만 지원합니다.', 400);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
