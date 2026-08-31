@@ -116,17 +116,28 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
         'text-gray-500',
       )}
     >
-      {links.map(({ label, href, isExternal }) => (
-        <ActiveLink
-          key={label}
-          href={href}
-          className={cn([...activeTextStyle])}
-          activeClassName={cn(...activeStyle)}
-          {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
-        >
-          {label}
-        </ActiveLink>
-      ))}
+      {links.map(({ label, href, isExternal }) =>
+        isExternal ? (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn([...activeTextStyle])}
+          >
+            {label}
+          </a>
+        ) : (
+          <ActiveLink
+            key={label}
+            href={href}
+            className={cn([...activeTextStyle])}
+            activeClassName={cn(...activeStyle)}
+          >
+            {label}
+          </ActiveLink>
+        ),
+      )}
     </nav>
   );
 };
@@ -179,25 +190,43 @@ const MobileNavigation = ({
     <div className={cn('flex', 'flex-col', 'items-end', 'gap-[2.25rem]')}>
       {links.map((link) => {
         const IconComponent = link.icon;
-        return (
+        const navItemClassName = cn(
+          'flex',
+          'items-center',
+          'gap-4',
+          'text-slate-300',
+          'text-[1.5rem]',
+          'leading-normal',
+          'font-bold',
+          'hover:text-slate-500',
+          'duration-150',
+        );
+
+        return link.isExternal ? (
+          <a
+            key={link.href}
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMenu(false)}
+            className={navItemClassName}
+            onMouseEnter={() => setHoveredLink(link.href)}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            <IconComponent
+              size="1.75rem"
+              color={hoveredLink === link.href ? '#64748B' : '#CBD5E1'}
+            />
+            {link.label}
+          </a>
+        ) : (
           <Link
             key={link.href}
             href={link.href}
             onClick={() => setIsMenu(false)}
-            className={cn(
-              'flex',
-              'items-center',
-              'gap-4',
-              'text-slate-300',
-              'text-[1.5rem]',
-              'leading-normal',
-              'font-bold',
-              'hover:text-slate-500',
-              'duration-150',
-            )}
+            className={navItemClassName}
             onMouseEnter={() => setHoveredLink(link.href)}
             onMouseLeave={() => setHoveredLink(null)}
-            {...(link.isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
           >
             <IconComponent
               size="1.75rem"
