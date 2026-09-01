@@ -4,7 +4,11 @@ import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { usePostSchoolRecordExtraction, usePostSchoolRecordOcr } from '@repo/api/hooks';
+import {
+  usePostSchoolRecordExtraction,
+  usePostSchoolRecordOcr,
+  usePostSchoolRecordOcrUploadUrl,
+} from '@repo/api/hooks';
 import {
   GraduationTypeValueEnum,
   LiberalSystemValueEnum,
@@ -56,6 +60,7 @@ const SchoolRecordUploader = ({
 
   const { mutateAsync: extractSchoolRecord } = usePostSchoolRecordExtraction();
   const { mutateAsync: extractSchoolRecordOcr } = usePostSchoolRecordOcr();
+  const { mutateAsync: getSchoolRecordOcrUploadUrl } = usePostSchoolRecordOcrUploadUrl();
 
   const isProcessing = status === 'processing' || status === 'submitting';
 
@@ -80,9 +85,21 @@ const SchoolRecordUploader = ({
     setStatus('processing');
 
     try {
-      const formData = new FormData();
-      formData.append('file', file, file.name);
-      const extraction = await extractSchoolRecordOcr(formData);
+      // 4.5MB Vercel Function 요청 본문 제한을 피하기 위해 파일은 Vercel을 거치지 않고
+      // 브라우저에서 S3로 직접 PUT 업로드한다. Route에는 objectKey만 전달한다.
+      const { uploadUrl, objectKey } = await getSchoolRecordOcrUploadUrl('pdf');
+
+      const putResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/pdf' },
+        body: file,
+      });
+
+      if (!putResponse.ok) {
+        throw new Error('파일 업로드에 실패했어요. 다시 시도해 주세요.');
+      }
+
+      const extraction = await extractSchoolRecordOcr({ objectKey });
 
       if (process.env.NODE_ENV !== 'production') {
         // eslint-disable-next-line no-console
