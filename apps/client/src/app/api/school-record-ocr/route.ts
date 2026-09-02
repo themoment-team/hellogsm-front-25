@@ -10,7 +10,13 @@ import { convertKordocBlocks } from '@/lib/kordoc/achievementTextConverter';
 // kordoc은 Node 전용 라이브러리(파일 시스템, sharp 네이티브 모듈 등)라 Edge 런타임에서 못 돈다.
 export const runtime = 'nodejs';
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
+// 30MB 스캔 PDF는 kordoc OCR에 시간이 걸릴 수 있어 Vercel 기본 실행 시간 제한(플랜에 따라
+// 10~15초)을 넘길 위험이 있다(리뷰 지적). Hobby/Pro 플랜에서 별도 설정 없이 쓸 수 있는
+// 상한인 60초로 늘려 안전 마진을 확보한다. 실제 대용량 스캔 PDF로 처리 시간·메모리 사용량을
+// 재검증해 필요하면 더 조정해야 한다.
+export const maxDuration = 60;
+
+const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
 // 파일은 브라우저에서 S3로 직접 PUT 업로드되고 이 라우트는 objectKey만 받는다 — Vercel
 // Function 요청 본문은 4.5MB 하드 캡이라 PDF를 이 라우트로 직접 흘려보낼 수 없다.
@@ -24,7 +30,7 @@ const errorResponse = (message: string, status: number) =>
 
 /**
  * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 S3에서 파일을 내려받아
- * 20MB짜리 OCR을 돌릴 수 있어 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에
+ * 30MB짜리 OCR을 돌릴 수 있어 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에
  * 로그인 페이지들이 쓰는 것과 같은 SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해
  * 비로그인 요청을 걷어낸다. 요청 빈도 제한(rate limit)은 이 라우트 코드가 아니라
  * 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
@@ -79,7 +85,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (buffer.byteLength > MAX_FILE_SIZE) {
-    return errorResponse('파일 용량은 20MB 이하만 지원합니다.', 400);
+    return errorResponse('파일 용량은 30MB 이하만 지원합니다.', 400);
   }
 
   // 손상되거나 암호화된 PDF는 kordoc이 ParseFailure로 감싸 돌려주지 않고 그냥 throw할 수

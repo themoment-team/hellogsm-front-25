@@ -20,7 +20,7 @@ import { cn } from '@repo/utils';
 import { CloseIcon, InfoIcon } from '../../icons';
 import { Button } from '../../shadcn';
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_FILE_SIZE = 30 * 1024 * 1024;
 const MIN_RAW_TEXT_LENGTH = 200;
 /** 순수 스캔본(OCR 경로)인데 인식률이 이 미만이면 부분 성공이 아니라 인식 실패로 안내한다 */
 const OCR_FAILURE_CONFIDENCE_THRESHOLD = 0.3;
@@ -75,7 +75,7 @@ const SchoolRecordUploader = ({
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('파일 용량은 20MB 이하만 업로드할 수 있어요.');
+      toast.error('파일 용량은 30MB 이하만 업로드할 수 있어요.');
       return;
     }
 
