@@ -1,6 +1,5 @@
 'use client';
 
-import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -96,7 +95,7 @@ const SchoolRecordUploader = ({
       });
 
       if (!putResponse.ok) {
-        throw new Error('파일 업로드에 실패했어요. 다시 시도해 주세요.');
+        throw new Error('S3 업로드 실패');
       }
 
       const extraction = await extractSchoolRecordOcr({ objectKey });
@@ -109,9 +108,7 @@ const SchoolRecordUploader = ({
       }
 
       if (extraction.rawText.replace(/\s+/g, '').length < MIN_RAW_TEXT_LENGTH) {
-        throw new Error(
-          '생기부에서 성적·출결·봉사 내용을 충분히 인식하지 못했어요. 스캔 화질을 확인하거나 직접 입력해 주세요.',
-        );
+        throw new Error('인식된 텍스트 길이 부족');
       }
 
       setStatus('submitting');
@@ -149,17 +146,11 @@ const SchoolRecordUploader = ({
           toastOption,
         );
       }
-    } catch (error) {
+    } catch {
       setStatus('error');
-      // axios가 던지는 에러는 error.message가 "Request failed with status code 422" 같은
-      // 고정 문구라, 백엔드가 응답 본문에 실어 보낸 실제 한국어 안내(예: "생기부를 인식하지
-      // 못했어요...")를 먼저 확인한다. axios가 아닌 에러(예: 아래 rawText 길이 체크에서
-      // 직접 throw한 Error)는 그 message를 그대로 쓴다.
-      const axiosError = error as AxiosError<{ message?: string }>;
-      const message =
-        axiosError.response?.data?.message ??
-        (error instanceof Error ? error.message : undefined) ??
-        '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
+      // 백엔드/axios가 던지는 원시 에러 메시지(예: "Request failed with status code 500")를
+      // 그대로 노출하지 않기 위해 항상 고정된 한국어 안내만 사용한다.
+      const message = '생기부 인식 중 오류가 발생했습니다. 다시 시도해주세요.';
       setErrorMessage(message);
       toast.error(message);
     }
