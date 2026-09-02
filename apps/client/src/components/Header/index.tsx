@@ -94,10 +94,11 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
           <a
             key={label}
             href={href}
-            className={cn([...activeTextStyle])}
+            className={cn([...activeTextStyle, isExternal && ['flex', 'items-center', 'gap-1']])}
             {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
           >
             {label}
+            {isExternal && <I.ExternalLinkIcon size="1.25rem" color="#9EA7B9" />}
           </a>
         ))}
       </nav>
@@ -123,9 +124,10 @@ const PCNavigation = ({ links, isRegisterPath }: NavProps) => {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={cn([...activeTextStyle])}
+            className={cn([...activeTextStyle, 'flex', 'items-center', 'gap-1'])}
           >
             {label}
+            <I.ExternalLinkIcon size="1.25rem" color="#9EA7B9" />
           </a>
         ) : (
           <ActiveLink
