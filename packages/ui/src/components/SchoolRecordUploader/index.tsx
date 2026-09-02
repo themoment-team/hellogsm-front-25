@@ -26,6 +26,9 @@ const OCR_FAILURE_CONFIDENCE_THRESHOLD = 0.3;
 
 type UploadStatus = 'idle' | 'processing' | 'submitting' | 'done' | 'error';
 
+/** 인식 실패처럼 원인이 명확하고 사용자가 취할 수 있는 대안이 있는 경우, 고정 안내 대신 전용 문구를 노출하기 위한 에러 */
+class SchoolRecordRecognitionError extends Error {}
+
 interface SchoolRecordUploaderProps {
   graduationType: GraduationTypeValueEnum.CANDIDATE | GraduationTypeValueEnum.GRADUATE;
   liberalSystem: LiberalSystemValueEnum | null;
@@ -108,7 +111,9 @@ const SchoolRecordUploader = ({
       }
 
       if (extraction.rawText.replace(/\s+/g, '').length < MIN_RAW_TEXT_LENGTH) {
-        throw new Error('인식된 텍스트 길이 부족');
+        throw new SchoolRecordRecognitionError(
+          '생기부에서 성적·출결·봉사 내용을 충분히 인식하지 못했어요. 스캔 화질을 확인하거나 직접 입력해 주세요.',
+        );
       }
 
       setStatus('submitting');
@@ -146,11 +151,17 @@ const SchoolRecordUploader = ({
           toastOption,
         );
       }
-    } catch {
+    } catch (error) {
       setStatus('error');
-      // 백엔드/axios가 던지는 원시 에러 메시지(예: "Request failed with status code 500")를
-      // 그대로 노출하지 않기 위해 항상 고정된 한국어 안내만 사용한다.
-      const message = '생기부 인식 중 오류가 발생했습니다. 다시 시도해주세요.';
+      // eslint-disable-next-line no-console
+      console.error('[SchoolRecordUploader] 업로드/OCR 실패:', error);
+      // 인식 실패처럼 원인이 명확하고 사용자가 취할 수 있는 대안이 있는 경우에는 전용 안내를,
+      // 그 외(S3 업로드, 백엔드 API 등 원시 에러 메시지가 그대로 노출될 수 있는 경우)에는
+      // 고정된 한국어 안내만 사용한다.
+      const message =
+        error instanceof SchoolRecordRecognitionError
+          ? error.message
+          : '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
       setErrorMessage(message);
       toast.error(message);
     }
