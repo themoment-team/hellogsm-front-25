@@ -16,3 +16,8 @@ words:
   - pdfjs
   - kordoc
   - bbox
+  - napi
+  - onnxruntime
+  - huggingface
+  - hyzyla
+  - pdfium
