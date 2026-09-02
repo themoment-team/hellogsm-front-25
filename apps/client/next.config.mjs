@@ -19,37 +19,39 @@ const nextConfig = {
   // darwin/android/windows 등 10개 플랫폼 패키지가 전부 매칭됐고, onnxruntime-node는
   // (@huggingface/transformers가 1.24.3을 dependencies로, 1.27.0을 optionalDependencies로
   // 동시에 선언해) 두 버전이 pnpm 스토어에 공존하는데 각 버전의 bin/ 안에 linux/darwin/win32
-  // (DirectML.dll 포함) 바이너리가 전부 들어 있어 버전당 200MB 이상이었다. Vercel 서버리스
-  // 런타임은 glibc 기반 Linux x64뿐이므로, 실제 실행에 필요한 linux-x64-gnu 바이너리만
-  // 남기고 나머지 플랫폼은 제외하도록 패턴을 좁혔더니 599MB로 줄었지만 여전히 초과했다.
-  // 남은 원인은 `kordoc*/**/*` 패턴 — pnpm은 kordoc 패키지 디렉터리 옆에 그 직접/옵셔널
-  // 의존성(onnxruntime-node, sharp, @huggingface/transformers, @hyzyla/pdfium 등)을 가리키는
-  // 심볼릭 링크를 함께 두는데, `**/*` 글롭이 이 심볼릭 링크를 그대로 따라 들어가면서 이미
-  // 좁혀둔 onnxruntime-node를 플랫폼 제한 없이(258MB) 통째로 다시 포함시키고 있었다. kordoc
-  // 자체 코드만 남기고, kordoc이 필요로 하는 나머지 옵셔널 의존성(@huggingface/transformers,
-  // @hyzyla/pdfium — 둘 다 순수 JS/WASM이라 플랫폼 분기가 없다)은 별도 패턴으로 명시했다.
+  // (DirectML.dll 포함) 바이너리가 전부 들어 있어 버전당 200MB 이상이었다. linux-x64-gnu로
+  // 좁혔더니 599MB로 줄었지만 여전히 초과했다 — kordoc*/**/* 글롭이 kordoc 옆의 의존성
+  // 심볼릭 링크를 따라 들어가 onnxruntime-node를 다시 통째로 포함시켰다.
+  //
+  // kordoc 패턴을 kordoc 자체 폴더로 좁히고 @huggingface/transformers·@hyzyla/pdfium을 명시
+  // 포함시켰는데도 621MB(VERCEL_ANALYZE_BUILD_OUTPUT=1 리포트 기준)였다. 리포트로 확인한
+  // 실제 원인: @huggingface/transformers@4.2.0 하나가 348MB — 그 패키지 옆에도 심볼릭 링크로
+  // onnxruntime-web(웹용 WASM 런타임), 별도 버전의 onnxruntime-node(1.24.3)·sharp(0.34.5)가
+  // 딸려 있었다. kordoc 소스(dist/formula-*.cjs)를 직접 읽어 확인한 결과 @huggingface/
+  // transformers와 @hyzyla/pdfium은 kordoc의 `formulaOcr` 옵션(수식 인식 전용, 기본 false)에서만
+  // tryImport로 로드되고, 우리 라우트는 `parse(buffer, { ocr: true, tables: true })`만 호출해
+  // formulaOcr을 켜지 않으므로 애초에 불필요했다 — 완전히 제외했다. 실제 이미지 OCR 경로
+  // (dist/image-ocr-*.cjs가 require하는 내부 청크)가 쓰는 건 sharp와 onnxruntime-node뿐이며,
+  // kordoc 옆 심볼릭 링크가 실제로 가리키는 버전은 onnxruntime-node@1.27.0·sharp@0.35.3라
+  // (1.24.3/0.34.5는 transformers 전용) 그 버전만 남기도록 고정했다.
   serverExternalPackages: [
     'kordoc',
     '@napi-rs/canvas',
     'onnxruntime-node',
     'sharp',
-    '@huggingface/transformers',
-    '@hyzyla/pdfium',
   ],
   outputFileTracingIncludes: {
     '/api/school-record-ocr': [
-      '../../node_modules/.pnpm/@napi-rs+canvas@*/**/*',
+      '../../node_modules/.pnpm/@napi-rs+canvas@*/node_modules/@napi-rs/canvas/**/*',
       '../../node_modules/.pnpm/@napi-rs+canvas-linux-x64-gnu@*/**/*',
-      '../../node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/package.json',
-      '../../node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/dist/**/*',
-      '../../node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/lib/**/*',
-      '../../node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/bin/napi-v6/linux/x64/**/*',
-      '../../node_modules/.pnpm/sharp@*/**/*',
-      '../../node_modules/.pnpm/@img+sharp-linux-x64@*/**/*',
-      '../../node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/**/*',
+      '../../node_modules/.pnpm/onnxruntime-node@1.27.0/node_modules/onnxruntime-node/package.json',
+      '../../node_modules/.pnpm/onnxruntime-node@1.27.0/node_modules/onnxruntime-node/dist/**/*',
+      '../../node_modules/.pnpm/onnxruntime-node@1.27.0/node_modules/onnxruntime-node/lib/**/*',
+      '../../node_modules/.pnpm/onnxruntime-node@1.27.0/node_modules/onnxruntime-node/bin/napi-v6/linux/x64/**/*',
+      '../../node_modules/.pnpm/sharp@0.35.3*/**/*',
+      '../../node_modules/.pnpm/@img+sharp-linux-x64@0.35.3/**/*',
+      '../../node_modules/.pnpm/@img+sharp-libvips-linux-x64@1.3.2/**/*',
       '../../node_modules/.pnpm/kordoc@*/node_modules/kordoc/**/*',
-      '../../node_modules/.pnpm/@huggingface+transformers@*/**/*',
-      '../../node_modules/.pnpm/@hyzyla+pdfium@*/**/*',
     ],
   },
   images: {
