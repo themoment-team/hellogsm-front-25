@@ -21,7 +21,13 @@ const nextConfig = {
   // 동시에 선언해) 두 버전이 pnpm 스토어에 공존하는데 각 버전의 bin/ 안에 linux/darwin/win32
   // (DirectML.dll 포함) 바이너리가 전부 들어 있어 버전당 200MB 이상이었다. Vercel 서버리스
   // 런타임은 glibc 기반 Linux x64뿐이므로, 실제 실행에 필요한 linux-x64-gnu 바이너리만
-  // 남기고 나머지 플랫폼은 제외하도록 패턴을 좁혔다.
+  // 남기고 나머지 플랫폼은 제외하도록 패턴을 좁혔더니 599MB로 줄었지만 여전히 초과했다.
+  // 남은 원인은 `kordoc*/**/*` 패턴 — pnpm은 kordoc 패키지 디렉터리 옆에 그 직접/옵셔널
+  // 의존성(onnxruntime-node, sharp, @huggingface/transformers, @hyzyla/pdfium 등)을 가리키는
+  // 심볼릭 링크를 함께 두는데, `**/*` 글롭이 이 심볼릭 링크를 그대로 따라 들어가면서 이미
+  // 좁혀둔 onnxruntime-node를 플랫폼 제한 없이(258MB) 통째로 다시 포함시키고 있었다. kordoc
+  // 자체 코드만 남기고, kordoc이 필요로 하는 나머지 옵셔널 의존성(@huggingface/transformers,
+  // @hyzyla/pdfium — 둘 다 순수 JS/WASM이라 플랫폼 분기가 없다)은 별도 패턴으로 명시했다.
   serverExternalPackages: [
     'kordoc',
     '@napi-rs/canvas',
@@ -41,7 +47,9 @@ const nextConfig = {
       '../../node_modules/.pnpm/sharp@*/**/*',
       '../../node_modules/.pnpm/@img+sharp-linux-x64@*/**/*',
       '../../node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/**/*',
-      '../../node_modules/.pnpm/kordoc*/**/*',
+      '../../node_modules/.pnpm/kordoc@*/node_modules/kordoc/**/*',
+      '../../node_modules/.pnpm/@huggingface+transformers@*/**/*',
+      '../../node_modules/.pnpm/@hyzyla+pdfium@*/**/*',
     ],
   },
   images: {
