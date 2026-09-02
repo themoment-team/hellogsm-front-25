@@ -56,7 +56,18 @@ export interface SchoolRecordExtractionResponseType {
   meta: SchoolRecordExtractionMetaType;
 }
 
-/** 생기부 PDF 전체를 Next.js API Route(kordoc)로 보내 인식한 결과 */
+/** 생기부 PDF를 S3에 직접 업로드하기 위한 presigned URL 발급 응답 */
+export interface SchoolRecordOcrUploadUrlResponseType {
+  uploadUrl: string;
+  objectKey: string;
+}
+
+/** S3에 업로드된 생기부 PDF의 objectKey를 Next.js API Route(kordoc)에 전달 */
+export interface SchoolRecordOcrRequestType {
+  objectKey: string;
+}
+
+/** 생기부 PDF를 Next.js API Route(kordoc)에서 인식한 결과 */
 export interface SchoolRecordOcrResponseType {
   rawText: string;
   unrecognizedSubjectBlobs: string[];

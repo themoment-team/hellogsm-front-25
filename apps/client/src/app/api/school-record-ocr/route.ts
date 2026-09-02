@@ -1,3 +1,4 @@
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { parse } from 'kordoc';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -11,6 +12,10 @@ export const runtime = 'nodejs';
 
 const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
+// 파일은 브라우저에서 S3로 직접 PUT 업로드되고 이 라우트는 objectKey만 받는다 — Vercel
+// Function 요청 본문은 4.5MB 하드 캡이라 PDF를 이 라우트로 직접 흘려보낼 수 없다.
+const s3Client = new S3Client({ region: process.env.AWS_REGION });
+
 // axiosInstance의 응답 인터셉터가 백엔드(Java) 응답 형식({code, data, message, status})을
 // 가정하고 response.data.data를 꺼내 쓴다. 이 라우트도 같은 형식으로 감싸야 클라이언트의
 // 공용 post() 훅이 그대로 통한다.
@@ -18,10 +23,11 @@ const errorResponse = (message: string, status: number) =>
   NextResponse.json({ code: status, message, status: `${status}` }, { status });
 
 /**
- * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 30MB짜리 OCR을 돌릴 수 있어
- * 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에 로그인 페이지들이 쓰는 것과 같은
- * SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해 비로그인 요청을 걷어낸다. 요청 빈도
- * 제한(rate limit)은 이 라우트 코드가 아니라 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
+ * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 S3에서 파일을 내려받아
+ * 30MB짜리 OCR을 돌릴 수 있어 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에
+ * 로그인 페이지들이 쓰는 것과 같은 SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해
+ * 비로그인 요청을 걷어낸다. 요청 빈도 제한(rate limit)은 이 라우트 코드가 아니라
+ * 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
  */
 const isAuthenticated = async (): Promise<boolean> => {
   const session = (await cookies()).get('SESSION')?.value;
@@ -50,22 +56,31 @@ export async function POST(request: NextRequest) {
     return errorResponse('로그인이 필요합니다.', 401);
   }
 
-  const formData = await request.formData();
-  const file = formData.get('file');
+  const { objectKey } = (await request.json().catch(() => ({}))) as { objectKey?: string };
 
-  if (!(file instanceof File)) {
-    return errorResponse('파일이 없습니다.', 400);
+  if (!objectKey) {
+    return errorResponse('objectKey가 없습니다.', 400);
   }
 
-  if (file.type !== 'application/pdf') {
-    return errorResponse('PDF 파일만 지원합니다.', 400);
+  let buffer: Buffer;
+  try {
+    const object = await s3Client.send(
+      new GetObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: objectKey }),
+    );
+    const byteArray = await object.Body?.transformToByteArray();
+    if (!byteArray) {
+      throw new Error('empty S3 object body');
+    }
+    buffer = Buffer.from(byteArray);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[school-record-ocr] S3에서 파일을 내려받지 못함', error);
+    return errorResponse('업로드된 파일을 찾지 못했어요. 다시 업로드해주세요.', 404);
   }
 
-  if (file.size > MAX_FILE_SIZE) {
+  if (buffer.byteLength > MAX_FILE_SIZE) {
     return errorResponse('파일 용량은 30MB 이하만 지원합니다.', 400);
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
 
   // 손상되거나 암호화된 PDF는 kordoc이 ParseFailure로 감싸 돌려주지 않고 그냥 throw할 수
   // 있다 — 감싸지 않으면 이 요청이 처리되지 않은 예외로 500이 되어, 사용자에게 "파일을
