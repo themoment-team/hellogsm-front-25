@@ -10,6 +10,12 @@ import { convertKordocBlocks } from '@/lib/kordoc/achievementTextConverter';
 // kordoc은 Node 전용 라이브러리(파일 시스템, sharp 네이티브 모듈 등)라 Edge 런타임에서 못 돈다.
 export const runtime = 'nodejs';
 
+// 30MB 스캔 PDF는 kordoc OCR에 시간이 걸릴 수 있어 Vercel 기본 실행 시간 제한(플랜에 따라
+// 10~15초)을 넘길 위험이 있다(리뷰 지적). Hobby/Pro 플랜에서 별도 설정 없이 쓸 수 있는
+// 상한인 60초로 늘려 안전 마진을 확보한다. 실제 대용량 스캔 PDF로 처리 시간·메모리 사용량을
+// 재검증해 필요하면 더 조정해야 한다.
+export const maxDuration = 60;
+
 const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
 // 파일은 브라우저에서 S3로 직접 PUT 업로드되고 이 라우트는 objectKey만 받는다 — Vercel
