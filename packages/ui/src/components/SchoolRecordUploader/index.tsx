@@ -1,6 +1,5 @@
 'use client';
 
-import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -26,6 +25,9 @@ const MIN_RAW_TEXT_LENGTH = 200;
 const OCR_FAILURE_CONFIDENCE_THRESHOLD = 0.3;
 
 type UploadStatus = 'idle' | 'processing' | 'submitting' | 'done' | 'error';
+
+/** 인식 실패처럼 원인이 명확하고 사용자가 취할 수 있는 대안이 있는 경우, 고정 안내 대신 전용 문구를 노출하기 위한 에러 */
+class SchoolRecordRecognitionError extends Error {}
 
 interface SchoolRecordUploaderProps {
   graduationType: GraduationTypeValueEnum.CANDIDATE | GraduationTypeValueEnum.GRADUATE;
@@ -96,7 +98,7 @@ const SchoolRecordUploader = ({
       });
 
       if (!putResponse.ok) {
-        throw new Error('파일 업로드에 실패했어요. 다시 시도해 주세요.');
+        throw new Error('S3 업로드 실패');
       }
 
       const extraction = await extractSchoolRecordOcr({ objectKey });
@@ -109,7 +111,7 @@ const SchoolRecordUploader = ({
       }
 
       if (extraction.rawText.replace(/\s+/g, '').length < MIN_RAW_TEXT_LENGTH) {
-        throw new Error(
+        throw new SchoolRecordRecognitionError(
           '생기부에서 성적·출결·봉사 내용을 충분히 인식하지 못했어요. 스캔 화질을 확인하거나 직접 입력해 주세요.',
         );
       }
@@ -151,15 +153,15 @@ const SchoolRecordUploader = ({
       }
     } catch (error) {
       setStatus('error');
-      // axios가 던지는 에러는 error.message가 "Request failed with status code 422" 같은
-      // 고정 문구라, 백엔드가 응답 본문에 실어 보낸 실제 한국어 안내(예: "생기부를 인식하지
-      // 못했어요...")를 먼저 확인한다. axios가 아닌 에러(예: 아래 rawText 길이 체크에서
-      // 직접 throw한 Error)는 그 message를 그대로 쓴다.
-      const axiosError = error as AxiosError<{ message?: string }>;
+      // eslint-disable-next-line no-console
+      console.error('[SchoolRecordUploader] 업로드/OCR 실패:', error);
+      // 인식 실패처럼 원인이 명확하고 사용자가 취할 수 있는 대안이 있는 경우에는 전용 안내를,
+      // 그 외(S3 업로드, 백엔드 API 등 원시 에러 메시지가 그대로 노출될 수 있는 경우)에는
+      // 고정된 한국어 안내만 사용한다.
       const message =
-        axiosError.response?.data?.message ??
-        (error instanceof Error ? error.message : undefined) ??
-        '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
+        error instanceof SchoolRecordRecognitionError
+          ? error.message
+          : '생기부를 인식하는 중 문제가 발생했어요. 다시 시도해 주세요.';
       setErrorMessage(message);
       toast.error(message);
     }
