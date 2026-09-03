@@ -29,10 +29,18 @@ COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN pnpm install --frozen-lockfile
 COPY --from=pruner /app/out/full/ .
 RUN pnpm turbo run build --filter=@repo/ocr-lambda
+# pnpm의 node_modules는 상대 심볼릭 링크로 pnpm 가상 저장소(../../../node_modules/.pnpm/...)를
+# 가리키는데, 이 상대 경로는 "지금 이 디렉터리 깊이"를 기준으로 계산된 것이다. apps/ocr-lambda/
+# node_modules만 떼어 ${LAMBDA_TASK_ROOT}처럼 전혀 다른 깊이의 디렉터리로 복사하면, 예를 들어
+# kordoc 심볼릭 링크가 원래 가리키던 /app/node_modules/.pnpm/... 대신 존재하지 않는
+# /node_modules/.pnpm/...를 가리키게 되어 런타임에 require("kordoc")가 깨진다(리뷰 지적,
+# 로컬에서 직접 재현·확인함). `pnpm deploy`는 이 문제를 위해 만들어진 공식 명령어로, 심볼릭
+# 링크가 전부 같은 node_modules 안에서만(예: node_modules/kordoc -> node_modules/.pnpm/...)
+# 상대 경로를 쓰도록 배포 디렉터리를 만들어준다 — 어느 깊이로 옮겨도 깨지지 않는다.
+RUN pnpm --filter=@repo/ocr-lambda deploy --prod --legacy /app/deploy
 
 FROM public.ecr.aws/lambda/nodejs:20 AS runner
 WORKDIR ${LAMBDA_TASK_ROOT}
-COPY --from=installer /app/apps/ocr-lambda/dist ./
-COPY --from=installer /app/apps/ocr-lambda/node_modules ./node_modules
-COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/deploy/dist ./
+COPY --from=installer /app/deploy/node_modules ./node_modules
 CMD ["handler.handler"]

@@ -45,6 +45,9 @@ pnpm --filter @repo/ocr-lambda lint
 - AWS CLI, Docker 설치 및 로그인
 - S3 버킷과 같은 리전(`ap-northeast-2`) 사용 — 리전이 다르면 데이터 전송 지연·비용이 늘어난다.
 - 아래 명령은 예시이며 `<...>` 부분을 실제 값으로 바꿔서 실행한다.
+- 아래 버킷명(`hellogsm-dev-bucket`)·prefix(`ocr-uploads/`)는 백엔드팀에서 확인해준 **stage/dev
+  전용** 값이다. 운영(prod) 배포 시에는 별도 버킷명을 다시 확인해서 IAM 정책·환경변수를
+  바꿔야 한다.
 
 ### 1. ECR 리포지토리 생성 (최초 1회)
 
@@ -106,7 +109,7 @@ cat > s3-read-policy.json <<'EOF'
   "Statement": [{
     "Effect": "Allow",
     "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:::<버킷명>/<업로드-prefix>/*"
+    "Resource": "arn:aws:s3:::hellogsm-dev-bucket/ocr-uploads/*"
   }]
 }
 EOF
@@ -131,7 +134,7 @@ aws lambda create-function \
   --timeout 120 \
   --memory-size 4096 \
   --region ap-northeast-2 \
-  --environment "Variables={AWS_S3_BUCKET=<버킷명>,KORDOC_MODEL_CACHE=/tmp/kordoc-models,NODE_ENV=production}"
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/tmp/kordoc-models,NODE_ENV=production}"
 ```
 
 `NODE_ENV=production`은 필수에 가깝다 — 꺼두면 생기부 원문 내용이 디버그 로그로
