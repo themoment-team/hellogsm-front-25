@@ -68,6 +68,7 @@ const nextConfig = {
       '../../node_modules/.pnpm/@napi-rs+canvas-linux-x64-gnu@*/**/*',
       '../../node_modules/.pnpm/pdfjs-dist@*/node_modules/@napi-rs/canvas/**/*',
       '../../node_modules/.pnpm/node_modules/@napi-rs/canvas-linux-x64-gnu/**/*',
+      '../../node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/bin/napi-v6/linux/x64/**/*',
     ],
   },
   images: {
