@@ -123,6 +123,21 @@ export async function POST(request: NextRequest) {
   const usedOcr = lowTextPageCount > 0;
   const hasTextLayer = lowTextPageCount < totalPages;
 
+  // TODO: 개발 환경 OCR 원인 확인용. Vercel 로그에서 OCR_FAILED의 실제 원인을 확인한 뒤 제거한다.
+  // 원서 원문·S3 objectKey는 개인정보이므로 출력하지 않는다.
+  console.info(
+    '[school-record-ocr] parse summary',
+    JSON.stringify({
+      pageCount: result.pageCount ?? totalPages,
+      blockCount: result.blocks.length,
+      rawTextLength: rawText.length,
+      isImageBased: result.isImageBased ?? false,
+      qualitySummary: result.qualitySummary,
+      warnings: result.warnings?.map(({ code, page, message }) => ({ code, page, message })),
+      unrecognizedSubjectBlobCount: unrecognizedSubjectBlobs.length,
+    }),
+  );
+
   return NextResponse.json({
     code: 200,
     data: {
