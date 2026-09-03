@@ -115,6 +115,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.2(react@19.2.7))
+      '@napi-rs/canvas':
+        specifier: ^0.1.100
+        version: 0.1.100
       '@repo/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -151,6 +154,9 @@ importers:
       next:
         specifier: ^16.2.10
         version: 16.2.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      onnxruntime-node:
+        specifier: ^1.27.0
+        version: 1.27.0
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -163,6 +169,9 @@ importers:
       react-toastify:
         specifier: ^11.0.5
         version: 11.0.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      sharp:
+        specifier: ^0.35.3
+        version: 0.35.3(@types/node@20.19.33)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -6290,8 +6299,7 @@ snapshots:
   '@hyzyla/pdfium@2.1.13':
     optional: true
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.34.5':
     optionalDependencies:
@@ -6642,7 +6650,6 @@ snapshots:
       '@napi-rs/canvas-linux-x64-musl': 0.1.100
       '@napi-rs/canvas-win32-arm64-msvc': 0.1.100
       '@napi-rs/canvas-win32-x64-msvc': 0.1.100
-    optional: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -7693,8 +7700,7 @@ snapshots:
 
   adler-32@1.3.1: {}
 
-  adm-zip@0.5.18:
-    optional: true
+  adm-zip@0.5.18: {}
 
   agent-base@6.0.2:
     dependencies:
@@ -8179,8 +8185,7 @@ snapshots:
 
   depd@2.0.0: {}
 
-  detect-libc@2.1.2:
-    optional: true
+  detect-libc@2.1.2: {}
 
   detect-node-es@1.1.0: {}
 
@@ -8828,7 +8833,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.7.4
+      semver: 7.8.5
       serialize-error: 7.0.1
     optional: true
 
@@ -8836,9 +8841,8 @@ snapshots:
     dependencies:
       globalthis: 1.0.4
       matcher: 4.0.0
-      semver: 7.7.4
+      semver: 7.8.5
       serialize-error: 8.1.0
-    optional: true
 
   global-directory@5.0.0:
     dependencies:
@@ -9289,7 +9293,6 @@ snapshots:
   matcher@4.0.0:
     dependencies:
       escape-string-regexp: 4.0.0
-    optional: true
 
   math-intrinsics@1.1.0: {}
 
@@ -9526,8 +9529,7 @@ snapshots:
   onnxruntime-common@1.24.3:
     optional: true
 
-  onnxruntime-common@1.27.0:
-    optional: true
+  onnxruntime-common@1.27.0: {}
 
   onnxruntime-node@1.24.3:
     dependencies:
@@ -9541,7 +9543,6 @@ snapshots:
       adm-zip: 0.5.18
       global-agent: 4.1.3
       onnxruntime-common: 1.27.0
-    optional: true
 
   onnxruntime-web@1.26.0-dev.20260416-b7804b056c:
     dependencies:
@@ -10023,8 +10024,7 @@ snapshots:
 
   semver@7.7.4: {}
 
-  semver@7.8.5:
-    optional: true
+  semver@7.8.5: {}
 
   send@1.2.1:
     dependencies:
@@ -10050,7 +10050,6 @@ snapshots:
   serialize-error@8.1.0:
     dependencies:
       type-fest: 0.20.2
-    optional: true
 
   serve-static@2.2.1:
     dependencies:
@@ -10195,7 +10194,6 @@ snapshots:
       '@img/sharp-win32-ia32': 0.35.3
       '@img/sharp-win32-x64': 0.35.3
       '@types/node': 20.19.33
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:
@@ -10521,8 +10519,7 @@ snapshots:
   type-fest@0.13.1:
     optional: true
 
-  type-fest@0.20.2:
-    optional: true
+  type-fest@0.20.2: {}
 
   type-fest@0.7.1: {}
 
