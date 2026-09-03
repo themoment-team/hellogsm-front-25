@@ -13,11 +13,16 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "env": [
         "AWS_REGION",
-        "AWS_S3_BUCKET",
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
-        "KORDOC_MODEL_CACHE"
+        "OCR_LAMBDA_FUNCTION_NAME"
       ]
+    },
+    "@repo/ocr-lambda#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": ["dist/**"],
+      "env": ["AWS_REGION", "AWS_S3_BUCKET", "NODE_ENV"]
     },
     "lint": {
       "dependsOn": ["^lint"]

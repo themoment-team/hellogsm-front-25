@@ -1,26 +1,19 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { parse } from 'kordoc';
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { memberUrl } from '@repo/api/lib';
 
-import { convertKordocBlocks } from '@/lib/kordoc/achievementTextConverter';
-
-// kordoc은 Node 전용 라이브러리(파일 시스템, sharp 네이티브 모듈 등)라 Edge 런타임에서 못 돈다.
+// OCR 자체(kordoc + onnxruntime-node/sharp/@napi-rs/canvas 네이티브 바이너리)는 Vercel
+// 서버리스 함수의 250MB 크기 제한에 계속 부딪혀 별도 Lambda 컨테이너 이미지로 분리했다
+// (apps/ocr-lambda 참고). 이 라우트는 인증만 하고 objectKey를 그대로 Lambda에 동기
+// 호출로 넘긴 뒤 결과를 그대로 중계한다.
 export const runtime = 'nodejs';
 
-// 30MB 스캔 PDF는 kordoc OCR에 시간이 걸릴 수 있어 Vercel 기본 실행 시간 제한(플랜에 따라
-// 10~15초)을 넘길 위험이 있다(리뷰 지적). Hobby/Pro 플랜에서 별도 설정 없이 쓸 수 있는
-// 상한인 60초로 늘려 안전 마진을 확보한다. 실제 대용량 스캔 PDF로 처리 시간·메모리 사용량을
-// 재검증해 필요하면 더 조정해야 한다.
-export const maxDuration = 60;
+// Lambda 실행 시간(최대 120초, apps/ocr-lambda/README 참고)보다 여유 있게 잡는다.
+export const maxDuration = 150;
 
-const MAX_FILE_SIZE = 30 * 1024 * 1024;
-
-// 파일은 브라우저에서 S3로 직접 PUT 업로드되고 이 라우트는 objectKey만 받는다 — Vercel
-// Function 요청 본문은 4.5MB 하드 캡이라 PDF를 이 라우트로 직접 흘려보낼 수 없다.
-const s3Client = new S3Client({ region: process.env.AWS_REGION });
+const lambdaClient = new LambdaClient({ region: process.env.AWS_REGION });
 
 // axiosInstance의 응답 인터셉터가 백엔드(Java) 응답 형식({code, data, message, status})을
 // 가정하고 response.data.data를 꺼내 쓴다. 이 라우트도 같은 형식으로 감싸야 클라이언트의
@@ -30,10 +23,10 @@ const errorResponse = (message: string, status: number) =>
 
 /**
  * 이 라우트는 인증·요청 제한 없이 그대로 두면 로그인 없이도 누구나 S3에서 파일을 내려받아
- * 30MB짜리 OCR을 돌릴 수 있어 리소스 남용에 노출된다(리뷰 지적). kordoc을 실행하기 전에
- * 로그인 페이지들이 쓰는 것과 같은 SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해
- * 비로그인 요청을 걷어낸다. 요청 빈도 제한(rate limit)은 이 라우트 코드가 아니라
- * 인프라(Vercel/백엔드) 쪽에서 적용하기로 했다.
+ * OCR을 돌릴 수 있어 리소스 남용에 노출된다(리뷰 지적). Lambda를 호출하기 전에 로그인
+ * 페이지들이 쓰는 것과 같은 SESSION 쿠키를 백엔드 인증 확인 엔드포인트로 검증해 비로그인
+ * 요청을 걷어낸다. 요청 빈도 제한(rate limit)은 이 라우트 코드가 아니라 인프라(Vercel/
+ * 백엔드) 쪽에서 적용하기로 했다.
  */
 const isAuthenticated = async (): Promise<boolean> => {
   const session = (await cookies()).get('SESSION')?.value;
@@ -57,6 +50,23 @@ const isAuthenticated = async (): Promise<boolean> => {
   }
 };
 
+interface OcrLambdaSuccess {
+  success: true;
+  rawText: string;
+  unrecognizedSubjectBlobs: string[];
+  hasTextLayer: boolean;
+  source: 'OCR' | 'TEXT_LAYER';
+  pageCount: number;
+}
+
+interface OcrLambdaFailure {
+  success: false;
+  code: number;
+  message: string;
+}
+
+type OcrLambdaResult = OcrLambdaSuccess | OcrLambdaFailure;
+
 export async function POST(request: NextRequest) {
   if (!(await isAuthenticated())) {
     return errorResponse('로그인이 필요합니다.', 401);
@@ -68,84 +78,65 @@ export async function POST(request: NextRequest) {
     return errorResponse('objectKey가 없습니다.', 400);
   }
 
-  let buffer: Buffer;
+  const functionName = process.env.OCR_LAMBDA_FUNCTION_NAME;
+  if (!functionName) {
+    // eslint-disable-next-line no-console
+    console.error('[school-record-ocr] OCR_LAMBDA_FUNCTION_NAME 환경변수가 설정되지 않음');
+    return errorResponse('OCR 서비스가 설정되지 않았어요. 잠시 후 다시 시도해주세요.', 500);
+  }
+
+  let invokeResponse;
   try {
-    const object = await s3Client.send(
-      new GetObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: objectKey }),
+    invokeResponse = await lambdaClient.send(
+      new InvokeCommand({
+        FunctionName: functionName,
+        InvocationType: 'RequestResponse',
+        Payload: Buffer.from(JSON.stringify({ objectKey })),
+      }),
     );
-    const byteArray = await object.Body?.transformToByteArray();
-    if (!byteArray) {
-      throw new Error('empty S3 object body');
-    }
-    buffer = Buffer.from(byteArray);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[school-record-ocr] S3에서 파일을 내려받지 못함', error);
-    return errorResponse('업로드된 파일을 찾지 못했어요. 다시 업로드해주세요.', 404);
+    console.error('[school-record-ocr] Lambda 호출 실패', error);
+    return errorResponse('생기부를 인식하지 못했어요. 잠시 후 다시 시도해주세요.', 502);
   }
 
-  if (buffer.byteLength > MAX_FILE_SIZE) {
-    return errorResponse('파일 용량은 30MB 이하만 지원합니다.', 400);
+  // Lambda 함수 자체가 처리되지 않은 예외로 죽으면(우리가 handler.ts에서 명시적으로 반환한
+  // 실패 응답이 아니라 진짜 크래시) FunctionError가 채워지고 Payload는 우리가 기대하는
+  // OcrLambdaResult 형식이 아니다.
+  if (invokeResponse.FunctionError) {
+    // eslint-disable-next-line no-console
+    console.error(
+      '[school-record-ocr] Lambda 함수 실행 중 예외 발생',
+      invokeResponse.FunctionError,
+      invokeResponse.Payload ? Buffer.from(invokeResponse.Payload).toString('utf-8') : undefined,
+    );
+    return errorResponse('생기부를 인식하지 못했어요. 다른 파일로 시도해주세요.', 500);
   }
 
-  // 손상되거나 암호화된 PDF는 kordoc이 ParseFailure로 감싸 돌려주지 않고 그냥 throw할 수
-  // 있다 — 감싸지 않으면 이 요청이 처리되지 않은 예외로 500이 되어, 사용자에게 "파일을
-  // 다시 시도해달라" 안내 대신 알 수 없는 서버 오류로 보인다.
-  let result;
+  let result: OcrLambdaResult;
   try {
-    result = await parse(buffer, { ocr: true, tables: true });
+    if (!invokeResponse.Payload) {
+      throw new Error('empty Lambda payload');
+    }
+    result = JSON.parse(Buffer.from(invokeResponse.Payload).toString('utf-8')) as OcrLambdaResult;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[school-record-ocr] kordoc 파싱 중 예외 발생', error);
-    return errorResponse('생기부를 인식하지 못했어요. 다른 파일로 시도해주세요.', 422);
+    console.error('[school-record-ocr] Lambda 응답 파싱 실패', error);
+    return errorResponse('생기부를 인식하지 못했어요. 다른 파일로 시도해주세요.', 500);
   }
 
   if (!result.success) {
-    // eslint-disable-next-line no-console
-    console.error('[school-record-ocr] kordoc 파싱 실패', result.error, result.code);
-    return errorResponse('생기부를 인식하지 못했어요. 다른 파일로 시도해주세요.', 422);
+    return errorResponse(result.message, result.code);
   }
-
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.debug(
-      '[KORDOC-DEBUG] qualitySummary',
-      JSON.stringify(result.qualitySummary),
-      'warnings',
-      JSON.stringify(result.warnings),
-    );
-  }
-
-  const { rawText, unrecognizedSubjectBlobs } = convertKordocBlocks(result.blocks);
-
-  const totalPages = result.qualitySummary?.totalPages ?? result.pageCount ?? 0;
-  const lowTextPageCount = result.qualitySummary?.lowTextPageCount ?? 0;
-  const usedOcr = lowTextPageCount > 0;
-  const hasTextLayer = lowTextPageCount < totalPages;
-
-  // TODO: 개발 환경 OCR 원인 확인용. Vercel 로그에서 OCR_FAILED의 실제 원인을 확인한 뒤 제거한다.
-  // 원서 원문·S3 objectKey는 개인정보이므로 출력하지 않는다.
-  console.info(
-    '[school-record-ocr] parse summary',
-    JSON.stringify({
-      pageCount: result.pageCount ?? totalPages,
-      blockCount: result.blocks.length,
-      rawTextLength: rawText.length,
-      isImageBased: result.isImageBased ?? false,
-      qualitySummary: result.qualitySummary,
-      warnings: result.warnings?.map(({ code, page, message }) => ({ code, page, message })),
-      unrecognizedSubjectBlobCount: unrecognizedSubjectBlobs.length,
-    }),
-  );
 
   return NextResponse.json({
     code: 200,
     data: {
-      rawText,
-      unrecognizedSubjectBlobs,
-      hasTextLayer,
-      source: usedOcr ? 'OCR' : 'TEXT_LAYER',
-      pageCount: result.pageCount ?? totalPages,
+      rawText: result.rawText,
+      unrecognizedSubjectBlobs: result.unrecognizedSubjectBlobs,
+      hasTextLayer: result.hasTextLayer,
+      source: result.source,
+      pageCount: result.pageCount,
     },
     message: 'OK',
     status: '200 OK',
