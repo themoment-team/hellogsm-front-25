@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build": "node build.mjs",
     "lint": "eslint src",
     "check-types": "tsc --noEmit"
   },
@@ -17,6 +17,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/aws-lambda": "^8.10.155",
     "@types/node": "^20.19.33",
+    "esbuild": "^0.27.2",
     "eslint": "^9.39.4",
     "typescript": "5.9.2"
   }
