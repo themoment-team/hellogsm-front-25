@@ -212,6 +212,9 @@ importers:
       kordoc:
         specifier: ^4.9.1
         version: 4.9.1(@types/node@20.19.33)
+      pdfjs-dist:
+        specifier: ^4.10.38
+        version: 4.10.38
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -9959,7 +9962,6 @@ snapshots:
   pdfjs-dist@4.10.38:
     optionalDependencies:
       '@napi-rs/canvas': 0.1.100
-    optional: true
 
   picocolors@1.1.1: {}
 

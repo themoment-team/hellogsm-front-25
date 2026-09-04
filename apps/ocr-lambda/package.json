@@ -10,7 +10,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1123.0",
     "@repo/constants": "workspace:*",
-    "kordoc": "^4.9.1"
+    "kordoc": "^4.9.1",
+    "pdfjs-dist": "^4.10.38"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
