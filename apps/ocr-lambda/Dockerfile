@@ -8,7 +8,13 @@
 # 로컬에서 컴파일하는 게 아니기 때문이다. glibc 계열이기만 하면 어디서 설치하든 동일한
 # 바이너리가 받아진다 — 반대로 alpine(musl) 기반 이미지를 쓰면 잘못된(musl용) 바이너리가
 # 받아져 Lambda(glibc)에서 로드가 실패하므로 절대 alpine을 쓰면 안 된다.
-FROM node:20-bookworm AS base
+#
+# Node 20 → 22: kordoc이 컴파일해둔 코드가 pdfjs-dist(ESM 전용 모듈)를 require()로
+# 불러오는데, Node 20은 CJS에서 ESM을 require()로 로드하는 걸 지원하지 않아
+# ERR_REQUIRE_ESM으로 항상 실패했다(실제 Lambda에서 재현·확인됨). Node 22.12+부터는
+# require()가 조건을 만족하는 ESM 모듈을 동기적으로 로드할 수 있어(require(esm)) 코드
+# 변경 없이 이 문제가 해결된다.
+FROM node:22-bookworm AS base
 RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
 RUN npm install -g turbo@2.8.9
 
@@ -39,7 +45,7 @@ RUN pnpm turbo run build --filter=@repo/ocr-lambda
 # 상대 경로를 쓰도록 배포 디렉터리를 만들어준다 — 어느 깊이로 옮겨도 깨지지 않는다.
 RUN pnpm --filter=@repo/ocr-lambda deploy --prod --legacy /app/deploy
 
-FROM public.ecr.aws/lambda/nodejs:20 AS runner
+FROM public.ecr.aws/lambda/nodejs:22 AS runner
 WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=installer /app/deploy/dist ./
 COPY --from=installer /app/deploy/node_modules ./node_modules
