@@ -10,6 +10,11 @@ overrides:
 
 packageExtensionsChecksum: sha256-adoohquc3L2qyWHlRc+kWslUp4nt0tTAWH41nNDhpDs=
 
+patchedDependencies:
+  kordoc:
+    hash: e7e0106b55bf1b3ce619c2ee43c0c31f7de7d1e3e0768ff5037fc8ff53d912cd
+    path: patches/kordoc.patch
+
 importers:
 
   .:
@@ -213,7 +218,7 @@ importers:
         version: link:../../packages/constants
       kordoc:
         specifier: ^4.9.1
-        version: 4.9.1(@types/node@20.19.33)
+        version: 4.9.1(patch_hash=e7e0106b55bf1b3ce619c2ee43c0c31f7de7d1e3e0768ff5037fc8ff53d912cd)(@types/node@20.19.33)
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -9524,7 +9529,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  kordoc@4.9.1(@types/node@20.19.33):
+  kordoc@4.9.1(patch_hash=e7e0106b55bf1b3ce619c2ee43c0c31f7de7d1e3e0768ff5037fc8ff53d912cd)(@types/node@20.19.33):
     dependencies:
       '@modelcontextprotocol/sdk': 1.30.0(zod@3.25.76)
       '@xmldom/xmldom': 0.9.12
