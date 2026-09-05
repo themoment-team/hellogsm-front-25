@@ -179,8 +179,7 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
               {achievementGradeValues.map((gradeKey) =>
                 !oneseo.middleSchoolAchievement[gradeKey]?.length ||
                 (oneseo.oneseoId !== null &&
-                  generalSubjectsScoreDetail[achievementScoreMap[gradeKey]!] === null) ||
-                gradeKey === 'achievement1_1' ? (
+                  generalSubjectsScoreDetail[achievementScoreMap[gradeKey]!] === null) ? (
                   <td
                     key={gradeKey}
                     className={cn(tdStyle, 'bg-slash', 'bg-contain', 'bg-no-repeat')}
