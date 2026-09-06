@@ -184,7 +184,7 @@ const FreeSemesterForm = ({
                 <button
                   className={cn([
                     ...freeSemesterButtonStyle,
-                    showError && errors.freeSemester && !isGraduate && '!border-red-600',
+                    showError && !freeSemester && '!border-red-600',
                   ])}
                   type="button"
                   onClick={() => {
@@ -200,6 +200,11 @@ const FreeSemesterForm = ({
           ))}
         </div>
       </div>
+      {showError && !freeSemester && (
+        <p className={cn('mt-2', 'text-xs', 'text-red-600')}>
+          자유학기에 해당하는 학기를 선택(on)해야 제출할 수 있어요.
+        </p>
+      )}
       {subjectArray.map((subject, idx) => {
         const dynamicIndex = idx - defaultSubjectLength;
 
