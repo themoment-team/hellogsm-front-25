@@ -8,6 +8,11 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
   const artPhysicalScores = getArtPhysicalScores(oneseo);
   const totalArtsPhysicalConvertedScore = oneseo.calculatedScore.artsPhysicalSubjectsScore;
 
+  // 자유학기제로 지정된 학기는 입력 폼이 예체능 성적을 0('없음')으로 채워 저장한다.
+  // 0은 지원자가 직접 고를 수도 있는 값이라 성적 배열만 보고는 구분할 수 없어,
+  // 그 학기가 '없음'으로 표시되고 있었다. freeSemester를 직접 보고 빗금 처리한다.
+  const freeSemester: string | null = oneseo.middleSchoolAchievement.freeSemester || null;
+
   const availableSemesters = semesterArray.filter((semester) => {
     if (oneseo.privacyDetail.graduationType === 'GRADUATE') {
       if (oneseo.middleSchoolAchievement.liberalSystem === '자유학기제') return true;
@@ -77,7 +82,7 @@ const ArtsPhysicalTable = ({ oneseo }: OneseoStatusType) => {
                 ? scoresInSemester.every((s) => s === null || s === undefined)
                 : true;
 
-              if (isSemesterScoreEmpty) {
+              if (isSemesterScoreEmpty || semester === freeSemester) {
                 if (rowIdx === 0) {
                   return (
                     <td
