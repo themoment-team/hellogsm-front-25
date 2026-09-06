@@ -38,8 +38,17 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
       `achievement${key}` as keyof typeof oneseo.middleSchoolAchievement
     ] as (number | null)[] | undefined;
 
-  const getConvertedScore = (key: SemesterKey) =>
-    generalSubjectsScoreDetail[`score${key}` as keyof typeof generalSubjectsScoreDetail];
+  const getConvertedScore = (key: SemesterKey) => {
+    const ownScore =
+      generalSubjectsScoreDetail[`score${key}` as keyof typeof generalSubjectsScoreDetail];
+    if (ownScore !== null && ownScore !== undefined) return ownScore;
+
+    // 자유학기가 1-2인 원서는 1학년 1학기 환산점이 score1_2(자유학기 자리)에 담겨 내려온다.
+    // 자유학기 칸은 어차피 빗금이라 그 값이 묻히므로, 원래 자리인 1-1 칸에 표시한다.
+    if (key === '1_1' && freeSemesterKey === '1_2') return generalSubjectsScoreDetail.score1_2;
+
+    return null;
+  };
 
   /**
    * 이 표(전형성적 입력 확인서)는 환산점이 아니라 "지원자가 실제로 입력한 성취도"를
