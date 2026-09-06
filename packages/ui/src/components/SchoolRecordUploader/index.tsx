@@ -216,7 +216,16 @@ const SchoolRecordUploader = ({
         </div>
       </div>
 
-      {isProcessing && <p className={cn('text-xs', 'text-blue-700')}>{STATUS_TEXT[status]}</p>}
+      {isProcessing && (
+        <div className={cn('flex', 'flex-col', 'gap-0.5')}>
+          <p className={cn('text-xs', 'text-blue-700')}>{STATUS_TEXT[status]}</p>
+          <p className={cn('text-xs', 'text-slate-500')}>
+            {status === 'processing'
+              ? '파일 용량과 페이지 수에 따라 약 5분 정도 걸릴 수 있어요. 창을 닫지 말고 잠시만 기다려 주세요.'
+              : '창을 닫지 말고 잠시만 기다려 주세요.'}
+          </p>
+        </div>
+      )}
 
       {status === 'error' && errorMessage && (
         <p className={cn('text-xs', 'text-red-600')}>{errorMessage}</p>
