@@ -187,7 +187,7 @@ const PassResultDialog = ({
                 className={cn('w-[10.625rem]', 'h-[3.25rem]', 'font-semibold', 'text-base')}
                 onClick={() =>
                   push(
-                    `${process.env.NEXT_PUBLIC_CDN_URL}/2027학년도 신임생 최종 합격자 제출 서류 안내.hwpx`,
+                    `${process.env.NEXT_PUBLIC_CDN_URL}/2027학년도 신입생 최종 합격자 제출 서류 안내.hwpx`,
                   )
                 }
               >
