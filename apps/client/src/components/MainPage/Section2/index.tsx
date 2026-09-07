@@ -142,7 +142,10 @@ const Section2 = () => {
                   'cursor-pointer',
                 )}
                 onClick={() => {
-                  window.open(`${process.env.NEXT_PUBLIC_CDN_URL}/2026_입학_요강.hwp`, '_blank');
+                  window.open(
+                    `${process.env.NEXT_PUBLIC_CDN_URL}/2027학년도 광주소프트웨어마이스터고등학교 신입생 전형요강.hwpx`,
+                    '_blank',
+                  );
                 }}
               >
                 입학요강 다운로드

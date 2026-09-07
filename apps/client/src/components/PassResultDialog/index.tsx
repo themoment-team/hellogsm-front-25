@@ -186,7 +186,9 @@ const PassResultDialog = ({
                 variant="reverseFill"
                 className={cn('w-[10.625rem]', 'h-[3.25rem]', 'font-semibold', 'text-base')}
                 onClick={() =>
-                  push(`${process.env.NEXT_PUBLIC_CDN_URL}/최종_합격자_제출_목록.hwpx`)
+                  push(
+                    `${process.env.NEXT_PUBLIC_CDN_URL}/2027학년도 신임생 최종 합격자 제출 서류 안내.hwpx`,
+                  )
                 }
               >
                 합격자 제출서류 다운
@@ -206,7 +208,7 @@ const PassResultDialog = ({
                   className={cn('w-[10.625rem]', 'h-[3.25rem]', 'font-semibold', 'text-base')}
                   onClick={() =>
                     push(
-                      `${process.env.NEXT_PUBLIC_CDN_URL}/2026학년_신입생_선발_1차_전형_합격자_안내사항.hwp`,
+                      `${process.env.NEXT_PUBLIC_CDN_URL}/2027학년도 신입생 선발 1차 전형 합격자 안내사항.hwp`,
                     )
                   }
                 >
