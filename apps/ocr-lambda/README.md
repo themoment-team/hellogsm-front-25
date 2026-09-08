@@ -145,13 +145,8 @@ CloudWatch에 그대로 남는다(`achievementTextConverter.ts`의 `kordocDebug`
 받아두도록 바뀌었다. `/tmp`는 Lambda 실행 환경이 새로 뜰 때(콜드 스타트)마다 비워지는 경로라
 그대로 두면 매번 모델을 인터넷에서 다시 받아야 했는데, 이게 "OCR 처리 시간이 오래 걸린다"는
 문제의 원인 중 하나였다. **이미 이 함수를 배포해둔 상태라면** 이미지만 새로 올리는 걸로는
-부족하고, 아래처럼 환경변수도 같이 갱신해야 실제로 적용된다:
-
-```bash
-aws lambda update-function-configuration \
-  --function-name ocr-lambda \
-  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
-```
+부족하고 환경변수도 같이 갱신해야 실제로 적용되는데, 아래 "업데이트할 때는" 순서를 반드시
+지켜야 한다.
 
 업데이트할 때는:
 
@@ -161,6 +156,30 @@ docker push $ECR_URI:latest
 aws lambda update-function-code \
   --function-name ocr-lambda \
   --image-uri $ECR_URI:latest
+```
+
+**반드시 이미지 코드 갱신이 끝난 뒤에 환경변수를 바꿔야 한다** — 순서를 바꿔서 이미지보다
+먼저 `KORDOC_MODEL_CACHE`를 `/opt/kordoc-models`로 바꾸면, 아직 그 경로가 없는 기존(구)
+이미지가 그 사이에 호출될 경우 모델 캐시 디렉터리를 만들지 못해(Lambda는 `/tmp` 밖이 읽기
+전용이다) OCR이 일시적으로 실패한다. `update-function-code`는 비동기이므로 아래처럼
+`LastUpdateStatus`가 `Successful`이 될 때까지 기다린 뒤에 진행한다:
+
+```bash
+aws lambda wait function-updated --function-name ocr-lambda
+```
+
+환경변수를 갱신할 때도 `--environment`는 기존 `Variables` 맵 전체를 그 값으로 **교체**한다 —
+여기 예시에 없는 변수가 실제 함수에 이미 설정되어 있다면 그대로 날아간다. 먼저 현재 값을
+읽어서 필요한 값만 바꾼 전체 맵을 다시 넣어야 한다:
+
+```bash
+aws lambda get-function-configuration \
+  --function-name ocr-lambda \
+  --query "Environment.Variables"
+# 위 출력을 기준으로 KORDOC_MODEL_CACHE만 바꾼 전체 Variables 맵을 아래에 채워 넣는다
+aws lambda update-function-configuration \
+  --function-name ocr-lambda \
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
 ```
 
 ### 5. Vercel → Lambda 호출 권한
