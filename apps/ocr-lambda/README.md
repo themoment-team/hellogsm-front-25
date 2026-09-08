@@ -69,13 +69,20 @@ export ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-2.amazonaws.com/ocr-lambda
 aws ecr get-login-password --region ap-northeast-2 | \
   docker login --username AWS --password-stdin $ECR_URI
 
-docker build --platform linux/amd64 -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
+docker build --platform linux/amd64 --provenance=false -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
 docker push $ECR_URI:latest
 ```
 
 `--platform linux/amd64`를 빼먹지 말 것 — Apple Silicon 맥에서 그냥 빌드하면 arm64 이미지가
 되어 Lambda(기본 x86_64) 배포 시 아키텍처 불일치로 실패한다. Graviton(arm64) Lambda로
 가려면 이 플래그와 Lambda 함수의 `--architectures arm64`를 함께 바꿔야 한다.
+
+`--provenance=false`도 빼먹지 말 것 — 요즘 Docker CLI의 `docker build`는 내부적으로 BuildKit/
+buildx를 쓰는데, 기본값으로 SLSA provenance attestation을 함께 만들어서 push한다. 그러면
+ECR의 `:latest`가 실제 이미지 하나가 아니라 "실제 이미지 + attestation" 두 매니페스트를 묶은
+OCI 이미지 인덱스(manifest list)가 되는데, AWS Lambda는 이런 멀티 매니페스트 형식을 지원하지
+않아 나중에 `update-function-code`가 매니페스트 타입 에러로 실패한다. `--provenance=false`를
+주면 attestation 없이 단일 이미지 매니페스트만 만들어 push한다.
 
 ### 3. IAM — Lambda 실행 역할
 
@@ -151,7 +158,7 @@ CloudWatch에 그대로 남는다(`achievementTextConverter.ts`의 `kordocDebug`
 업데이트할 때는:
 
 ```bash
-docker build --platform linux/amd64 -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
+docker build --platform linux/amd64 --provenance=false -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
 docker push $ECR_URI:latest
 aws lambda update-function-code \
   --function-name ocr-lambda \
