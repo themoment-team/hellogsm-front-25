@@ -324,33 +324,36 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
       schoolTeacherName: schoolTeacherName || undefined,
       schoolTeacherPhoneNumber: schoolTeacherPhoneNumber || undefined,
 
-      // step 4
-      middleSchoolAchievement: isGED
-        ? {
-            gedAvgScore: gedAvgScore!,
-          }
-        : {
-            liberalSystem: liberalSystem,
-            achievement1_1: achievement1_1!,
-            achievement1_2: achievement1_2!,
-            achievement2_1: achievement2_1!,
-            achievement2_2: achievement2_2!,
-            achievement3_1: achievement3_1!,
-            achievement3_2: achievement3_2!,
-            newSubjects: newSubjects,
-            artsPhysicalAchievement: artsPhysicalAchievement!,
-            absentDays: absentDays!,
-            attendanceDays: attendanceDays!,
-            volunteerTime: volunteerTime!,
-            freeSemester:
-              liberalSystem === LiberalSystemValueEnum.FREE_GRADE
-                ? null
-                : graduationType === GraduationTypeValueEnum.GRADUATE
-                  ? (freeSemester ?? '')
-                  : freeSemester,
-            generalSubjects: [...GENERAL_SUBJECTS],
-            artsPhysicalSubjects: [...ARTS_PHYSICAL_SUBJECTS],
-          },
+      // step 4 — GED 분기({ gedAvgScore }만 담은 객체)는 점수가 실제로 입력된
+      // 뒤에만 쓴다. 점수가 없는 상태로는 이 형태({})도, 키 생략도 서버가
+      // 거부하므로(각각 400/500), 점수 입력 전에는 다른 전형과 동일한 전체
+      // 객체를 보낸다 — step1~3 임시저장에서 정상 동작이 확인된 형태다.
+      middleSchoolAchievement:
+        isGED && gedAvgScore != null
+          ? {
+              gedAvgScore: gedAvgScore,
+            }
+          : {
+              liberalSystem: liberalSystem,
+              achievement1_1: achievement1_1!,
+              achievement1_2: achievement1_2!,
+              achievement2_1: achievement2_1!,
+              achievement2_2: achievement2_2!,
+              achievement3_1: achievement3_1!,
+              achievement3_2: achievement3_2!,
+              newSubjects: newSubjects,
+              artsPhysicalAchievement: artsPhysicalAchievement!,
+              absentDays: absentDays!,
+              attendanceDays: attendanceDays!,
+              volunteerTime: volunteerTime!,
+              // freeSemester는 서버 enum이라 ''를 허용하지 않는다(스웨거 확인).
+              // 과거엔 졸업(GRADUATE) 전형만 ''로 보냈는데, 이는 서버가 거부하는
+              // 값이라 항상 400을 유발했다 — null로 통일한다.
+              freeSemester:
+                liberalSystem === LiberalSystemValueEnum.FREE_GRADE ? null : freeSemester,
+              generalSubjects: [...GENERAL_SUBJECTS],
+              artsPhysicalSubjects: [...ARTS_PHYSICAL_SUBJECTS],
+            },
 
       step: isTemp ? Number(step) : undefined,
     };
@@ -685,6 +688,7 @@ const StepWrapper = ({ data, step, info, memberId, type, isModifyApproved }: Ste
             {step === StepEnum.FOUR && (
               <Step4Register
                 {...step4UseForm}
+                type={type}
                 graduationType={graduationType}
                 isGED={isGED}
                 isCandidate={isCandidate}

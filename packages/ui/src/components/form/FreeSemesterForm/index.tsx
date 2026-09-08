@@ -23,6 +23,7 @@ const defaultSubjectLength = GENERAL_SUBJECTS.length;
 
 interface FreeSemesterFormProps {
   subjectArray: string[];
+  subjectKeys: string[];
   setValue: UseFormSetValue<Step4FormType>;
   register: UseFormRegister<Step4FormType>;
   control: Control<Step4FormType>;
@@ -84,6 +85,7 @@ const freeSemesterToAchievementField: Record<FreeSemesterValueEnum, SemesterIdTy
 const FreeSemesterForm = ({
   register,
   subjectArray,
+  subjectKeys,
   setValue,
   control,
   handleDeleteSubjectClick,
@@ -98,6 +100,10 @@ const FreeSemesterForm = ({
   // 렌더 중 구독은 watch() 대신 useWatch 사용 (React Compiler 호환)
   // 훅은 map 안에서 호출할 수 없으므로 학기별 배열 전체를 한 번 구독하고 인덱싱한다
   const achievements = useWatch({ control, name: ACHIEVEMENT_FIELD_LIST });
+
+  // 표 전체 폭은 44.25rem(708px) 고정 — 과목명 6.75rem + 학기 영역 37.5rem
+  // 학기 열은 37.5rem을 학기 수로 나눈 값이다 (졸업자 6학기, 재학생 5학기)
+  const columnWidth = isGraduate ? 'w-[6.25rem]' : 'w-[7.5rem]';
 
   useEffect(() => {
     setTimeout(
@@ -146,10 +152,7 @@ const FreeSemesterForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>과목명</h1>
         <div className={cn('flex')}>
           {achievementList.map(({ title }) => (
-            <h1
-              key={title}
-              className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-            >
+            <h1 key={title} className={cn([...itemStyle, columnWidth])}>
               {title}
             </h1>
           ))}
@@ -160,10 +163,7 @@ const FreeSemesterForm = ({
         <h1 className={cn([...itemStyle, 'w-[6.75rem]'])}>자유학기제</h1>
         <div className={cn('flex')}>
           {achievementList.map(({ value, field }) => (
-            <div
-              key={field}
-              className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-            >
+            <div key={field} className={cn([...itemStyle, columnWidth])}>
               {freeSemester === value ? (
                 <button
                   className={cn([
@@ -184,7 +184,7 @@ const FreeSemesterForm = ({
                 <button
                   className={cn([
                     ...freeSemesterButtonStyle,
-                    showError && errors.freeSemester && !isGraduate && '!border-red-600',
+                    showError && !freeSemester && '!border-red-600',
                   ])}
                   type="button"
                   onClick={() => {
@@ -200,6 +200,11 @@ const FreeSemesterForm = ({
           ))}
         </div>
       </div>
+      {showError && !freeSemester && (
+        <p className={cn('mt-2', 'text-xs', 'text-red-600')}>
+          자유학기에 해당하는 학기를 선택(on)해야 제출할 수 있어요.
+        </p>
+      )}
       {subjectArray.map((subject, idx) => {
         const dynamicIndex = idx - defaultSubjectLength;
 
@@ -207,7 +212,7 @@ const FreeSemesterForm = ({
         const isNewSubjectError = newSubjectHasError && showError && '!border-red-600';
         return (
           <div
-            key={subject}
+            key={subjectKeys[idx] ?? idx}
             className={cn([
               ...rowStyle,
               'bg-white',
@@ -248,10 +253,7 @@ const FreeSemesterForm = ({
                 const isSubjectError = subjectHasError && showError && '!border-red-600';
 
                 return (
-                  <div
-                    key={field}
-                    className={cn([...itemStyle, isGraduate ? 'w-[9.34375rem]' : 'w-[7.475rem]'])}
-                  >
+                  <div key={field} className={cn([...itemStyle, columnWidth])}>
                     {freeSemester === value ? (
                       <div
                         className={cn(
@@ -268,7 +270,7 @@ const FreeSemesterForm = ({
                         자유학기제
                       </div>
                     ) : (
-                      <div className={cn('w-[7.3375rem]', 'flex', 'justify-center')}>
+                      <div className={cn(columnWidth, 'flex', 'justify-center')}>
                         <Select
                           onValueChange={(value) => {
                             const prev = getValues(field) || [];
@@ -282,11 +284,11 @@ const FreeSemesterForm = ({
 
                             setValue(field, next, { shouldDirty: true, shouldValidate: true });
                           }}
-                          defaultValue={Number.isInteger(score) ? String(score) : ''}
+                          value={Number.isInteger(score) ? String(score) : ''}
                         >
                           <SelectTrigger
                             className={cn(
-                              isGraduate ? 'w-[7.34375rem]' : 'w-[5.475rem]',
+                              'w-[5.475rem]',
                               'h-[2rem]',
                               'text-sm',
                               'font-normal',

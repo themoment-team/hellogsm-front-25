@@ -24,10 +24,48 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
   const { generalSubjectsScoreDetail } = oneseo.calculatedScore;
   const subjects = [...GENERAL_SUBJECTS, ...(oneseo.middleSchoolAchievement.newSubjects ?? [])];
 
+  const isFreeSemester = oneseo.middleSchoolAchievement.liberalSystem === '자유학기제';
+
   const semesters: SemesterKey[] =
     graduationType === 'CANDIDATE'
       ? ['1_1', '1_2', '2_1', '2_2', '3_1']
-      : ['2_1', '2_2', '3_1', '3_2'];
+      : isFreeSemester
+        ? ['1_1', '1_2', '2_1', '2_2', '3_1', '3_2']
+        : ['2_1', '2_2', '3_1', '3_2'];
+
+  const getScores = (key: SemesterKey) =>
+    oneseo.middleSchoolAchievement[
+      `achievement${key}` as keyof typeof oneseo.middleSchoolAchievement
+    ] as (number | null)[] | undefined;
+
+  const getConvertedScore = (key: SemesterKey) => {
+    const ownScore =
+      generalSubjectsScoreDetail[`score${key}` as keyof typeof generalSubjectsScoreDetail];
+    if (ownScore !== null && ownScore !== undefined) return ownScore;
+
+    // 자유학기가 1-2인 원서는 1학년 1학기 환산점이 score1_2(자유학기 자리)에 담겨 내려온다.
+    // 자유학기 칸은 어차피 빗금이라 그 값이 묻히므로, 원래 자리인 1-1 칸에 표시한다.
+    if (key === '1_1' && freeSemesterKey === '1_2') return generalSubjectsScoreDetail.score1_2;
+
+    return null;
+  };
+
+  /**
+   * 이 표(전형성적 입력 확인서)는 환산점이 아니라 "지원자가 실제로 입력한 성취도"를
+   * 보여주는 서식이다. 예전에는 환산점(generalSubjectsScoreDetail)이 없으면 학기를
+   * 통째로 빗금 처리했는데, 그러면 서버가 성취도는 내려주면서 환산점은 아직 못 채우는
+   * 학기(자유학기제가 1-2인 원서의 1학년 1학기)가 입력값까지 같이 가려져 버린다.
+   * 그래서 칸을 채울지 말지는 입력값(middleSchoolAchievement)만 보고 판단한다.
+   */
+  const isSemesterEmpty = (key: SemesterKey) => {
+    if (key === freeSemesterKey) return true;
+
+    const hasAchievement = getScores(key)?.some((score) => score !== null && score !== undefined);
+    if (hasAchievement) return false;
+
+    // 미리보기 응답은 성취도 배열이 비어 오는 경우가 있어 환산점 유무로 한 번 더 확인한다.
+    return !isPreview || getConvertedScore(key) === null || getConvertedScore(key) === undefined;
+  };
 
   return (
     <table className={cn('w-full', 'border', 'border-black', 'text-center')}>
@@ -63,13 +101,7 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
           <tr key={subject}>
             <td className={cn('border', 'border-black')}>{subject}</td>
             {semesters.map((key) => {
-              const detailKey = `score${key}` as keyof typeof generalSubjectsScoreDetail;
-              const scoreDetail = generalSubjectsScoreDetail[detailKey];
-              const scores = oneseo.middleSchoolAchievement[
-                `achievement${key}` as keyof typeof oneseo.middleSchoolAchievement
-              ] as (number | null)[] | undefined;
-
-              if (!scoreDetail || freeSemesterKey === key || (!isPreview && !scores?.length)) {
+              if (isSemesterEmpty(key)) {
                 if (rowIdx === 0) {
                   return (
                     <td
@@ -88,6 +120,8 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
                 return null;
               }
 
+              const scores = getScores(key);
+
               return (
                 <td key={`${key}-${rowIdx}`} className={cn('border', 'border-black')}>
                   {scoreToAlphabet[scores?.[rowIdx] ?? -1] ?? ''}
@@ -99,19 +133,11 @@ const GeneralSubjectsTable = ({ oneseo }: OneseoStatusType) => {
 
         <tr>
           <td className={cn('border', 'border-black')}>환산점</td>
-          {semesters.map((key) => {
-            const detailKey = `score${key}` as keyof typeof generalSubjectsScoreDetail;
-            const scores = oneseo.middleSchoolAchievement[
-              `achievement${key}` as keyof typeof oneseo.middleSchoolAchievement
-            ] as (number | null)[] | undefined;
-            return (
-              <td key={`${key}-total`} className={cn('border', 'border-black')}>
-                {freeSemesterKey !== key && (isPreview || scores?.length)
-                  ? (generalSubjectsScoreDetail[detailKey] ?? '')
-                  : ''}
-              </td>
-            );
-          })}
+          {semesters.map((key) => (
+            <td key={`${key}-total`} className={cn('border', 'border-black')}>
+              {isSemesterEmpty(key) ? '' : (getConvertedScore(key) ?? '')}
+            </td>
+          ))}
         </tr>
       </tbody>
     </table>

@@ -1,6 +1,8 @@
 import {
+  AchievementGradeType,
   achievementGradeValues,
   GraduationEnum,
+  LiberalSystemValueEnum,
   MajorEnum,
   OneseoStatusType,
   ScreeningEnum,
@@ -42,6 +44,41 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
     achievement2_2: 'score2_2',
     achievement3_1: 'score3_1',
     achievement3_2: 'score3_2',
+  };
+
+  const isPreview = oneseo.oneseoId === null;
+  const { liberalSystem, freeSemester } = oneseo.middleSchoolAchievement;
+
+  const freeSemesterGradeKey =
+    liberalSystem === LiberalSystemValueEnum.FREE_SEMESTER && freeSemester
+      ? (`achievement${freeSemester.replace('-', '_')}` as AchievementGradeType)
+      : null;
+
+  /**
+   * 자유학기로 지정된 학기에는 애초에 성적이 존재할 수 없다. 그런데 자유학기가 1-2인
+   * 원서는 1학년 1학기 환산점이 score1_2(자유학기 자리)에 담겨 내려온다. 그대로 그리면
+   * "1학년 2학기 성적이 있다"는 오해를 부르므로, 그 값은 원래 자리인 1-1 칸에 표시하고
+   * 자유학기 칸은 빗금으로 비운다. 서버가 score1_1을 채워 주면 그 값이 우선한다.
+   */
+  const getConvertedScore = (gradeKey: AchievementGradeType) => {
+    const ownScore = generalSubjectsScoreDetail[achievementScoreMap[gradeKey]!];
+    if (ownScore !== null && ownScore !== undefined) return ownScore;
+
+    if (gradeKey === 'achievement1_1' && freeSemesterGradeKey === 'achievement1_2') {
+      return generalSubjectsScoreDetail.score1_2;
+    }
+
+    return null;
+  };
+
+  const isSemesterEmpty = (gradeKey: AchievementGradeType) => {
+    if (gradeKey === freeSemesterGradeKey) return true;
+
+    const score = getConvertedScore(gradeKey);
+    if (score === null || score === undefined) return true;
+
+    // 미리보기는 환산점만 먼저 내려오는 경우가 있어 입력값 유무로 한 번 더 확인한다.
+    return isPreview && !oneseo.middleSchoolAchievement[gradeKey]?.length;
   };
 
   return (
@@ -177,17 +214,14 @@ const OneseoStatus = ({ oneseo }: OneseoStatusType) => {
           ) : (
             <>
               {achievementGradeValues.map((gradeKey) =>
-                !oneseo.middleSchoolAchievement[gradeKey]?.length ||
-                (oneseo.oneseoId !== null &&
-                  generalSubjectsScoreDetail[achievementScoreMap[gradeKey]!] === null) ||
-                gradeKey === 'achievement1_1' ? (
+                isSemesterEmpty(gradeKey) ? (
                   <td
                     key={gradeKey}
                     className={cn(tdStyle, 'bg-slash', 'bg-contain', 'bg-no-repeat')}
                   />
                 ) : (
                   <td key={gradeKey} className={cn(tdStyle)}>
-                    {generalSubjectsScoreDetail[achievementScoreMap[gradeKey]!]}
+                    {getConvertedScore(gradeKey)}
                   </td>
                 ),
               )}
