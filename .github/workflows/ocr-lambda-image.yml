@@ -1,0 +1,19 @@
+name: OCR Lambda Image Build
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'apps/ocr-lambda/**'
+      - 'packages/constants/**'
+
+jobs:
+  build-image:
+    name: Build ocr-lambda Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build ocr-lambda image (runner stage)
+        run: docker build --platform linux/amd64 --provenance=false --target runner -f apps/ocr-lambda/Dockerfile .

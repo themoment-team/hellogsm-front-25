@@ -69,13 +69,20 @@ export ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-2.amazonaws.com/ocr-lambda
 aws ecr get-login-password --region ap-northeast-2 | \
   docker login --username AWS --password-stdin $ECR_URI
 
-docker build --platform linux/amd64 -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
+docker build --platform linux/amd64 --provenance=false -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
 docker push $ECR_URI:latest
 ```
 
 `--platform linux/amd64`를 빼먹지 말 것 — Apple Silicon 맥에서 그냥 빌드하면 arm64 이미지가
 되어 Lambda(기본 x86_64) 배포 시 아키텍처 불일치로 실패한다. Graviton(arm64) Lambda로
 가려면 이 플래그와 Lambda 함수의 `--architectures arm64`를 함께 바꿔야 한다.
+
+`--provenance=false`도 빼먹지 말 것 — 요즘 Docker CLI의 `docker build`는 내부적으로 BuildKit/
+buildx를 쓰는데, 기본값으로 SLSA provenance attestation을 함께 만들어서 push한다. 그러면
+ECR의 `:latest`가 실제 이미지 하나가 아니라 "실제 이미지 + attestation" 두 매니페스트를 묶은
+OCI 이미지 인덱스(manifest list)가 되는데, AWS Lambda는 이런 멀티 매니페스트 형식을 지원하지
+않아 나중에 `update-function-code`가 매니페스트 타입 에러로 실패한다. `--provenance=false`를
+주면 attestation 없이 단일 이미지 매니페스트만 만들어 push한다.
 
 ### 3. IAM — Lambda 실행 역할
 
@@ -134,20 +141,52 @@ aws lambda create-function \
   --timeout 120 \
   --memory-size 4096 \
   --region ap-northeast-2 \
-  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/tmp/kordoc-models,NODE_ENV=production}"
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
 ```
 
 `NODE_ENV=production`은 필수에 가깝다 — 꺼두면 생기부 원문 내용이 디버그 로그로
 CloudWatch에 그대로 남는다(`achievementTextConverter.ts`의 `kordocDebug` 참고).
 
+`KORDOC_MODEL_CACHE=/opt/kordoc-models`는 `/tmp/kordoc-models`에서 바뀐 값이다 — Dockerfile이
+빌드 타임에 텍스트 OCR 모델(PP-OCRv5 korean, ~18MB)을 이미지 안 `/opt/kordoc-models`에 미리
+받아두도록 바뀌었다. `/tmp`는 Lambda 실행 환경이 새로 뜰 때(콜드 스타트)마다 비워지는 경로라
+그대로 두면 매번 모델을 인터넷에서 다시 받아야 했는데, 이게 "OCR 처리 시간이 오래 걸린다"는
+문제의 원인 중 하나였다. **이미 이 함수를 배포해둔 상태라면** 이미지만 새로 올리는 걸로는
+부족하고 환경변수도 같이 갱신해야 실제로 적용되는데, 아래 "업데이트할 때는" 순서를 반드시
+지켜야 한다.
+
 업데이트할 때는:
 
 ```bash
-docker build --platform linux/amd64 -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
+docker build --platform linux/amd64 --provenance=false -f apps/ocr-lambda/Dockerfile -t $ECR_URI:latest .
 docker push $ECR_URI:latest
 aws lambda update-function-code \
   --function-name ocr-lambda \
   --image-uri $ECR_URI:latest
+```
+
+**반드시 이미지 코드 갱신이 끝난 뒤에 환경변수를 바꿔야 한다** — 순서를 바꿔서 이미지보다
+먼저 `KORDOC_MODEL_CACHE`를 `/opt/kordoc-models`로 바꾸면, 아직 그 경로가 없는 기존(구)
+이미지가 그 사이에 호출될 경우 모델 캐시 디렉터리를 만들지 못해(Lambda는 `/tmp` 밖이 읽기
+전용이다) OCR이 일시적으로 실패한다. `update-function-code`는 비동기이므로 아래처럼
+`LastUpdateStatus`가 `Successful`이 될 때까지 기다린 뒤에 진행한다:
+
+```bash
+aws lambda wait function-updated --function-name ocr-lambda
+```
+
+환경변수를 갱신할 때도 `--environment`는 기존 `Variables` 맵 전체를 그 값으로 **교체**한다 —
+여기 예시에 없는 변수가 실제 함수에 이미 설정되어 있다면 그대로 날아간다. 먼저 현재 값을
+읽어서 필요한 값만 바꾼 전체 맵을 다시 넣어야 한다:
+
+```bash
+aws lambda get-function-configuration \
+  --function-name ocr-lambda \
+  --query "Environment.Variables"
+# 위 출력을 기준으로 KORDOC_MODEL_CACHE만 바꾼 전체 Variables 맵을 아래에 채워 넣는다
+aws lambda update-function-configuration \
+  --function-name ocr-lambda \
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
 ```
 
 ### 5. Vercel → Lambda 호출 권한
