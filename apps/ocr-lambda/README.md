@@ -134,11 +134,24 @@ aws lambda create-function \
   --timeout 120 \
   --memory-size 4096 \
   --region ap-northeast-2 \
-  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/tmp/kordoc-models,NODE_ENV=production}"
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
 ```
 
 `NODE_ENV=production`은 필수에 가깝다 — 꺼두면 생기부 원문 내용이 디버그 로그로
 CloudWatch에 그대로 남는다(`achievementTextConverter.ts`의 `kordocDebug` 참고).
+
+`KORDOC_MODEL_CACHE=/opt/kordoc-models`는 `/tmp/kordoc-models`에서 바뀐 값이다 — Dockerfile이
+빌드 타임에 텍스트 OCR 모델(PP-OCRv5 korean, ~18MB)을 이미지 안 `/opt/kordoc-models`에 미리
+받아두도록 바뀌었다. `/tmp`는 Lambda 실행 환경이 새로 뜰 때(콜드 스타트)마다 비워지는 경로라
+그대로 두면 매번 모델을 인터넷에서 다시 받아야 했는데, 이게 "OCR 처리 시간이 오래 걸린다"는
+문제의 원인 중 하나였다. **이미 이 함수를 배포해둔 상태라면** 이미지만 새로 올리는 걸로는
+부족하고, 아래처럼 환경변수도 같이 갱신해야 실제로 적용된다:
+
+```bash
+aws lambda update-function-configuration \
+  --function-name ocr-lambda \
+  --environment "Variables={AWS_S3_BUCKET=hellogsm-dev-bucket,KORDOC_MODEL_CACHE=/opt/kordoc-models,NODE_ENV=production}"
+```
 
 업데이트할 때는:
 

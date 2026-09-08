@@ -33,6 +33,15 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN pnpm install --frozen-lockfile
+# 텍스트 OCR 모델(PP-OCRv5 korean det+rec, ~18MB)을 빌드 타임에 이미지 안에 구워 넣는다.
+# 안 그러면(런타임 환경변수 KORDOC_MODEL_CACHE가 Lambda의 유일한 쓰기 가능 경로인 /tmp를
+# 가리키던 기존 방식) 실행 환경이 새로 뜰 때(콜드 스타트)마다 이 모델을 인터넷에서 처음부터
+# 다시 받아야 했다 — "OCR 처리 시간이 오래 걸린다"는 문제의 큰 원인 중 하나였다. 이미지 안의
+# 고정 경로에 미리 받아두면 콜드 스타트에서도 다운로드 없이 로컬 파일을 그대로 쓴다. runner
+# 스테이지에서 같은 경로에 이 디렉터리를 그대로 복사하고 같은 환경변수를 지정해야 적용된다 —
+# README 4번(Lambda 함수 생성) 항목의 KORDOC_MODEL_CACHE 값도 함께 바꿔야 한다.
+ENV KORDOC_MODEL_CACHE=/opt/kordoc-models
+RUN pnpm --filter=@repo/ocr-lambda exec kordoc check-ocr-models
 COPY --from=pruner /app/out/full/ .
 RUN pnpm turbo run build --filter=@repo/ocr-lambda
 # pnpm의 node_modules는 상대 심볼릭 링크로 pnpm 가상 저장소(../../../node_modules/.pnpm/...)를
@@ -49,4 +58,8 @@ FROM public.ecr.aws/lambda/nodejs:22 AS runner
 WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=installer /app/deploy/dist ./
 COPY --from=installer /app/deploy/node_modules ./node_modules
+# installer 단계에서 미리 받아둔 OCR 모델을 그대로 심는다 — 같은 경로 + 같은 환경변수여야
+# kordoc이 다시 받지 않고 이 파일들을 쓴다(위 installer 단계 주석 참고).
+COPY --from=installer /opt/kordoc-models /opt/kordoc-models
+ENV KORDOC_MODEL_CACHE=/opt/kordoc-models
 CMD ["handler.handler"]
